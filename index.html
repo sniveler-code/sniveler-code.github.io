@@ -21,7 +21,7 @@
         <h1 class="text-4xl md:text-6xl font-bold mb-4">Sniveler Code</h1>
         <p class="text-xl text-slate-300 max-w-2xl mx-auto">
             High-performance tools and architectural solutions for Unity. 
-            Specializing in ECS, DOTS, and On-Device AI.
+            Specializing in ECS, DOTS, and GPU-driven systems.
         </p>
     </header>
 
@@ -36,62 +36,63 @@
     <main class="max-w-6xl mx-auto px-4">
         
         <section id="assets" class="mb-20">
-            <h2 class="text-3xl font-bold mb-8 border-b-2 border-blue-500 inline-block">Published & Upcoming Assets</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h2 class="text-3xl font-bold mb-8 border-b-2 border-blue-500 inline-block">Published Assets</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
                 
-                <div class="asset-card bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 text-blue-700 leading-tight">Audio Dispatcher (AudioSource) for Unity DOTS</h3>
+                <div class="asset-card bg-white p-6 rounded-xl shadow-md border-2 border-blue-100 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-blue-800 leading-tight">GPU Animation Entities</h3>
+                        <span class="bg-blue-600 text-white text-[10px] uppercase px-2 py-1 rounded font-bold">Asset Store</span>
+                    </div>
                     <p class="text-slate-600 text-sm mb-4 flex-grow text-pretty">
-                        A high-performance bridge for Unity DOTS that allows seamless control of standard AudioSources within ECS systems. Supports Burst and Job System.
+                        A powerful GPU-based animation system designed specifically for Unity Entities (ECS). Efficiently render thousands of animated characters with minimal CPU overhead.
                     </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">Live on Itch.io</span>
-                        <a href="https://snivelercode.itch.io/audio-dispatcher-audio-source-for-unity-dots" target="_blank" class="text-blue-600 text-sm font-bold hover:underline italic">View Project →</a>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-50">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-1 rounded">v2.0 Update in Progress</span>
+                        <a href="https://assetstore.unity.com/packages/tools/animation/gpu-animation-entities-246164" target="_blank" class="text-blue-600 text-sm font-bold hover:underline italic">View Store Page →</a>
                     </div>
                 </div>
 
                 <div class="asset-card bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 text-blue-700 leading-tight">Audio Dispatcher (FMOD) for Unity DOTS</h3>
+                    <h3 class="text-xl font-bold mb-2 text-slate-800 leading-tight">Audio Dispatcher for DOTS</h3>
                     <p class="text-slate-600 text-sm mb-4 flex-grow text-pretty">
-                        Optimized FMOD integration for ECS. Handle thousands of audio events with minimal overhead using a native-friendly architecture.
+                        High-performance bridge for Unity DOTS. Seamlessly control standard AudioSources or FMOD events within ECS systems using Burst-compatible code.
                     </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">Live on Itch.io</span>
-                        <a href="https://snivelercode.itch.io/audio-dispatcher-fmod-for-unity-dots" target="_blank" class="text-blue-600 text-sm font-bold hover:underline italic">View Project →</a>
-                    </div>
-                </div>
-
-                <div class="asset-card bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 text-blue-700 leading-tight">LoreMind: On-Device NPC Knowledge</h3>
-                    <p class="text-slate-600 text-sm mb-4 flex-grow text-pretty">
-                        Local RAG system utilizing Unity Sentis. Enables NPCs to have long-term memory and context-aware logic without external APIs.
-                    </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded text-nowrap">Coming to Asset Store</span>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-50">
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded text-nowrap">Available on Itch.io</span>
+                        <a href="https://snivelercode.itch.io/" target="_blank" class="text-blue-600 text-sm font-bold hover:underline italic">View Collection →</a>
                     </div>
                 </div>
 
             </div>
+            
+            <div class="mt-12">
+                <h3 class="text-xl font-bold mb-4 text-slate-400 uppercase tracking-widest text-sm text-center">Upcoming Projects</h3>
+                <div class="flex justify-center">
+                    <div class="bg-slate-50 border border-dashed border-slate-300 p-4 rounded-lg max-w-md text-center">
+                        <h4 class="font-bold text-slate-700">LoreMind: On-Device NPC Knowledge</h4>
+                        <p class="text-xs text-slate-500">Local RAG system for Unity Sentis. Advanced NPC memory without cloud APIs.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="about" class="mb-20 bg-slate-100 p-8 rounded-2xl">
-            <h2 class="text-3xl font-bold mb-4">Professional Profile</h2>
+            <h2 class="text-3xl font-bold mb-4 text-pretty">Technical Expertise</h2>
             <p class="text-lg text-slate-700 leading-relaxed max-w-4xl text-pretty">
-                Senior Unity Developer and Technical Architect with over 6 years of experience in the industry. 
-                My mission is to provide developers with robust, high-performance tools that solve complex architectural challenges. 
-                Expertise includes <strong>DOTS, ECS, Burst Compiler</strong>, and integration of <strong>Local LLMs</strong> within the Unity ecosystem.
+                Senior Unity Developer with over 6 years of experience focusing on <strong>low-level optimization</strong> and <strong>data-oriented design</strong>. 
+                I specialize in building production-ready bridges between classic Unity systems and the modern <strong>Entities (ECS)</strong> framework. 
+                My tools are built with a "Performance by Default" mindset, ensuring zero garbage collection and full Burst compatibility.
             </p>
         </section>
 
         <section id="support" class="mb-20 text-center">
-            <h2 class="text-3xl font-bold mb-6 text-pretty">Support & Inquiries</h2>
+            <h2 class="text-3xl font-bold mb-6">Publisher Support</h2>
             <div class="bg-white p-10 rounded-2xl shadow-xl border-2 border-blue-500 max-w-2xl mx-auto">
-                <p class="text-xl mb-4 text-slate-600">Need help with an asset? Contact me directly:</p>
-                <p class="text-2xl font-mono font-bold text-blue-600 break-all text-pretty">sniveler.code@gmail.com</p>
-                <div class="mt-6 pt-6 border-t border-slate-100">
-                    <p class="text-sm text-slate-500">
-                        Response time: 24-48 hours. Please provide your Invoice ID or Order number when contacting support.
-                    </p>
+                <p class="text-xl mb-4 text-slate-600">For technical inquiries and bug reports:</p>
+                <p class="text-2xl font-mono font-bold text-blue-600 break-all">sniveler.code@gmail.com</p>
+                <div class="mt-6 pt-6 border-t border-slate-100 text-sm text-slate-500">
+                    <p>Response time: 24-48 hours. Business inquiries are also welcome.</p>
                 </div>
             </div>
         </section>
@@ -99,7 +100,7 @@
     </main>
 
     <footer class="py-12 text-center text-slate-400 border-t border-slate-200">
-        <p>&copy; 2026 Sniveler Code. Technical Excellence in Unity Development.</p>
+        <p>&copy; 2026 Sniveler Code. Focused on Performance.</p>
     </footer>
 
 </body>
