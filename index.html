@@ -3,134 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniveler Code | Unity Performance Solutions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sniveler Code | High-Performance Unity Architecture</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; /* Cyan/Neon Blue */
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
         }
-        .asset-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
         }
-        .asset-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+        body {
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
+            /* Subtle grid fade out at the bottom */
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0.9) 100%);
+        }
+
+        /* Utility */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+
+        p { color: var(--text-secondary); }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%; left: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero .slogan {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--text-primary);
+            color: var(--bg-base);
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-dim);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+
+        .nav-logo:hover {
+            filter: brightness(1.5) drop-shadow(0 0 12px var(--accent));
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        /* Sections */
+        section { padding: 6rem 0; }
+
+        /* Portfolio Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--bg-surface-hover);
+        }
+
+        .card:hover::before { transform: scaleX(1); }
+
+        .card-image {
+            width: 100%;
+            height: 160px;
+            background: #050505;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .card:hover .card-image {
+            border-color: var(--border-hover);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        .card-link {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            margin-top: auto;
+        }
+
+        .card-link:hover { color: var(--accent); }
+
+        /* Philosophy */
+        .philosophy-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 3rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .philosophy-content p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .philosophy-content p:last-child { margin-bottom: 0; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 4rem 0;
+            text-align: center;
+            background: var(--bg-surface);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover { color: var(--accent); }
+
+        /* Scroll Reveal (JS) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .philosophy-content { padding: 2rem; }
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; }
+            .hero::before { width: 300px; height: 300px; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans text-balance">
+<body>
 
-    <header class="gradient-bg text-white py-16 px-4 text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight">Sniveler Code</h1>
-        <p class="text-xl text-slate-300 max-w-2xl mx-auto font-light">
-            High-performance tools and architectural solutions for Unity. 
-            Specializing in <strong>ECS, DOTS</strong>, and GPU-driven systems.
-        </p>
-    </header>
-
-    <nav class="sticky top-0 bg-white/80 backdrop-blur-md shadow-sm py-4 mb-12 z-50">
-        <div class="max-w-4xl mx-auto flex justify-center space-x-12 font-semibold text-slate-600">
-            <a href="#assets" class="hover:text-blue-600 transition">Assets</a>
-            <a href="#about" class="hover:text-blue-600 transition">About</a>
-            <a href="#support" class="hover:text-blue-600 transition">Support</a>
+    <nav>
+        <div class="container">
+            <a href="#" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="#assets">// ASSETS</a>
+                <a href="#about">// PHILOSOPHY</a>
+                <a href="#contact">// CONTACT</a>
+            </div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-4">
-        
-        <section id="assets" class="mb-20">
-            <h2 class="text-3xl font-bold mb-10 border-b-2 border-blue-500 inline-block">Product Portfolio</h2>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="container">
+        <header class="hero reveal active">
+            <p class="mono text-accent" style="margin-bottom: 1rem;">System.Initialize();</p>
+            <h1>Sniveler Code</h1>
+            <p class="slogan">High-Performance Unity Architecture & Tooling. Specializing in DOTS, ECS, and zero-allocation systems.</p>
+            <div class="hero-buttons">
+                <a href="#assets" class="btn btn-primary">View Assets</a>
+                <a href="https://github.com/sniveler-code" target="_blank" class="btn btn-secondary">GitHub</a>
+            </div>
+        </header>
+
+        <main>
+            <section id="assets">
+                <h2 class="mono reveal">public IEnumerable&lt;Asset&gt; Portfolio()</h2>
                 
-                <div class="asset-card bg-white p-6 rounded-2xl shadow-md border-2 border-blue-500 flex flex-col lg:col-span-full mb-4">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="bg-blue-600 text-white text-[10px] uppercase px-2 py-0.5 rounded font-bold mb-2 inline-block">Unity Asset Store</span>
-                            <h3 class="text-2xl font-bold text-slate-800 leading-tight">GPU Animation Entities</h3>
+                <div class="grid">
+                    <!-- AI Behavior Architect -->
+                    <div class="card reveal">
+                        <img src="Images/_ai_behavior_architect.jpg" alt="AI Behavior Architect" class="card-image">
+                        <h3>AI Behavior Architect</h3>
+                        <div class="tags">
+                            <span class="tag" style="color: #a0a0a0; border-color: rgba(255, 255, 255, 0.2);">Pending</span>
+                            <span class="tag text-accent">$69.99</span>
+                            <span class="tag">DOTS / ECS</span>
                         </div>
-                        <div class="text-right">
-                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200">v2.0 Update in Progress</span>
+                        <p>Pure DOTS / ECS Behavior Trees. Professional AI behavior logic with zero-allocation performance.</p>
+                        <a href="https://assetstore.unity.com/publishers/80672" target="_blank" class="card-link">Asset Store ↗</a>
+                    </div>
+
+                    <!-- GPU Animation Entities PRO -->
+                    <div class="card reveal">
+                        <img src="Images/_gpu_animation_entities_pro.jpg" alt="GPU Animation Entities PRO" class="card-image">
+                        <h3>GPU Animation Entities PRO</h3>
+                        <div class="tags">
+                            <span class="tag" style="color: #10b981; border-color: rgba(16, 185, 129, 0.2);">Published</span>
+                            <span class="tag text-accent">$49.99</span>
+                            <span class="tag">Burst</span>
                         </div>
+                        <p>High-performance GPU-based animation system for Unity Entities. Professional tier with advanced features.</p>
+                        <a href="https://assetstore.unity.com/packages/slug/370150" target="_blank" class="card-link">Asset Store ↗</a>
                     </div>
-                    <p class="text-slate-600 mb-6 text-pretty">
-                        A high-performance GPU-based animation system designed for Unity Entities (ECS). Render thousands of animated characters with full Burst and Job System support.
-                    </p>
-                    <div class="mt-auto flex items-center justify-between">
-                        <a href="https://assetstore.unity.com/packages/tools/animation/gpu-animation-entities-246164" target="_blank" class="bg-slate-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-600 transition">View on Store</a>
+
+                    <!-- Advanced Audio Dispatcher -->
+                    <div class="card reveal">
+                        <img src="Images/_audio_dispatcher_advanced.jpg" alt="Advanced Audio Dispatcher" class="card-image">
+                        <h3>Advanced Audio Dispatcher</h3>
+                        <div class="tags">
+                            <span class="tag" style="color: #10b981; border-color: rgba(16, 185, 129, 0.2);">Published</span>
+                            <span class="tag text-accent">$34.99</span>
+                            <span class="tag">ECS Audio</span>
+                        </div>
+                        <p>Advanced bridge for Unity DOTS to seamlessly control standard AudioSources with robust prioritization.</p>
+                        <a href="https://assetstore.unity.com/packages/slug/369628" target="_blank" class="card-link">Asset Store ↗</a>
+                    </div>
+
+                    <!-- Gpu Animation Entities -->
+                    <div class="card reveal">
+                        <img src="Images/_gpu_animation_entities_lite.jpg" alt="Gpu Animation Entities" class="card-image">
+                        <h3>Gpu Animation Entities</h3>
+                        <div class="tags">
+                            <span class="tag" style="color: #10b981; border-color: rgba(16, 185, 129, 0.2);">Published</span>
+                            <span class="tag text-accent">Free</span>
+                            <span class="tag" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.2);">★ 4.0 (7)</span>
+                        </div>
+                        <p>Render thousands of animated characters with full Burst and Job System support. Free core version.</p>
+                        <a href="https://assetstore.unity.com/packages/slug/246164" target="_blank" class="card-link">Asset Store ↗</a>
+                    </div>
+
+                    <!-- Audio Dispatcher for DOTS -->
+                    <div class="card reveal">
+                        <img src="Images/_audio_dispatcher_lite.jpg" alt="Audio Dispatcher for DOTS" class="card-image">
+                        <h3>Audio Dispatcher for DOTS</h3>
+                        <div class="tags">
+                            <span class="tag" style="color: #10b981; border-color: rgba(16, 185, 129, 0.2);">Published</span>
+                            <span class="tag text-accent">Free</span>
+                            <span class="tag">Zero-Allocation</span>
+                        </div>
+                        <p>Lightweight bridge for Unity DOTS to control standard AudioSources within ECS systems without performance overhead.</p>
+                        <a href="https://assetstore.unity.com/packages/slug/365086" target="_blank" class="card-link">Asset Store ↗</a>
                     </div>
                 </div>
+            </section>
 
-                <div class="asset-card bg-white p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col">
-                    <span class="bg-slate-100 text-slate-600 text-[10px] uppercase px-2 py-0.5 rounded font-bold mb-3 self-start">Itch.io Release</span>
-                    <h3 class="text-lg font-bold mb-2 text-slate-800">Audio Dispatcher (AudioSource)</h3>
-                    <p class="text-slate-600 text-sm mb-6 flex-grow">
-                        Bridge for Unity DOTS to control standard AudioSources within ECS systems.
-                    </p>
-                    <a href="https://snivelercode.itch.io/audio-dispatcher-audio-source-for-unity-dots" target="_blank" class="text-blue-600 text-sm font-bold hover:underline">Download Project →</a>
+            <section id="about">
+                <h2 class="mono reveal">public struct Philosophy : IComponentData</h2>
+                <div class="philosophy-content reveal">
+                    <p>I build <strong>"Performance by Default"</strong> tools. My development philosophy is rooted in Data-Oriented Design (DOD) and strict memory management.</p>
+                    <p>Whether it's managing thousands of entities in a simulation or writing custom C# code generators, every line of code is optimized for the Burst compiler. No visual trash, no unnecessary allocations—just raw speed and clean architecture.</p>
                 </div>
+            </section>
+        </main>
+    </div>
 
-                <div class="asset-card bg-white p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col">
-                    <span class="bg-slate-100 text-slate-600 text-[10px] uppercase px-2 py-0.5 rounded font-bold mb-3 self-start">Itch.io Release</span>
-                    <h3 class="text-lg font-bold mb-2 text-slate-800">Audio Dispatcher (FMOD)</h3>
-                    <p class="text-slate-600 text-sm mb-6 flex-grow">
-                        Optimized FMOD integration for ECS. Performance-first event handling for thousands of voices.
-                    </p>
-                    <a href="https://snivelercode.itch.io/audio-dispatcher-fmod-for-unity-dots" target="_blank" class="text-blue-600 text-sm font-bold hover:underline">Download Project →</a>
-                </div>
-
-                <div class="asset-card bg-slate-50 p-6 rounded-2xl shadow-sm border border-dashed border-slate-300 flex flex-col">
-                    <span class="bg-blue-50 text-blue-500 text-[10px] uppercase px-2 py-0.5 rounded font-bold mb-3 self-start">In Development</span>
-                    <h3 class="text-lg font-bold mb-2 text-slate-500">LoreMind: On-Device NPC</h3>
-                    <p class="text-slate-500 text-sm mb-6 flex-grow">
-                        Local RAG system utilizing Unity Sentis for offline NPC memory and context.
-                    </p>
-                    <span class="text-slate-400 text-xs italic italic">Targeting Asset Store 2026</span>
-                </div>
-
+    <footer id="contact">
+        <div class="container reveal">
+            <div class="social-links">
+                <a href="mailto:sniveler.code@gmail.com">Email</a>
+                <a href="https://github.com/sniveler-code" target="_blank">GitHub</a>
+                <a href="https://www.youtube.com/@SnivelerCode" target="_blank">YouTube</a>
+                <a href="https://assetstore.unity.com/publishers/80672" target="_blank">Asset Store</a>
             </div>
-        </section>
-
-        <section id="about" class="mb-20 bg-white p-10 rounded-3xl shadow-sm border border-slate-100">
-            <h2 class="text-3xl font-bold mb-6">Technical Expertise</h2>
-            <div class="grid md:grid-cols-3 gap-8 text-slate-700 leading-relaxed">
-                <div class="md:col-span-2">
-                    <p class="text-lg mb-4">
-                        Senior Unity Developer with 6+ years of commercial experience. I focus on creating <strong>"Performance by Default"</strong> tools.
-                    </p>
-                    <p>
-                        My work bridges the gap between classic Unity workflows and the modern <strong>Data-Oriented Technology Stack (DOTS)</strong>. I ensure that every asset I publish is optimized for the Burst Compiler and maintains a zero-allocation memory footprint.
-                    </p>
-                </div>
-                <div class="bg-slate-50 p-6 rounded-xl text-sm">
-                    <h4 class="font-bold mb-2 uppercase text-slate-400">Core Skills</h4>
-                    <ul class="space-y-1 font-mono">
-                        <li>• Unity Entities (ECS)</li>
-                        <li>• Burst / Job System</li>
-                        <li>• GPU Instancing</li>
-                        <li>• Local AI (Sentis)</li>
-                        <li>• C# Optimization</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="support" class="mb-20 text-center">
-            <h2 class="text-3xl font-bold mb-6">Publisher Support</h2>
-            <div class="bg-white p-10 rounded-3xl shadow-xl border-2 border-blue-500 max-w-2xl mx-auto">
-                <p class="text-xl mb-4 text-slate-600">For support, bug reports, or business inquiries:</p>
-                <p class="text-3xl font-mono font-bold text-blue-600 break-all select-all">sniveler.code@gmail.com</p>
-                <p class="mt-6 text-sm text-slate-400">
-                    Typical response time: <strong>24-48 hours</strong>.
-                </p>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="py-12 text-center text-slate-400 border-t border-slate-200">
-        <p>&copy; 2026 Sniveler Code. Built for Performance.</p>
+            <p class="mono" style="font-size: 0.8rem; color: var(--border-hover);">&copy; 2026 Sniveler Code. 0 Bytes Allocated.</p>
+        </div>
     </footer>
 
+    <script>
+        // Intersection Observer for scroll reveal animations
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll(".reveal");
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        observer.unobserve(entry.target); // Trigger only once
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.15
+            });
+
+            reveals.forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+        });
+    </script>
 </body>
 </html>
