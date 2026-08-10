@@ -285,6 +285,14 @@
             border: 1px solid rgba(0, 229, 255, 0.2);
         }
 
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .card-link {
             font-family: var(--font-mono);
             font-size: 0.875rem;
@@ -294,7 +302,6 @@
             align-items: center;
             gap: 0.5rem;
             transition: var(--transition);
-            margin-top: auto;
         }
 
         .card-link:hover { color: var(--accent); }
@@ -401,7 +408,9 @@
                             <span class="tag">AI / DOTS / ECS</span>
                         </div>
                         <p>A blazing-fast, zero-allocation pathfinding system for Unity ECS.</p>
-                        <a href="https://assetstore.unity.com/publishers/80672" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="https://assetstore.unity.com/publishers/80672" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
                     
                     <!-- AI Behavior Architect -->
@@ -414,7 +423,10 @@
                             <span class="tag">DOTS / ECS</span>
                         </div>
                         <p>Pure DOTS / ECS Behavior Trees. Professional AI behavior logic with zero-allocation performance.</p>
-                        <a href="https://assetstore.unity.com/publishers/80672" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="project.html?id=ai-behavior-architect" class="card-link" style="color: var(--accent);">Documentation ↗</a>
+                            <a href="https://assetstore.unity.com/publishers/80672" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
 
                     <!-- GPU Animation Entities PRO -->
@@ -427,7 +439,10 @@
                             <span class="tag">Burst</span>
                         </div>
                         <p>High-performance GPU-based animation system for Unity Entities. Professional tier with advanced features.</p>
-                        <a href="https://assetstore.unity.com/packages/slug/370150" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="project.html?id=gpu-animation" class="card-link" style="color: var(--accent);">Documentation ↗</a>
+                            <a href="https://assetstore.unity.com/packages/slug/370150" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
 
                     <!-- Advanced Audio Dispatcher -->
@@ -440,7 +455,10 @@
                             <span class="tag">ECS Audio</span>
                         </div>
                         <p>Pure ECS wrapper for native FMOD in Unity DOTS. Ultra-fast, zero-GC, Burst-compiled 3D audio with async occlusion.</p>
-                        <a href="https://assetstore.unity.com/packages/slug/369628" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="project.html?id=fmod" class="card-link" style="color: var(--accent);">Documentation ↗</a>
+                            <a href="https://assetstore.unity.com/packages/slug/369628" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
 
                     <!-- Gpu Animation Entities -->
@@ -453,7 +471,10 @@
                             <span class="tag" style="color: #f59e0b; border-color: rgba(245, 158, 11, 0.2);">★ 4.0 (7)</span>
                         </div>
                         <p>Render thousands of animated characters with full Burst and Job System support. Free core version.</p>
-                        <a href="https://assetstore.unity.com/packages/slug/246164" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="project.html?id=gpu-animation" class="card-link" style="color: var(--accent);">Documentation ↗</a>
+                            <a href="https://assetstore.unity.com/packages/slug/246164" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
 
                     <!-- Audio Dispatcher for DOTS -->
@@ -466,7 +487,10 @@
                             <span class="tag">ECS Audio</span>
                         </div>
                         <p>Lightweight bridge for Unity DOTS to control standard AudioSources within ECS systems without performance overhead.</p>
-                        <a href="https://assetstore.unity.com/packages/slug/365086" target="_blank" class="card-link">Asset Store ↗</a>
+                        <div class="card-actions">
+                            <a href="project.html?id=audio-source" class="card-link" style="color: var(--accent);">Documentation ↗</a>
+                            <a href="https://assetstore.unity.com/packages/slug/365086" target="_blank" class="card-link" style="color: var(--text-secondary);">Asset Store ↗</a>
+                        </div>
                     </div>
                 </div>
             </section>

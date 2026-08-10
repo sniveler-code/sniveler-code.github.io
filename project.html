@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Documentation</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; /* Cyan/Neon Blue */
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+
+        .nav-logo:hover {
+            filter: brightness(1.5) drop-shadow(0 0 12px var(--accent));
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        /* Docs Layout */
+        .docs-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 80px auto 0;
+            min-height: calc(100vh - 80px);
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            padding: 2rem 2rem 2rem 0;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem 0 4rem 4rem;
+            max-width: 900px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+        .sidebar > ul { padding-left: 0; }
+        
+        .sidebar li { margin-bottom: 0.25rem; }
+        
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .sidebar a.active {
+            color: var(--accent);
+            background: var(--accent-dim);
+            font-weight: 600;
+        }
+
+        /* Markdown Content Styles */
+        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; }
+        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); }
+        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); }
+        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
+        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+        .content-area a:hover { border-bottom-style: solid; }
+        
+        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        
+        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
+        .content-area li { margin-bottom: 0.5rem; }
+        
+        .content-area pre {
+            background: #0d0d0d !important;
+            padding: 1.5rem !important;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
+        .content-area p code, .content-area li code {
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        .content-area blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        .content-area blockquote p:last-child { margin-bottom: 0; }
+        
+        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
+        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
+
+        .loading, .error {
+            text-align: center;
+            padding: 4rem 0;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+        
+        /* Mobile Adjustments */
+        @media (max-width: 992px) {
+            .docs-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 2rem 0; }
+            .content-area { padding: 2rem 0; }
+        }
+        @media (max-width: 768px) {
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; font-size: 0.75rem; }
+            .docs-container { margin-top: 120px; }
+            .content-area h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="loading">Loading structure...</div>
+        </aside>
+        
+        <main class="content-area" id="content">
+            <div class="loading">Loading documentation...</div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        // Setup Markdown parser with Syntax Highlighting
+        marked.setOptions({
+            highlight: function(code, lang) {
+                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                return hljs.highlight(code, { language }).value;
+            },
+            gfm: true,
+            breaks: true
+        });
+
+        // Parse URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        let currentFile = urlParams.get('file') || 'README.md';
+
+        const basePath = `documentation/${projectId}`;
+
+        async function loadMarkdown(file) {
+            const contentEl = document.getElementById('content');
+            contentEl.innerHTML = `<div class="loading">Loading ${file}...</div>`;
+            
+            try {
+                const response = await fetch(`${basePath}/${file}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                let text = await response.text();
+                
+                // Fix image paths
+                text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+                    if (!src.startsWith('http') && !src.startsWith('/')) {
+                        const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/') + 1) : '';
+                        return `![${alt}](${basePath}/${dir}${src})`;
+                    }
+                    return match;
+                });
+
+                // Fix internal MD links to trigger JS reload instead of standard navigation
+                text = text.replace(/\[([^\]]+)\]\(([^)]+\.md)\)/g, (match, linkText, src) => {
+                    if (!src.startsWith('http')) {
+                        const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/') + 1) : '';
+                        return `[${linkText}](?id=${projectId}&file=${encodeURIComponent(dir + src)})`;
+                    }
+                    return match;
+                });
+
+                contentEl.innerHTML = marked.parse(text);
+                
+                // Scroll to top or to anchor
+                const hash = window.location.hash;
+                if(hash) {
+                    const el = document.querySelector(hash);
+                    if(el) el.scrollIntoView();
+                } else {
+                    window.scrollTo(0, 0);
+                }
+
+                // Intercept clicks on modified links to prevent full page reload (SPA feel)
+                interceptLinks(contentEl);
+
+            } catch (e) {
+                contentEl.innerHTML = `<div class="error">
+                    <h2>Error 404</h2>
+                    <p>Failed to load: <code>${file}</code></p>
+                    <p>Are you sure the documentation exists?</p>
+                </div>`;
+            }
+        }
+
+        async function loadSidebar() {
+            const sidebarEl = document.getElementById('sidebar');
+            try {
+                const response = await fetch(`${basePath}/SUMMARY.md`);
+                if (!response.ok) throw new Error('No SUMMARY.md');
+                let text = await response.text();
+                
+                // Convert SUMMARY.md links
+                text = text.replace(/\[([^\]]+)\]\(([^)]+\.md)\)/g, (match, linkText, src) => {
+                    return `[${linkText}](?id=${projectId}&file=${encodeURIComponent(src)})`;
+                });
+
+                sidebarEl.innerHTML = marked.parse(text);
+                
+                // Set initial active state & intercept links
+                updateActiveSidebarLink();
+                interceptLinks(sidebarEl);
+
+            } catch (e) {
+                sidebarEl.innerHTML = `<div class="error" style="font-size:0.8rem">Navigation not found.</div>`;
+            }
+        }
+
+        function interceptLinks(container) {
+            const links = container.querySelectorAll('a');
+            links.forEach(link => {
+                const url = new URL(link.href, window.location.origin);
+                // If it's a link to the same project page
+                if (url.pathname === window.location.pathname && url.searchParams.has('file')) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetFile = url.searchParams.get('file');
+                        
+                        if(currentFile !== targetFile) {
+                            window.history.pushState({}, '', url.href);
+                            currentFile = targetFile;
+                            loadMarkdown(currentFile);
+                            updateActiveSidebarLink();
+                        }
+                    });
+                }
+            });
+        }
+
+        function updateActiveSidebarLink() {
+            const links = document.querySelectorAll('#sidebar a');
+            links.forEach(link => {
+                link.classList.remove('active');
+                const url = new URL(link.href, window.location.origin);
+                if (url.searchParams.get('file') === currentFile) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', () => {
+            const params = new URLSearchParams(window.location.search);
+            currentFile = params.get('file') || 'README.md';
+            loadMarkdown(currentFile);
+            updateActiveSidebarLink();
+        });
+
+        // Initialization
+        if (projectId) {
+            loadSidebar();
+            loadMarkdown(currentFile);
+        } else {
+            document.getElementById('sidebar').innerHTML = '';
+            document.getElementById('content').innerHTML = `
+                <div class="error" style="margin-top: 100px;">
+                    <h1>No Project Specified</h1>
+                    <p>Please select a project from the <a href="index.html" style="color:var(--accent)">Assets page</a>.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
