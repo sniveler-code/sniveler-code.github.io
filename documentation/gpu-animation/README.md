@@ -1,7 +1,3 @@
----
-description: Welcome to the official documentation for Sniveler GPU Animation!
----
-
 # 👋 Introduction & Overview
 
 This asset is a high-performance, strictly DOTS/ECS-driven animation system designed for the Universal Render Pipeline (URP). It bypasses traditional CPU animation bottlenecks by baking skeletal data into highly optimized `BlobAssets` and performing matrix/Dual Quaternion skinning directly inside the Vertex Shader.

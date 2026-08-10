@@ -30,7 +30,7 @@
 
 ## Section 6
 
-* [💻 Creating Your First Custom Node](section-6/creating-your-first-custom-node.md)
-* [🏷 API Attributes Reference](section-6/api-attributes-reference.md)
-* [🔍 Querying and Modifying ECS Components](section-6/querying-and-modifying-ecs-components.md)
-* [🏗 Using Entity Command Buffers (Structural Changes)](section-6/using-entity-command-buffers-structural-changes.md)
+* [💻 Custom Node](section-6/creating-your-first-custom-node.md)
+* [🏷 API Attributes](section-6/api-attributes-reference.md)
+* [🔍 ECS Components](section-6/querying-and-modifying-ecs-components.md)
+* [🏗 Entity Command Buffers](section-6/using-entity-command-buffers-structural-changes.md)
