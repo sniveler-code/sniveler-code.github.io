@@ -22,5 +22,5 @@ Ensure your project is using **Unity 2022.3 LTS** or higher and has the followin
 3.  Paste the following URL and click **Add**:
 
     ```
-    https://github.com/igor-karpushin/com.snivelercode.audio-dispatcher.git
+    https://github.com/sniveler-code/com.snivelercode.audio-dispatcher
     ```
