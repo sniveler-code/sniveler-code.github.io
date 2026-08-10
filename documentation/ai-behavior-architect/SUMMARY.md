@@ -2,14 +2,14 @@
 
 ## Section 1
 
-* [👋Welcome to AI Behavior Architect](README.md)
+* [👋 AI Behavior Architect](README.md)
 * [🧠 Core Concepts & Architecture](section-1/core-concepts-and-architecture.md)
 
 ## Section 2
 
-* [📥Installation & Requirements](section-2/installation-and-requirements.md)
+* [📥 Installation & Requirements](section-2/installation-and-requirements.md)
 * [⚙️ Project Setup](section-2/project-setup.md)
-* [🚀 Quick Start: Your First AI Agent](section-2/quick-start-your-first-ai-agent.md)
+* [🚀 Quick Start](section-2/quick-start-your-first-ai-agent.md)
 
 ## Section 3
 

@@ -1,7 +1,3 @@
----
-description: Welcome to the official documentation for AI Behavior Architect!
----
-
 # 👋Welcome to AI Behavior Architect
 
 **AI Behavior Architect** is a visual scripting tool and runtime framework designed from the ground up for Unity's **Data-Oriented Technology Stack (DOTS)** and the **Entity Component System (ECS)**.
