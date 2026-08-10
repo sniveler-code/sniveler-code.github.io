@@ -265,11 +265,21 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 let text = await response.text();
                 
-                // Fix image paths
+                // Fix Markdown image paths
                 text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
                     if (!src.startsWith('http') && !src.startsWith('/')) {
                         const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/') + 1) : '';
                         return `![${alt}](${basePath}/${dir}${src})`;
+                    }
+                    return match;
+                });
+
+                // Fix HTML image paths (GitBook exports often use <img src="...">)
+                text = text.replace(/<img\s+[^>]*src="([^"]+)"[^>]*>/gi, (match, src) => {
+                    if (!src.startsWith('http') && !src.startsWith('/')) {
+                        const dir = file.includes('/') ? file.substring(0, file.lastIndexOf('/') + 1) : '';
+                        const newSrc = `${basePath}/${dir}${src}`;
+                        return match.replace(src, newSrc);
                     }
                     return match;
                 });
