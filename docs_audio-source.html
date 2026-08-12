@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Audio Source Documentation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; 
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+        .nav-logo:hover { filter: brightness(1.5) drop-shadow(0 0 12px var(--accent)); }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        nav a:hover { color: var(--accent); }
+
+        .docs-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 80px auto 0;
+            min-height: calc(100vh - 80px);
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            padding: 2rem 2rem 2rem 0;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem 0 4rem 4rem;
+            max-width: 900px;
+        }
+
+        .sidebar ul { list-style: none; padding-left: 1rem; }
+        .sidebar > ul { padding-left: 0; }
+        .sidebar li { margin-bottom: 0.25rem; }
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; scroll-margin-top: 100px; }
+        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
+        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+        .content-area a:hover { border-bottom-style: solid; }
+        
+        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
+        .content-area li { margin-bottom: 0.5rem; }
+        
+        .content-area pre {
+            background: #0d0d0d !important;
+            padding: 1.5rem !important;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
+        .content-area p code, .content-area li code {
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        .content-area blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        .content-area blockquote p:last-child { margin-bottom: 0; }
+        
+        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
+        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
+
+        details.mobile-nav summary {
+            background: var(--bg-surface);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            color: var(--accent);
+            list-style: none;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        details.mobile-nav summary::-webkit-details-marker { display: none; }
+
+        @media (max-width: 992px) {
+            .docs-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-right: none; padding: 1rem 0; }
+            .content-area { padding: 1rem 0 4rem 0; }
+            details.mobile-nav summary { display: block; }
+        }
+        @media (max-width: 768px) {
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; font-size: 0.75rem; }
+            .docs-container { margin-top: 120px; }
+            .content-area h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <details class="mobile-nav" id="nav-details">
+                <summary>☰ TABLE OF CONTENTS</summary>
+                <div id="sidebar-content">
+                    <ul><li><a href="#introduction">Introduction</a></li><li><a href="#installation">Installation</a></li><li><a href="#quick-start">Quick Start</a></li><li><a href="#audio-database-ids">Audio Database & IDs</a></li><li><a href="#playing-sounds-fluent-api">Playing Sounds (Fluent API)</a></li><li><a href="#looping-sounds-shadow-tracking">Looping Sounds (Shadow Tracking)</a></li><li><a href="#architecture-performance">Architecture & Performance</a></li></ul>
+                </div>
+            </details>
+        </aside>
+        
+        <main class="content-area">
+            <div id="introduction"></div><h1>Introduction</h1>
+<p>Welcome to the documentation for <strong>Audio Dispatcher for DOTS</strong>.</p>
+<p>Triggering standard Unity <code>AudioSource</code> components from pure ECS is notoriously difficult because managed objects cannot be accessed inside Burst-compiled jobs.</p>
+<p><strong>Audio Dispatcher</strong> solves this problem elegantly. It is a production-ready, Data-Oriented audio bridging system that allows your high-frequency ECS systems to trigger, move, and stop sounds without ever touching the Managed Heap or stalling the Main Thread.</p>
+<h4>Key Features</h4>
+<ul>
+<li>⚡ <strong>100% Burst Compatible:</strong> Trigger sounds directly from <code>IJobEntity</code> or <code>ISystem</code>.</li>
+<li>🚀 <strong>Zero Main Thread Stalls:</strong> Uses a Double Buffering Command Architecture.</li>
+<li>🗑️ <strong>Zero GC Allocations:</strong> Pre-allocated object pools for One-Shot and Looping sounds.</li>
+<li>🧠 <strong>Smart Voice Stealing:</strong> Automatically replaces the quietest/furthest sound when pools are full.</li>
+<li>🔗 <strong>Shadow Tracking:</strong> Looping sounds follow entities without modifying your core archetypes.</li>
+<li>💎 <strong>Fluent API:</strong> Clean, readable, and chainable syntax for triggering sounds.</li>
+<li>🛠️ <strong>Stable Hash IDs:</strong> Auto-generates C# constants using stable hashes. Reordering your audio database will never break your code.</li>
+</ul>
+<p>Let&#39;s get started!</p>
+<hr>
+<div id="installation"></div><h1>Installation</h1>
+<h4>Prerequisites</h4>
+<p>Ensure your project is using <strong>Unity 2022.3 LTS</strong> or higher and has the following packages installed:</p>
+<ul>
+<li><code>com.unity.entities</code> (1.0.0+)</li>
+<li><code>com.unity.burst</code></li>
+<li><code>com.unity.collections</code></li>
+</ul>
+<h4>Method 1: Unity Asset Store (Recommended)</h4>
+<ol>
+<li>Open your project in Unity.</li>
+<li>Go to <strong>Window &gt; Package Manager</strong>.</li>
+<li>Select <strong>My Assets</strong> from the dropdown menu.</li>
+<li>Search for <strong>Audio Dispatcher</strong>, click <strong>Download</strong>, and then <strong>Import</strong>.</li>
+</ol>
+<h4>Method 2: Install via Git URL</h4>
+<ol>
+<li><p>Open <strong>Window &gt; Package Manager</strong>.</p>
+</li>
+<li><p>Click the <strong>+</strong> button in the top-left corner and select <strong>Add package from git URL...</strong></p>
+</li>
+<li><p>Paste the following URL and click <strong>Add</strong>:</p>
+<pre><code>https://github.com/sniveler-code/com.snivelercode.audio-dispatcher
+</code></pre>
+</li>
+</ol>
+<hr>
+<div id="quick-start"></div><h1>Quick Start</h1>
+<p>Get your first sound playing in 4 simple steps.</p>
+<h4>1. Create an Audio Database</h4>
+<p>Right-click in your Project view and select <code>Create &gt; SnivelerCode &gt; Audio Database</code>. Add an <code>AudioClip</code> (e.g., an explosion sound) to the list.</p>
+<h4>2. Generate IDs</h4>
+<p>Select your new Audio Database asset. In the Inspector, click the green <strong>&quot;Generate C# Constants&quot;</strong> button. This creates a file containing your Audio IDs.</p>
+<h4>3. Scene Setup</h4>
+<p>Create an empty GameObject in your sub-scene. Add the <code>AudioSettingsAuthoring</code> component to it and assign your Audio Database asset.</p>
+<h4>4. Play a Sound from Code</h4>
+<p>Use the Fluent API inside any Burst-compiled system:</p>
+<pre><code class="language-csharp">using SnivelerCode.AudioDispatcher.Runtime;
+using Unity.Burst;
+using Unity.Entities;
+
+[BurstCompile]
+public partial struct CombatSystem : ISystem
+{
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        // 1. Get the Audio Writer
+        var audioSingleton = SystemAPI.GetSingleton&lt;NativeAudioSystem.Singleton&gt;();
+        
+        state.Dependency = new CombatJob
+        {
+            AudioWriter = audioSingleton.Writer
+        }.ScheduleParallel(state.Dependency);
+    }
+}
+
+[BurstCompile]
+public partial struct CombatJob : IJobEntity
+{
+    public NativeQueue&lt;AudioEvent&gt;.ParallelWriter AudioWriter;
+
+    private void Execute(in LocalTransform transform)
+    {
+        // 2. Play the sound!
+        AudioIDs.EXPLOSION.Shot(transform.Position).Apply(AudioWriter);
+    }
+}
+</code></pre>
+<hr>
+<div id="audio-database-ids"></div><h1>Audio Database &amp; IDs</h1>
+<p>The <code>AudioDatabase</code> ScriptableObject is the heart of your audio configuration.</p>
+<h4>Pool Settings</h4>
+<ul>
+<li><strong>Pool Size:</strong> The maximum number of One-Shot sounds (explosions, gunshots) that can play simultaneously.</li>
+<li><strong>Loop Pool Size:</strong> The maximum number of Looping sounds (engines, auras) that can play simultaneously.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Tip:</strong> All <code>AudioSource</code> GameObjects are instantiated and pooled at startup. There are zero <code>Instantiate</code> or <code>Destroy</code> calls during gameplay.</p>
+</blockquote>
+<h4>Sound Definitions</h4>
+<p>For each sound, you can configure:</p>
+<ul>
+<li><strong>Mixer Group:</strong> Route audio to UI, SFX, or Music buses.</li>
+<li><strong>Spatial Blend:</strong> Set to <code>0</code> for 2D sounds (UI) or <code>1</code> for 3D spatialized sounds.</li>
+<li><strong>Min/Max Distance &amp; Rolloff:</strong> Standard Unity 3D audio settings.</li>
+</ul>
+<h4>Stable Hash IDs</h4>
+<p>Instead of using strings (which allocate memory) or Enums (which break if you reorder them), Audio Dispatcher uses <strong>Stable Hash IDs</strong>.</p>
+<p>When you click <strong>&quot;Generate C# Constants&quot;</strong>, the system hashes the name of your AudioClip (e.g., <code>math.hash(&quot;Explosion&quot;)</code>) and generates a static class:</p>
+<pre><code class="language-csharp">public static class AudioIDs
+{
+    public const int EXPLOSION = -211360833;
+    public const int SHOT = 188032901;
+}
+</code></pre>
+<hr>
+<div id="playing-sounds-fluent-api"></div><h1>Playing Sounds (Fluent API)</h1>
+<p>Audio Dispatcher features a zero-allocation <strong>Fluent Builder API</strong>. It makes writing audio code inside Jobs incredibly clean and readable.</p>
+<h4>The Syntax</h4>
+<p>Every generated Audio ID gets extension methods. You start by calling <code>.Shot()</code> or <code>.Loop()</code>, chain your modifiers, and finish with <code>.Apply(writer)</code>.</p>
+<p><strong>Basic One-Shot</strong></p>
+<pre><code class="language-csharp">AudioIDs.SHOT.Shot(transform.Position).Apply(AudioWriter);
+</code></pre>
+<p><strong>Modifying Volume and Pitch</strong></p>
+<p>You can chain modifiers to randomize sounds. This is fully Burst-compatible:</p>
+<pre><code class="language-csharp">AudioIDs.EXPLOSION.Shot(transform.Position)
+    .Volume(0.8f)
+    .Pitch(random.NextFloat(0.9f, 1.1f))
+    .Apply(AudioWriter);
+</code></pre>
+<h4>How it works under the hood</h4>
+<p>The Fluent API does not allocate any classes. It builds a 32-byte <code>AudioEvent</code> struct on the stack and pushes it directly into the lock-free <code>NativeQueue</code>.</p>
+<hr>
+<div id="looping-sounds-shadow-tracking"></div><h1>Looping Sounds (Shadow Tracking)</h1>
+<p>Playing a looping sound (like a car engine) in ECS is tricky because the sound needs to follow the moving entity, and it needs to stop when the entity is destroyed.</p>
+<p>Audio Dispatcher handles this automatically using a technique called <strong>Shadow Tracking</strong>.</p>
+<h4>How to start a Loop</h4>
+<p>Instead of passing a <code>float3 Position</code>, you pass the <code>Entity</code> itself using the <code>.Loop()</code> method:</p>
+<pre><code class="language-csharp">AudioIDs.ENGINE_LOOP.Loop(entity)
+    .Volume(0.5f)
+    .Apply(AudioWriter);
+</code></pre>
+<h4>What happens next?</h4>
+<ol>
+<li><strong>No Archetype Changes:</strong> The system does <strong>not</strong> add any components to your vehicle entity. Your gameplay data remains tightly packed in memory.</li>
+<li><strong>Shadow Entity:</strong> The Audio Dispatcher creates a hidden &quot;Shadow Entity&quot; that tracks your vehicle using a fast <code>ComponentLookup&lt;LocalTransform&gt;</code>.</li>
+<li><strong>Automatic Movement:</strong> The <code>AudioSource</code> will automatically update its position every frame to match your vehicle.</li>
+<li><strong>Automatic Cleanup:</strong> If your vehicle entity is destroyed (e.g., <code>ecb.DestroyEntity(entity)</code>), the Shadow Tracker detects it, stops the <code>AudioSource</code>, returns it to the pool, and destroys itself. You don&#39;t need to write any cleanup code!</li>
+</ol>
+<hr>
+<div id="architecture-performance"></div><h1>Architecture &amp; Performance</h1>
+<p>Audio Dispatcher was built with strict Data-Oriented Design (DOD) principles to ensure it scales to AAA workloads.</p>
+<h4>1. Double Buffering (No Main Thread Stalls)</h4>
+<p>In a naive implementation, the Main Thread must wait for ECS Jobs to finish before it can read the audio queue (<code>Dependency.Complete()</code>). This causes massive frame drops.</p>
+<p>Audio Dispatcher uses <strong>Double Buffering</strong>:</p>
+<ul>
+<li><strong>Frame 1:</strong> Your Jobs write to <code>Queue A</code>. The Main Thread reads from <code>Queue B</code> (which is empty).</li>
+<li><strong>Frame 2:</strong> Your Jobs write to <code>Queue B</code>. The Main Thread reads from <code>Queue A</code>. Because the Main Thread is always reading the queue from the <em>previous</em> frame, it never has to wait for worker threads. The 1-frame audio delay (~16ms) is imperceptible to players.</li>
+</ul>
+<h4>2. 32-Byte Cache Alignment</h4>
+<p>The <code>AudioEvent</code> struct uses <code>[StructLayout(LayoutKind.Explicit)]</code> to overlap the <code>Entity</code> (used for loops) and <code>float3 Position</code> (used for one-shots) in memory.</p>
+<p>This compresses the struct to exactly <strong>32 bytes</strong>. This is a magic number in CPU architecture: exactly two events fit perfectly into a standard 64-byte L1 CPU cache line, resulting in lightning-fast queue processing.</p>
+<h4>3. Priority-Based Voice Stealing</h4>
+<p>What happens if you have a pool of 32 sounds, but 40 explosions happen at once? Instead of a naive Round-Robin approach, the Burst-compiled <code>AudioBrainJob</code> evaluates the priority (Volume) of all currently playing sounds. It will automatically find the quietest sound and overwrite it with the new explosion.</p>
+<h4>4. TimeScale Independent</h4>
+<p>The system calculates sound lifetimes using <code>AudioSettings.dspTime</code> instead of <code>Time.time</code>. If you use slow-motion effects (<code>Time.timeScale = 0.1f</code>), your sounds will not be cut off prematurely.</p>
+<hr>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                        // Update hash in URL
+                        window.history.pushState(null, null, href);
+                    }
+                    if (window.innerWidth <= 992) {
+                        document.getElementById('nav-details').removeAttribute('open');
+                    }
+                }
+            });
+        });
+        
+        function handleResize() {
+            const details = document.getElementById('nav-details');
+            if (window.innerWidth <= 992) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>

@@ -1,7 +1,3 @@
----
-description: Welcome to Audio Dispatcher FMOD
----
-
 # 🏠 1. Introduction
 
 **Advanced Audio Dispatcher for DOTS** is a high-performance, thread-safe, and zero-GC bridge between Unity's Data-Oriented Technology Stack (DOTS) and the native FMOD Studio C-API.

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Ai Behavior Architect Documentation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; 
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+        .nav-logo:hover { filter: brightness(1.5) drop-shadow(0 0 12px var(--accent)); }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        nav a:hover { color: var(--accent); }
+
+        .docs-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 80px auto 0;
+            min-height: calc(100vh - 80px);
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            padding: 2rem 2rem 2rem 0;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem 0 4rem 4rem;
+            max-width: 900px;
+        }
+
+        .sidebar ul { list-style: none; padding-left: 1rem; }
+        .sidebar > ul { padding-left: 0; }
+        .sidebar li { margin-bottom: 0.25rem; }
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; scroll-margin-top: 100px; }
+        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
+        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+        .content-area a:hover { border-bottom-style: solid; }
+        
+        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
+        .content-area li { margin-bottom: 0.5rem; }
+        
+        .content-area pre {
+            background: #0d0d0d !important;
+            padding: 1.5rem !important;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
+        .content-area p code, .content-area li code {
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        .content-area blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        .content-area blockquote p:last-child { margin-bottom: 0; }
+        
+        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
+        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
+
+        details.mobile-nav summary {
+            background: var(--bg-surface);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            color: var(--accent);
+            list-style: none;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        details.mobile-nav summary::-webkit-details-marker { display: none; }
+
+        @media (max-width: 992px) {
+            .docs-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-right: none; padding: 1rem 0; }
+            .content-area { padding: 1rem 0 4rem 0; }
+            details.mobile-nav summary { display: block; }
+        }
+        @media (max-width: 768px) {
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; font-size: 0.75rem; }
+            .docs-container { margin-top: 120px; }
+            .content-area h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <details class="mobile-nav" id="nav-details">
+                <summary>☰ TABLE OF CONTENTS</summary>
+                <div id="sidebar-content">
+                    <ul><li><a href="#ai-behavior-architect">👋 AI Behavior Architect</a></li><li><a href="#core-concepts-architecture">🧠 Core Concepts & Architecture</a></li><li><a href="#installation-requirements">📥 Installation & Requirements</a></li><li><a href="#project-setup">⚙️ Project Setup</a></li><li><a href="#quick-start">🚀 Quick Start</a></li><li><a href="#interface-overview">🎨 Interface Overview</a></li><li><a href="#working-with-subtrees">🗂 Working with Sub-Trees</a></li><li><a href="#runtime-visual-debugging">🐞 Runtime Visual Debugging</a></li><li><a href="#the-blackboard-system">🧠 The Blackboard System</a></li><li><a href="#blackboard-nodes">🎛 Blackboard Nodes</a></li><li><a href="#composites">🌳 Composites</a></li><li><a href="#decorators">🎀 Decorators</a></li><li><a href="#queries-transactions">🔎 Queries & Transactions</a></li><li><a href="#custom-node">💻 Custom Node</a></li><li><a href="#api-attributes">🏷 API Attributes</a></li><li><a href="#ecs-components">🔍 ECS Components</a></li><li><a href="#entity-command-buffers">🏗 Entity Command Buffers</a></li></ul>
+                </div>
+            </details>
+        </aside>
+        
+        <main class="content-area">
+            <div id="ai-behavior-architect"></div><h1>👋Welcome to AI Behavior Architect</h1>
+<p><strong>AI Behavior Architect</strong> is a visual scripting tool and runtime framework designed from the ground up for Unity&#39;s <strong>Data-Oriented Technology Stack (DOTS)</strong> and the <strong>Entity Component System (ECS)</strong>.</p>
+<blockquote>
+<p>💡 <strong>The DOTS Challenge</strong><br>While there are many Behavior Tree solutions available for Unity, most are built around object-oriented <code>MonoBehaviour</code> workflows. Attempting to force those object-oriented trees into an ECS environment often results in heavy memory allocations (Garbage Collection), thread-safety issues, and lost performance.</p>
+</blockquote>
+<p>AI Behavior Architect solves this by bridging the gap between designer-friendly visual scripting and hardcore developer performance.</p>
+<h4>🎯 Who is this for?</h4>
+<ul>
+<li>🎨 <strong>For Designers:</strong> A clean, intuitive node-based editor right inside Unity. Design AI logic, manage sub-trees, configure blackboards, and watch visual debugging in real-time—all without touching code.</li>
+<li>💻 <strong>For Programmers:</strong> A robust backend that takes that visual graph and uses a custom code-generator to automatically write highly optimized, Burst-compiled <code>ISystem</code> and <code>IJobChunk</code> C# scripts.</li>
+</ul>
+<p>You get the rapid iteration of visual scripting with the extreme runtime performance of pure DOTS code.</p>
+<h4>✨ Core Features at a Glance</h4>
+<ul>
+<li><strong>100% DOTS Native:</strong> Executes entirely inside Burst-compiled jobs.</li>
+<li><strong>Zero-GC Allocations:</strong> No runtime garbage collection. Memory is handled strictly via unmanaged buffers and Blob Assets.</li>
+<li><strong>Auto-Code Generation:</strong> Click &quot;Compile&quot; and watch the framework generate optimized backend systems for you automatically.</li>
+<li><strong>Advanced Spatial Queries:</strong> Built-in spatial hashing nodes to easily find entities (nearest, random, etc.) without writing complex math.</li>
+<li><strong>Parallel Execution:</strong> Native support for evaluating multiple nodes simultaneously.</li>
+</ul>
+<hr>
+<div id="core-concepts-architecture"></div><h1>🧠 Core Concepts &amp; Architecture</h1>
+<p>To get the most out of <strong>AI Behavior Architect</strong>, it is helpful to understand how it operates under the hood. The framework relies on three core DOTS pillars to achieve maximum performance:</p>
+<h4>⚙️ 1. Automated Code Generation</h4>
+<p>Behavior Trees are inherently polymorphic (e.g., a generic &quot;Node&quot; can be an Action, a Sequence, or a Condition). Standard ECS does not support polymorphism well, as everything must be strictly typed data.</p>
+<p>To bypass this, <strong>AI Behavior Architect</strong> uses a <strong>Code Generator</strong>. When you save your graph, the tool reads your nodes and automatically generates partial struct systems that process your specific logic. You never have to manually register nodes into systems; the architect wires it all up for you.</p>
+<h4>📦 2. Blob Assets (BlobAssetReference)</h4>
+<p>When you bake your sub-scene, the framework reads your visual <code>Graph Asset</code> and converts the tree&#39;s layout into a <code>BtBlob</code> (a Blob Asset).</p>
+<blockquote>
+<p>🚀 <strong>Why Blob Assets?</strong><br>Blob Assets guarantee that the entire structure of your behavior tree is stored in a single, contiguous block of unmanaged memory. This makes navigating the tree incredibly cache-friendly and allows it to be safely read inside Burst-compiled multithreaded jobs.</p>
+</blockquote>
+<h4>💾 3. Unmanaged State Buffers</h4>
+<p>Because a Behavior Tree needs to remember what it was doing last frame (e.g., waiting for a timer, or running a custom action), it requires memory. <strong>AI Behavior Architect</strong> allocates unmanaged <code>DynamicBuffer&lt;T&gt;</code> components directly onto your Agent Entity during the baking process:</p>
+<ul>
+<li><code>BtNodeState</code>: Stores internal timers and loop counters (e.g., for Wait or Repeater nodes).</li>
+<li><code>BtActionState</code>: Tracks which custom actions are currently running and their results.</li>
+<li><code>BtBlackboardEntry</code>: A 16-byte unmanaged wrapper that stores your Blackboard variables (<code>floats</code>, <code>ints</code>, <code>bools</code>, and <code>Entity</code> references) directly on the memory chunk.</li>
+</ul>
+<p>Because all state data is strictly unmanaged and tightly packed on the Entity, the runtime evaluator <strong>never triggers the Garbage Collector</strong>.</p>
+<hr>
+<div id="installation-requirements"></div><h1>📥Installation &amp; Requirements</h1>
+<p>Before importing AI Behavior Architect, please ensure your Unity project meets the necessary minimum requirements for DOTS development.</p>
+<h4>📋 System Requirements</h4>
+<ul>
+<li><strong>Unity Version</strong>: 2022.2 or higher</li>
+<li><strong>Entities Package</strong> (<code>com.unity.entities</code>): Version 1.4.5 or newer</li>
+<li><strong>Burst Compiler</strong> (<code>com.unity.burst</code>): Version 1.8.27 or newer</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Render Pipeline Compatibility</strong><br>The core AI framework is 100% render-pipeline agnostic. Because it relies purely on ECS and the Job System, you can use it in the <strong>Built-in Render Pipeline</strong>, <strong>URP</strong>, or <strong>HDRP</strong>. (Note: The included Demo Scene uses URP materials, but the AI logic functions universally).</p>
+</blockquote>
+<h4>📦 Installation Steps</h4>
+<ol>
+<li>Open your Unity Project.</li>
+<li>Ensure you have installed the <strong>Entities</strong> package via the Unity Package Manager.</li>
+<li>Import the <strong>AI Behavior Architect</strong> <code>.unitypackage</code> into your project.</li>
+<li>Unity will automatically resolve the remaining dependencies.</li>
+</ol>
+<hr>
+<div id="project-setup"></div><h1>⚙️ Project Setup</h1>
+<p>Because <strong>AI Behavior Architect</strong> automatically writes C# code for you, you need to tell it where to save those generated scripts.</p>
+<h4>Configuring the Generator</h4>
+<ol>
+<li>In the top menu bar, navigate to <strong>Edit &gt; Project Settings</strong>.</li>
+<li>Select the <strong>AI Behavior Architect</strong> tab on the left-hand menu.</li>
+<li>Locate the <strong>Generated Directory</strong> field.</li>
+<li>Choose or create a folder where the framework will safely output the auto-generated DOTS systems.<ul>
+<li>Default path: <code>Assets/SnivelerCode/AiBehavior/Generated</code></li>
+</ul>
+</li>
+<li>Ensure <strong>Auto Compile On Save</strong> is checked. This ensures your code backend updates seamlessly whenever you modify your visual graphs.</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Important:</strong> Do not manually edit the C# files inside your Generated Directory! They will be overwritten the next time you compile your Behavior Tree.</p>
+</blockquote>
+<hr>
+<div id="quick-start"></div><h1>🚀 Quick Start: Your First AI Agent</h1>
+<p>Let&#39;s build your very first DOTS-driven AI agent from scratch. We will create a simple behavior that tells an entity to simply wait in place.</p>
+<h4>Step 1: Create the Behavior Graph</h4>
+<ol>
+<li>Right-click anywhere in your Project window.</li>
+<li>Go to <code>Create &gt; Entities &gt; Sniveler Code &gt; AI Graph</code> and name it <code>MyFirstAgent</code>.</li>
+<li>Open the editor by going to <code>Window/Sniveler Code/AI Behavior Architect</code>.</li>
+<li>Drag and drop your new <code>MyFirstAgent</code> asset into the <code>Active Tree</code> slot in the editor toolbar.</li>
+</ol>
+<h4>Step 2: Add Logic Nodes</h4>
+<ol>
+<li>Right-click in the empty grid area (or press <code>Spacebar</code>) to open the <strong>Node Search Window</strong>.</li>
+<li>Search for and add a <code>Sequence</code> node.</li>
+<li>Right-click again and add an <code>Action Wait</code> node.</li>
+<li>Connect the bottom output port of the <code>Sequence</code> node to the top input port of the <code>Wait</code> node.</li>
+</ol>
+<h4>Step 3: Compile the Tree</h4>
+<ol>
+<li>On the left-hand Settings Panel, click the <strong>Compile</strong> button.</li>
+<li>Check your Unity Console. You should see a message indicating the graph compiled successfully and DOTS systems were generated.</li>
+</ol>
+<h4>Step 4: Setup the Agent Entity</h4>
+<ol>
+<li>Open a <strong>Sub-Scene</strong> in your Unity project (required for DOTS baking).</li>
+<li>Create a new empty <code>GameObject</code> and name it AI Agent.</li>
+<li>Add the <code>BtAgentAuthoring</code> component to this <code>GameObject</code>.</li>
+<li>Drag your compiled <code>MyFirstAgent</code> Graph Asset into the <strong>Tree</strong> field of the authoring component.</li>
+<li>(Optional) Add the <code>BtSettingsAuthoring</code> component if you wish to configure the maximum evaluation iterations per frame.</li>
+</ol>
+<h4>Step 5: Bake and Play!</h4>
+<ol>
+<li>Ensure your <code>Sub-Scene</code> is closed/baked.</li>
+<li>Press <strong>Play</strong> in the Unity Editor.</li>
+<li>While in Play Mode, select your AI Agent Entity using the <code>Entity Hierarchy</code> window.</li>
+<li>Look at your Behavior Editor window—you will see the nodes light up <strong>Yellow</strong>, indicating that your unmanaged DOTS tree is successfully executing the Wait action!</li>
+</ol>
+<hr>
+<div id="interface-overview"></div><h1>🎨 Interface Overview</h1>
+<p>The <strong>AI Behavior Architect Editor</strong> is your central hub for visually authoring AI logic. You can open it at any time via <code>Window/Sniveler Code/AI Behavior Architect</code>.</p>
+<p>The editor is divided into three primary zones:</p>
+<h4>🛠 1. The Top Toolbar</h4>
+<p>Located at the very top of the window, the toolbar manages which behavior tree you are currently editing.</p>
+<ul>
+<li><strong>Active Tree:</strong> Drag and drop a <code>GraphAsset</code> here to open it.</li>
+<li><strong>Breadcrumbs / History:</strong> When you dive into Sub-Trees (nested graphs), this area displays your navigation history (e.g., <code>Hierarchy -&gt; PatrolBehavior -&gt; OpenDoor</code>). Click on any previous name to jump back up the hierarchy.</li>
+</ul>
+<h4>🎛 2. The Settings Panel (Left)</h4>
+<p>This side-panel contains the contextual settings for your graph and nodes.</p>
+<ul>
+<li><strong>Node Tab:</strong> Whenever you select a node on the canvas, this tab acts as an Inspector. It allows you to configure parameters, dropdowns, and data specific to that node.</li>
+<li><strong>Variables Tab:</strong> This is where you manage the <strong>Blackboard</strong> variables for the entire graph (we will cover this deeply in Section 4).</li>
+<li><strong>Compile Button:</strong> Located at the bottom of the panel. Click this to trigger the code-generator and update your DOTS backend.</li>
+</ul>
+<h4>🗺 3. The Graph Canvas (Right)</h4>
+<p>This is your infinite workspace.</p>
+<ul>
+<li><strong>Navigation:</strong> Middle-click (or hold Alt + Left-click) to pan. Scroll to zoom.</li>
+<li><strong>Add Nodes:</strong> Right-click anywhere (or press Spacebar) to open the Node Search window.</li>
+<li><strong>Ports:</strong> Nodes connect via ports.<ul>
+<li>Top/Bottom Ports (Vertical): These are <strong>Flow Ports</strong>, used to define execution order (e.g., connecting a Sequence to an Action).</li>
+<li>Left/Right Ports (Horizontal): These are <strong>Data Ports</strong>, used to pass Blackboard variables directly between specific nodes (like passing a spatial position to an entity spawner).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<br><hr>
+<div id="working-with-subtrees"></div><h1>🗂 Working with Sub-Trees</h1>
+<p>As your AI logic grows, your graphs can become massive. <strong>Sub-Trees</strong> allow you to encapsulate logic into smaller, reusable Graph Assets. For example, you can build an Attack Sub-Tree and reuse it across multiple different enemy types.</p>
+<h4>🏗 How to Setup a Sub-Tree</h4>
+<ol>
+<li>Create a new <code>GraphAsset</code> in your project folder (e.g., <code>Sub_MeleeAttack</code>).</li>
+<li>Open your main behavior tree in the Behavior Editor.</li>
+<li>Add a <strong>Composites &gt; Sub-Tree</strong> node.</li>
+<li>Select the <code>Sub-Tree</code> node. In the left-hand <strong>Node Tab</strong>, assign your <code>Sub_MeleeAttack</code> asset to the field.</li>
+</ol>
+<h4>🧭 Navigating Sub-Trees</h4>
+<ul>
+<li><strong>Diving In:</strong> Simply <strong>double-click</strong> the Sub-Tree node on the canvas, or click the &quot;Open Sub-Tree&quot; button in the Node Tab. The editor will instantly load the nested graph.</li>
+<li><strong>Going Back:</strong> Look at the top toolbar. You will see a breadcrumb trail showing your current depth. Click the name of the parent tree to return.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Circular Dependency Protection</strong><br>The compiler strictly prevents infinite loops. You cannot assign a Graph Asset to itself, nor can you place a Sub-Tree inside a graph that eventually calls the parent graph. The compiler will catch this and throw a helpful error in the console.</p>
+</blockquote>
+<hr>
+<div id="runtime-visual-debugging"></div><h1>🐞 Runtime Visual Debugging</h1>
+<p>Debugging DOTS applications can be notoriously difficult since the logic happens inside multithreaded Burst jobs. AI Behavior Architect completely solves this by providing real-time, visual debugging directly on the graph.</p>
+<h4>🔍 How to Monitor an Agent</h4>
+<ol>
+<li>Enter <strong>Play Mode</strong> in the Unity Editor.</li>
+<li>Open the <strong>Entity Hierarchy</strong> window (provided by Unity&#39;s Entities package).</li>
+<li>Select any Entity that possesses a <code>BtAgent</code> component.</li>
+<li>If your <code>Behavior Editor</code> window is open, it will immediately snap to the <code>Graph Asset</code> currently running on that Entity.</li>
+</ol>
+<h4>🚦 Visual Feedback</h4>
+<p>As the C# Job evaluates the behavior tree, the Editor listens to the state buffer and updates the nodes on your canvas in real-time. Look at the colored borders of the nodes:</p>
+<ul>
+<li>🟡 <strong>Yellow Border:</strong> The node is currently <strong>Running</strong>.</li>
+<li>🟢 <strong>Green Border:</strong> The node returned <strong>Success</strong> this frame.</li>
+<li>🔴 <strong>Red Border:</strong> The node returned <strong>Failure</strong> this frame.</li>
+</ul>
+<blockquote>
+<p>🔒 <strong>Read-Only Mode</strong><br>When you enter Play Mode, the entire graph canvas and toolbar become locked (Read-Only). This prevents you from accidentally making structural changes to the graph while the backend DOTS systems are actively iterating over the unmanaged Blob Assets.</p>
+</blockquote>
+<h4>⚡ Zero Overhead in Production</h4>
+<p>You might be wondering: &quot;Does visual debugging slow down my DOTS jobs?&quot;<br>The answer is <strong>No</strong>.<br>The debug state buffers (<code>BtDebugState</code>) are wrapped in strict <code>#if UNITY_EDITOR</code> preprocessor directives. When you build your game, the debugging memory footprint and logging logic are completely stripped from the compilation. Your production builds run with absolute maximum performance.</p>
+<hr>
+<br><hr>
+<div id="the-blackboard-system"></div><h1>🧠 The Blackboard System</h1>
+<p>In Behavior Trees, nodes need a way to share data with one another. For instance, a &quot;Find&quot; node might locate an enemy, and a &quot;Move&quot; node needs to know where that enemy is.</p>
+<p><code>AI Behavior Architect</code> handles this using a <code>Blackboard</code>—a shared memory space accessible by all nodes within a tree.</p>
+<blockquote>
+<p>⚡ <strong>DOTS Performance Note</strong><br>In object-oriented systems, Blackboards are usually dictionaries containing objects, which causes massive Garbage Collection. AI Behavior Architect stores Blackboard variables internally inside a 16-byte unmanaged wrapper (<code>BtBlackboardEntry</code>) attached directly to your Entity&#39;s chunk as a <code>DynamicBuffer</code>. This guarantees rapid, cache-friendly memory access during Burst jobs with zero allocations.</p>
+</blockquote>
+<h4>➕ Creating Variables</h4>
+<ol>
+<li>Open the Behavior Editor and select your <code>Graph Asset</code>.</li>
+<li>In the left-hand Settings Panel, click the <strong>Variables</strong> tab.</li>
+<li>Click the <strong>Add Variable</strong> button.</li>
+<li>Configure your variable:<ul>
+<li><strong>Name:</strong> Give it a readable name (e.g., <code>TargetPosition</code> or <code>Health</code>).</li>
+<li><strong>Type:</strong> Select between <code>Float</code>, <code>Int</code>, or <code>Bool</code>. (Note: For advanced DOTS data like Entity or <code>float3</code>, you will pass these via <code>Data Ports</code>, which we cover below).</li>
+<li><strong>Value:</strong> Set the default starting value.</li>
+</ul>
+</li>
+</ol>
+<h4>🔌 Connecting Variables via Data Ports</h4>
+<p>Some nodes (like <strong>Find</strong> or <strong>Create Entity</strong>) explicitly require complex data types like an Entity ID or a <code>float3</code> position.<br>These nodes feature <strong>Horizontal Data Ports</strong> (on the left for Inputs, and on the right for Outputs).</p>
+<ol>
+<li>Left-click and drag from a <code>Data Port</code> to another compatible <code>Data Port</code> to create a link.</li>
+<li>The framework will automatically assign a hidden <code>Blackboard hash</code> to transfer this unmanaged data from the outputting node directly into the receiving node during runtime.</li>
+</ol>
+<hr>
+<div id="blackboard-nodes"></div><h1>🎛 Blackboard Nodes</h1>
+<p>While custom C# actions can read and write to the Blackboard programmatically, you can also manipulate Blackboard variables directly using visual nodes.</p>
+<h4>⚖️ Blackboard Condition Node</h4>
+<p>This node acts as a gatekeeper. It checks the value of a Blackboard variable and returns <strong>Success</strong> if the condition is met, or <strong>Failure</strong> if it is not.</p>
+<p><strong>How to use:</strong></p>
+<ol>
+<li>Add a <strong>Blackboard Condition</strong> node via the Search Window (<code>Blackboard/Blackboard Condition</code>).</li>
+<li>Select the node.</li>
+<li>In the Node Tab (left panel), configure the check:<ul>
+<li><strong>Variable:</strong> Select the variable from your <code>Blackboard list</code>.</li>
+<li><strong>Operator:</strong> Choose how to compare it (<code>Equal</code>, <code>NotEqual</code>, <code>Greater</code>, <code>Less</code>).</li>
+<li><strong>Value:</strong> The static value to compare against.</li>
+</ul>
+</li>
+</ol>
+<p>Example: Check if Health is Less than 20. If true (Success), the tree can move on to a &quot;Flee&quot; action.</p>
+<h4>✏️ Blackboard Modify Node</h4>
+<p>This node allows you to mathematically alter the value of a Blackboard variable during the execution of the tree. It always returns <strong>Success</strong> upon completion.</p>
+<p><strong>How to use:</strong></p>
+<ol>
+<li>Add a <strong>Blackboard Modify</strong> node (Blackboard/Blackboard Modify).</li>
+<li>Select the node.</li>
+<li>In the Node Tab, configure the modification:<ul>
+<li><strong>Variable:</strong> Select the variable you want to change.</li>
+<li><strong>Operator:</strong> Choose the math operation (<code>Set</code>, <code>Inc</code> [Increase/Add], <code>Dec</code> [Decrease/Subtract]).</li>
+<li><strong>Value:</strong> The static value to apply.</li>
+</ul>
+</li>
+</ol>
+<p>Example: When a &quot;Take Damage&quot; action completes, use this node to Dec (decrease) the Health variable by 10.</p>
+<hr>
+<div id="composites"></div><h1>🌳 Composites</h1>
+<p>Composite nodes are the structural backbone of your Behavior Tree. They control the flow of execution, deciding which of their children (connected below them) to run, and in what order.</p>
+<h4>➡️ Sequence</h4>
+<p>The Sequence node executes its children from left to right.</p>
+<ul>
+<li><strong>Success:</strong> It returns Success only if <strong>all</strong> of its children return Success.</li>
+<li><strong>Failure:</strong> It stops and returns Failure the moment <strong>any</strong> child returns Failure.</li>
+<li>Use case: A strict list of tasks. (e.g., Check Ammo -&gt; Aim -&gt; Fire). If the agent has no ammo, the sequence fails and stops immediately.</li>
+</ul>
+<h4>🔀 Selector</h4>
+<p>The Selector node executes its children from left to right.</p>
+<ul>
+<li><strong>Success:</strong> It stops and returns Success the moment <strong>any</strong> child returns Success.</li>
+<li><strong>Failure:</strong> It returns Failure only if <strong>all</strong> of its children return Failure.</li>
+<li>Use case: Prioritizing actions. (e.g., Try to take cover -&gt; Try to shoot -&gt; Try to run away). It attempts the first option; if that fails, it tries the next.</li>
+</ul>
+<h4>🎲 Random Sequence &amp; Random Selector</h4>
+<p>These function exactly like their standard counterparts, but instead of evaluating children strictly from left to right, they evaluate them in a <strong>random, non-repeating order</strong>.</p>
+<ul>
+<li>Use case: Making AI feel less predictable (e.g., choosing a random patrol point or picking a random taunt animation).</li>
+</ul>
+<h4>⏸ Parallel</h4>
+<p>The Parallel node executes <strong>all</strong> of its connected children simultaneously on the same frame.<br>When you select the Parallel node, you can configure its <strong>Policy</strong> in the settings panel:</p>
+<ul>
+<li><strong>Require All Success:</strong> The Parallel node returns Success only when every running child finishes with Success. If any child fails, the Parallel node immediately returns Failure and aborts the other children.</li>
+<li><strong>Require One Success:</strong> The Parallel node returns Success the moment any child finishes with Success, instantly aborting the remaining running children.</li>
+<li>Use case: Moving while shooting, or monitoring for threats while performing a task.</li>
+</ul>
+<hr>
+<div id="decorators"></div><h1>🎀 Decorators</h1>
+<p>Decorator nodes only ever have <strong>one child</strong>. They sit above that child and modify its behavior, alter its result, or restrict its execution.</p>
+<h4>🔁 Repeater</h4>
+<p>Executes its child node multiple times before returning a result to the parent.</p>
+<ul>
+<li><strong>Configuration:</strong> You define the number of loops in the Node Inspector. If set to 0, it loops infinitely.</li>
+<li>Use case: &quot;Chop Tree 5 times.&quot;</li>
+</ul>
+<h4>🔄 Retry</h4>
+<p>Similar to the Repeater, but it only restarts the child if the child returns <strong>Failure</strong>.</p>
+<ul>
+<li><strong>Configuration:</strong> You define the maximum number of retry attempts. If all attempts fail, the Retry node returns Failure to the parent.</li>
+<li>Use case: &quot;Try to unlock the door up to 3 times.&quot;</li>
+</ul>
+<h4>⏳ Cooldown</h4>
+<p>Prevents its child node from being executed again until a specific real-world time duration has passed. If evaluated while the cooldown is active, it instantly returns Failure.</p>
+<ul>
+<li><strong>Configuration:</strong> Set the cooldown time (in seconds).</li>
+<li>Use case: Preventing an enemy from spamming a heavy attack.</li>
+</ul>
+<h4>🚫 Inverter</h4>
+<p>Reverses the result of its child node.</p>
+<ul>
+<li>If the child returns Success, the Inverter returns <strong>Failure</strong>.</li>
+<li>If the child returns Failure, the Inverter returns <strong>Success</strong>.</li>
+<li>Use case: &quot;NOT in range.&quot; (Checks if in range, then inverts the success).</li>
+</ul>
+<h4>✅ Force Success / ❌ Force Failure</h4>
+<p>These decorators ignore the actual result of their child node and override the output.</p>
+<ul>
+<li><strong>Force Success:</strong> Always returns Success, even if the child failed.</li>
+<li><strong>Force Failure:</strong> Always returns Failure, even if the child succeeded.</li>
+<li>Use case: Running a non-critical animation sequence that you don&#39;t care if it gets interrupted or fails, ensuring the main branch continues.</li>
+</ul>
+<hr>
+<div id="queries-transactions"></div><h1>🔎 Queries &amp; Transactions</h1>
+<p>These nodes interact directly with the DOTS ECS world, allowing you to query, spawn, and modify Entities visually without writing any code.</p>
+<h4>📍 Find Node</h4>
+<p>Executes a highly optimized spatial hash query to locate other Entities in the world.</p>
+<ul>
+<li><strong>Configuration:</strong><ul>
+<li><strong>Max Distance:</strong> The radius to search.</li>
+<li><strong>Spatial Cell Size:</strong> The chunk size of the internal grid (adjust for performance tuning).</li>
+<li><strong>Find Method:</strong> <code>First (fastest)</code>, <code>Nearest (checks distances)</code>, <code>Random</code>.</li>
+<li><strong>Components Setup:</strong> You must add at least one Component requirement. (e.g., Find an entity that has a <code>PlayerTag</code>). You can also add specific value conditions (e.g., Find a <code>HealthComponent</code> where <code>Value &gt; 50</code>).</li>
+</ul>
+</li>
+<li><strong>Outputs:</strong> This node provides two Horizontal Data Ports. It outputs the found Entity ID and its float3 position. You can plug these into other nodes.</li>
+</ul>
+<h4>🐣 Create Entity Node</h4>
+<p>Instantiates a Unity Prefab dynamically at runtime.</p>
+<ul>
+<li><strong>Configuration:</strong><ul>
+<li><strong>Entity:</strong> Drag and drop a Unity <code>GameObject</code> Prefab here. (The framework will ensure it is baked into the DOTS registry).</li>
+<li><strong>Min/Max Radius:</strong> Spawns the entity at a random point within this radius around the target position.</li>
+<li><strong>Position:</strong> You can type a static <code>x,y,z</code> position, or connect a float3 <code>Data Port</code> to spawn the entity dynamically at a runtime location.</li>
+</ul>
+</li>
+</ul>
+<h4>🛠 Change Entity Node</h4>
+<p>Allows you to visually alter the component data of a specific Entity.</p>
+<ul>
+<li><strong>Configuration:</strong><ul>
+<li><strong>Input Entity (Data Port):</strong> By default, this node modifies the Agent executing the tree (Self). If you connect an Entity <code>Data Port</code> (e.g., from a <code>Find node</code>), it will modify that targeted Entity instead.</li>
+<li><strong>Components Setup:</strong> Add the component you wish to modify.</li>
+<li><strong>Transactions Tab:</strong> Configure the math operators to apply to the component&#39;s data fields (<code>Set</code>, <code>Inc</code>, <code>Dec</code>).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div id="custom-node"></div><h1>💻 Creating Your First Custom Node</h1>
+<p>While AI Behavior Architect provides powerful built-in nodes, the true strength of the framework is how easily you can write custom DOTS logic.</p>
+<p>You write standard C# structs, and the framework’s Code Generator automatically writes the ECS boilerplate, creates the <code>ISystem</code>, queries the chunks, and schedules the multithreaded Burst jobs for you.</p>
+<h4>Step-by-Step: Creating an Action</h4>
+<ol>
+<li>Create a new C# script in your project (e.g., <code>LogMessageAction.cs</code>).</li>
+<li>Define a partial struct (this is required because the code generator will create the other half of the struct).</li>
+<li>Add the <code>[BtCustom]</code> attribute above the struct. This registers it in the visual editor.</li>
+<li>Create a private <code>NodeStatus Process()</code> method. This is where your logic executes.</li>
+</ol>
+<pre><code class="language-csharp">using SnivelerCode.AiBehavior.Runtime.Attributes;
+using SnivelerCode.AiBehavior.Runtime.Components;
+
+namespace MyGame.AI
+{
+    // The string dictates the path in the Editor&#39;s Node Search Window
+    [BtCustom(&quot;Debug/Log Action&quot;)]
+    public partial struct LogMessageAction
+    {
+        // The generator automatically calls this Process method inside a Burst job
+        private NodeStatus Process()
+        {
+            // Note: Because this runs in a Burst job, you must use Unity.Burst logging, 
+            // not UnityEngine.Debug.Log!
+            SnivelerCode.AiBehavior.Runtime.Utils.BtLogger.BurstLog()
+                .Append(&quot;Hello from Burst!&quot;)
+                .Log();
+
+            return NodeStatus.Success;
+        }
+    }
+}
+</code></pre>
+<ol>
+<li>Save the script.</li>
+<li>Open the <code>Behavior Editor</code>, right-click, find <code>CustomAction</code> and search for <code>Debug/Log Action</code>. It is now a fully functional node!</li>
+</ol>
+<hr>
+<div id="api-attributes"></div><h1>🏷 API Attributes Reference</h1>
+<p>To pass data into and out of your <code>Process method</code>, you use specific attributes on your method parameters and struct fields. The code generator reads these attributes and wires up the UI and the ECS backend.</p>
+<h4>[BtParam]</h4>
+<p>Marks a parameter as a static value. This exposes a field in the Node Inspector inside the Unity Editor, allowing designers to tweak the value.</p>
+<ul>
+<li><strong>Supported types:</strong> int, float, bool, and enum.</li>
+</ul>
+<pre><code class="language-csharp">private NodeStatus Process([BtParam] float moveSpeed) { ... }
+</code></pre>
+<h4>[BtInput]</h4>
+<p>Retrieves a dynamic variable from the Agent&#39;s Blackboard at runtime. In the editor, this generates a <strong>Horizontal Input Port</strong> on the left side of the node.</p>
+<pre><code class="language-csharp">private NodeStatus Process([BtInput] Unity.Mathematics.float3 targetPosition) { ... }
+</code></pre>
+<h4>[BtOutput]</h4>
+<p>Writes a dynamic variable back to the Agent&#39;s Blackboard. In the editor, this generates a <strong>Horizontal Output Port</strong> on the right side of the node.</p>
+<pre><code class="language-csharp">private NodeStatus Process([BtOutput] out Unity.Mathematics.float3 currentPosition) { ... }
+</code></pre>
+<h4>[BtDeltaTime]</h4>
+<p>Applied to a struct field (not a method parameter). The code generator will automatically inject SystemAPI.Time.DeltaTime into this field before the job runs.</p>
+<pre><code class="language-csharp">[BtDeltaTime] public float DeltaTime;
+</code></pre>
+<hr>
+<div id="ecs-components"></div><h1>🔍 Querying and Modifying ECS Components</h1>
+<p>You do not need to write <code>SystemAPI.Query</code> or manual <code>ComponentLookup</code> code to access ECS components.</p>
+<p>If you pass any standard <code>IComponentData</code> into your <code>Process method</code>, the code generator automatically adds it to the internal <code>EntityQuery</code> and provides it to you.</p>
+<h4>Reading Data (in)</h4>
+<p>Use the in keyword to read component data without modifying it. This is highly optimized as it creates a read-only access path in the job.</p>
+<pre><code class="language-csharp">private NodeStatus Process(in LocalTransform transform)
+{
+    float3 currentPos = transform.Position;
+    return NodeStatus.Success;
+}
+</code></pre>
+<h4>Writing Data (ref)</h4>
+<p>Use the ref keyword to read and modify component data.</p>
+<pre><code class="language-csharp">private NodeStatus Process(ref LocalTransform transform, [BtParam] float speed)
+{
+    // Move the entity up along the Y axis
+    transform.Position.y += speed * DeltaTime; 
+    return NodeStatus.Running;
+}
+</code></pre>
+<p><em>Note: If you are iterating over a buffer (<code>IBufferElementData</code>), simply pass <code>DynamicBuffer&lt;T&gt;</code> myBuffer without ref or in.</em></p>
+<hr>
+<div id="entity-command-buffers"></div><h1>🏗 Using Entity Command Buffers (Structural Changes)</h1>
+<p>In DOTS, you cannot add components, remove components, or destroy entities on the main thread while jobs are iterating over chunks. You must use an <code>EntityCommandBuffer</code> (ECB).</p>
+<p>To use an ECB in your custom action, declare a struct field with the <code>[BtCommandBuffer]</code> attribute and specify which <code>System Group</code> should execute the buffer (usually <code>EndSimulationEntityCommandBufferSystem</code>).</p>
+<pre><code class="language-csharp">using SnivelerCode.AiBehavior.Runtime.Attributes;
+using SnivelerCode.AiBehavior.Runtime.Components;
+using Unity.Entities;
+
+namespace MyGame.AI
+{
+    [BtCustom(&quot;Combat/Destroy Self&quot;)]
+    public partial struct DestroySelfAction
+    {
+        // 1. Declare the ECB Parallel Writer
+        [BtCommandBuffer(typeof(EndSimulationEntityCommandBufferSystem))]
+        public EntityCommandBuffer.ParallelWriter CommandBuffer;
+
+        private NodeStatus Process([BtEntityIndex] int queryIndex, in Entity selfEntity)
+        {
+            // 3. Queue the destruction safely
+            CommandBuffer.DestroyEntity(queryIndex, selfEntity);
+            
+            return NodeStatus.Success;
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Critical ECB Rule:</strong> Always use a deterministic sort key  <code>[BtEntityIndex]</code> as the first argument in CommandBuffer methods when writing multithreaded DOTS code</p>
+</blockquote>
+<hr>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                        // Update hash in URL
+                        window.history.pushState(null, null, href);
+                    }
+                    if (window.innerWidth <= 992) {
+                        document.getElementById('nav-details').removeAttribute('open');
+                    }
+                }
+            });
+        });
+        
+        function handleResize() {
+            const details = document.getElementById('nav-details');
+            if (window.innerWidth <= 992) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "sniveler-code.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sniveler-code/sniveler-code.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sniveler-code/sniveler-code.github.io/issues"
+  },
+  "homepage": "https://github.com/sniveler-code/sniveler-code.github.io#readme",
+  "dependencies": {
+    "highlight.js": "^11.12.0",
+    "marked": "^18.0.9"
+  }
+}

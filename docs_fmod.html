@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Fmod Documentation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; 
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+        .nav-logo:hover { filter: brightness(1.5) drop-shadow(0 0 12px var(--accent)); }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        nav a:hover { color: var(--accent); }
+
+        .docs-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 80px auto 0;
+            min-height: calc(100vh - 80px);
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            padding: 2rem 2rem 2rem 0;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem 0 4rem 4rem;
+            max-width: 900px;
+        }
+
+        .sidebar ul { list-style: none; padding-left: 1rem; }
+        .sidebar > ul { padding-left: 0; }
+        .sidebar li { margin-bottom: 0.25rem; }
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; scroll-margin-top: 100px; }
+        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
+        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+        .content-area a:hover { border-bottom-style: solid; }
+        
+        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
+        .content-area li { margin-bottom: 0.5rem; }
+        
+        .content-area pre {
+            background: #0d0d0d !important;
+            padding: 1.5rem !important;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
+        .content-area p code, .content-area li code {
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        .content-area blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        .content-area blockquote p:last-child { margin-bottom: 0; }
+        
+        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
+        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
+
+        details.mobile-nav summary {
+            background: var(--bg-surface);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            color: var(--accent);
+            list-style: none;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        details.mobile-nav summary::-webkit-details-marker { display: none; }
+
+        @media (max-width: 992px) {
+            .docs-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-right: none; padding: 1rem 0; }
+            .content-area { padding: 1rem 0 4rem 0; }
+            details.mobile-nav summary { display: block; }
+        }
+        @media (max-width: 768px) {
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; font-size: 0.75rem; }
+            .docs-container { margin-top: 120px; }
+            .content-area h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <details class="mobile-nav" id="nav-details">
+                <summary>☰ TABLE OF CONTENTS</summary>
+                <div id="sidebar-content">
+                    <ul><li><a href="#1-introduction">🏠 1. Introduction</a></li><li><a href="#2-getting-started">⚙️ 2. Getting Started</a></li><li><a href="#3-core-api">💻 3. Core API</a></li><li><a href="#4-hybrid-ecs-animation">🎭 4. Hybrid ECS & Animation</a></li><li><a href="#5-advanced-features">🧱 5. Advanced Features</a></li><li><a href="#6-debugging-profiling">🐞 6. Debugging & Profiling</a></li><li><a href="#7-faq-troubleshooting">❓ 7. FAQ & Troubleshooting</a></li></ul>
+                </div>
+            </details>
+        </aside>
+        
+        <main class="content-area">
+            <div id="1-introduction"></div><h1>🏠 1. Introduction</h1>
+<p><strong>Advanced Audio Dispatcher for DOTS</strong> is a high-performance, thread-safe, and zero-GC bridge between Unity&#39;s Data-Oriented Technology Stack (DOTS) and the native FMOD Studio C-API.</p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1.5rem 0; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                <iframe src="https://www.youtube.com/embed/cIGFI-eBLuA" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                            </div><p>Built specifically for Entities 1.0+ and the Burst Compiler, this asset allows you to dispatch thousands of audio events directly from your <code>IJobEntity</code> systems without allocating a single byte of managed memory.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li><strong>Zero GC Allocations:</strong> 100% unmanaged data structures.</li>
+<li><strong>Burst Compatible:</strong> Dispatch audio commands from any background worker thread.</li>
+<li><strong>Automatic Lifecycle:</strong> Looping sounds automatically track entity positions and clean themselves up when the target entity is destroyed.</li>
+<li><strong>Asynchronous Occlusion:</strong> Built-in, multi-threaded raycast occlusion that doesn&#39;t block the Main Thread.</li>
+</ul>
+<h4>Why this asset?</h4>
+<p>The official FMOD Unity integration is fantastic for traditional OOP projects, but it relies heavily on <code>MonoBehaviour</code>, managed strings, and Main Thread execution. Using it in a DOTS project forces you to break the ECS paradigm, leading to thread locks and garbage collection spikes.</p>
+<p><strong>Audio Dispatcher</strong> solves this by bypassing the official C# wrapper entirely. It communicates directly with the raw FMOD native binaries (<code>fmodstudioL.dll</code>), providing a pure ECS architecture designed for AA/AAA performance.</p>
+<hr>
+<div id="2-getting-started"></div><h1>⚙️ 2. Getting Started</h1>
+<h4>Installation</h4>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 1.5rem 0; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                <iframe src="https://www.youtube.com/embed/WYzMlvAjTD0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>
+                            </div><blockquote>
+<p>🛑 <strong>CRITICAL WARNING:</strong> Do NOT import the full official FMOD Unity package into your DOTS project. It will clutter your project with unnecessary <code>MonoBehaviours</code> and cause compilation conflicts.</p>
+</blockquote>
+<p><strong>Step 1: Get the Native Libraries</strong></p>
+<ol>
+<li>Download the official <strong>FMOD for Unity</strong> package from fmod.com.</li>
+<li>Import the <code>.unitypackage</code> into your Unity project.</li>
+<li>In the Import Window, click <strong>&quot;None&quot;</strong>, and <strong>ONLY check the <code>Plugins</code> folder</strong>. Uncheck <code>Scripts</code>, <code>Editor</code>, and everything else.</li>
+</ol>
+<p><strong>Step 2: Install Audio Dispatcher</strong></p>
+<ol>
+<li>Open <strong>Window -&gt; Package Manager</strong>.</li>
+<li>Click the <strong>+</strong> icon and select <strong>Add package from tarball...</strong></li>
+<li>Select the <code>com.snivelercode.audio-dispatcher.fmod-1.0.0.tgz</code> file.</li>
+</ol>
+<h4>Project Settings</h4>
+<p>Once installed, navigate to <code>Edit -&gt; Project Settings -&gt; SnivelerCode</code>.<br>Here you can configure the core behavior of the audio engine:</p>
+<ul>
+<li><strong>Max Channels:</strong> Hardware voice limit (default is 256. Lower to 64-128 for mobile).</li>
+<li><strong>Occlusion Layer Mask:</strong> Define which physics layers block sound.</li>
+<li><strong>Generated Code Path:</strong> Where the tool will save your generated C# IDs.</li>
+</ul>
+<h4>Bank Synchronization</h4>
+<ol>
+<li>Build your FMOD Studio project and export the <code>.bank</code> and <code>.strings.bank</code> files.</li>
+<li>Drag and drop them anywhere into your Unity project.</li>
+<li>Create an empty <code>GameObject</code> in your <code>SubScene</code> and attach the <strong><code>Fmod Sounds Library Authoring</code></strong> component.</li>
+<li>The system will automatically detect your banks, copy them to <code>StreamingAssets</code>, and generate safe, stringless <code>ulong</code> IDs for all your events, buses, and parameters.</li>
+</ol>
+<hr>
+<div id="3-core-api"></div><h1>💻 3. Core API</h1>
+<p>To play sounds from a Burst-compiled job, you need to pass the <code>FmodRuntimeAudio.ParallelWriter</code> to your job.</p>
+<h4>Playing One-Shots</h4>
+<p>One-shots are &quot;fire-and-forget&quot; sounds (e.g., footsteps, gunshots, impacts). If the sound is spawned outside its audible range (defined in FMOD Studio), it is instantly culled to save CPU.</p>
+<pre><code class="language-csharp">[BurstCompile]
+public partial struct WeaponFireJob : IJobEntity
+{
+    public SncRuntimeAudio.ParallelWriter AudioWriter;
+
+    private void Execute(in LocalTransform transform, in FireEvent fireEvent)
+    {
+        // Plays a sound at the given position with 80% volume
+        SncAudioID.WeaponsGunshot.Shot(transform.Position)
+            .Volume(0.8f)
+            .Pitch(1.1f)
+            .Apply(AudioWriter);
+    }
+}
+</code></pre>
+<h4>Looping Sounds &amp; Lifecycle</h4>
+<p>When you call <code>.Loop(entity)</code>, the system creates a lightweight <strong>Shadow Entity</strong>. This entity automatically tracks your target&#39;s position, rotation, and velocity (for the Doppler effect).</p>
+<blockquote>
+<p>💡 <strong>Info:</strong> You <strong>do not</strong> need to stop loops manually! If you destroy the target entity (e.g., the enemy dies), the Shadow Entity detects it, tells FMOD to smoothly fade out the sound, and destroys itself. Zero memory leaks.</p>
+</blockquote>
+<pre><code class="language-csharp">// Start a looping engine sound attached to a vehicle entity
+SncAudioID.VehiclesEngine.Loop(entity)
+    .Volume(1.0f)
+    .Apply(AudioWriter);
+</code></pre>
+<h4>Dynamic Parameters &amp; Properties</h4>
+<p>You can change FMOD Local Parameters or built-in properties (like Min/Max 3D Distance) on the fly for any active loop.</p>
+<pre><code class="language-csharp">// Update the RPM parameter of an already playing engine loop
+SncAudioID.VehiclesEngine.Change(entity)
+    .Param(SncAudioParamID.VehiclesEngine.RPM, 3500f)
+    .Apply(AudioWriter);
+</code></pre>
+<h4>Global Commands</h4>
+<p>Control buses and global parameters without string allocations. IDs are automatically generated from your <code>.strings.bank</code>.</p>
+<pre><code class="language-csharp">// Pause the SFX bus (e.g., when the game is paused)
+AudioWriter.SetBusPaused(SncBusID.GameSfx, true);
+
+// Change Music Volume
+AudioWriter.SetBusVolume(SncBusID.Music, 0.5f);
+
+// Update a Global Parameter
+AudioWriter.SetGlobalParameter(SncGlobalParamID.TimeOfDay, 14.5f);
+</code></pre>
+<hr>
+<div id="4-hybrid-ecs-animation"></div><h1>🎭 4. Hybrid ECS &amp; Animation</h1>
+<h4>The FmodAnimatorBridge</h4>
+<p>Syncing standard Unity Animations (like footsteps) with DOTS audio is usually a headache. We solved this with the  component.</p>
+<ol>
+<li>Attach <kbd>SncAnimatorBridge</kbd> to your character <code>GameObject</code> (next to the Animator).</li>
+<li>Add a new element to the <strong>Audio Events</strong> array.</li>
+<li>Give it a name (e.g., <code>Footstep</code>) and select your sound from the beautiful <code>[SncEvent]</code> dropdown.</li>
+<li>Open the Unity Animation Window, add an Animation Event, select <code>PlayAudioEvent(string)</code>, and type <code>Footstep</code>.</li>
+</ol>
+<p>The bridge will safely catch the OOP event and dispatch it to the Burst-compiled DOTS queue without any GC allocations!</p>
+<h4>Proxy API</h4>
+<p>If you need to play a sound from a standard <code>MonoBehaviour</code> (e.g., a UI Button click), use the Proxy API extensions:</p>
+<pre><code class="language-csharp">public void OnButtonClick()
+{
+    SncAudioID.UI_Click.Shot(transform.position).ProxyEvent();
+    SncBusID.Master.ProxyBusVolume(0.5f);
+}
+</code></pre>
+<hr>
+<div id="5-advanced-features"></div><h1>🧱 5. Advanced Features</h1>
+<h4>Asynchronous Raycast Occlusion</h4>
+<p>The package includes a highly optimized, multi-threaded occlusion system. It uses Unity&#39;s <code>RaycastCommand</code> to check for obstacles between the listener and the sound source.</p>
+<ul>
+<li><strong>Time-Slicing:</strong> Rays are cast every N frames (configurable in Project Settings) to save physics CPU time.</li>
+<li><strong>Smooth Interpolation:</strong> When an object goes behind a wall, the occlusion parameter is smoothly interpolated, preventing harsh audio popping.</li>
+</ul>
+<h4>Smart Culling &amp; Virtualization</h4>
+<p>Audio Dispatcher uses <strong>FMOD Studio as the Single Source of Truth</strong>.<br>It automatically reads the <code>MaxDistance</code> of your events from the FMOD banks.</p>
+<ul>
+<li><strong>One-Shots:</strong> If a one-shot is spawned further than its <code>MaxDistance</code>, the command is dropped. FMOD never even hears about it.</li>
+<li><strong>Loops:</strong> If a looping entity moves out of range, the system calls <code>EventSetPaused(true)</code>. This instantly frees up the hardware channel (Voice Stealing) and stops sending 3D matrices, saving massive amounts of CPU. When the entity comes back into range, it seamlessly resumes.</li>
+</ul>
+<hr>
+<div id="6-debugging-profiling"></div><h1>🐞 6. Debugging &amp; Profiling</h1>
+<h4>Visual Debugger</h4>
+<p>To help you profile your audio, we included a high-performance Visual Debugger.</p>
+<ol>
+<li>Go to <code>Edit -&gt; Project Settings -&gt; SnivelerCode</code>.</li>
+<li>Enable <strong>Visual Debugger</strong>.</li>
+<li>Open the Scene View while in Play Mode.</li>
+</ol>
+<p>You will see wireframe spheres representing the Min/Max distance of your sounds, color-coded icons showing their playback state (Playing, Stopped, Virtualized), and real-time occlusion percentages.</p>
+<hr>
+<div id="7-faq-troubleshooting"></div><h1>❓ 7. FAQ &amp; Troubleshooting</h1>
+<p><strong>Q: I get a <code>DllNotFoundException: fmodstudioL</code> error.</strong><br><strong>A:</strong> You forgot to import the native libraries. Download the official FMOD for Unity package and import only the <code>Plugins</code> folder into your project.</p>
+<p><strong>Q: My background music is being culled/muted when I move the camera!</strong><br><strong>A:</strong> Your music event is being treated as a 3D sound. Open FMOD Studio, select your music event, and <strong>delete the <code>Spatializer</code> effect</strong> from the Master Track. Rebuild your banks. The system will automatically detect it as a 2D sound (<code>MaxDistance = 0</code>) and disable culling for it.</p>
+<p><strong>Q: When I spawn 1,000 enemies, some sounds don&#39;t play or cut off abruptly.</strong><br><strong>A:</strong> You are experiencing &quot;Voice Stealing Thrashing&quot;. FMOD has a hard limit of 256 channels.</p>
+<ol>
+<li>Open FMOD Studio and reduce the <code>Max Distance</code> of your enemy sounds so they cull earlier.</li>
+<li>Set <code>Max Instances</code> (e.g., to 20) in the event&#39;s Macros, and set <code>Stealing</code> to <code>Virtualize</code> or <code>Furthest</code>.</li>
+<li>Ensure your looping sounds have a <strong>Loop Region</strong> on the FMOD timeline, otherwise, they will die naturally while virtualized.</li>
+</ol>
+<hr>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                        // Update hash in URL
+                        window.history.pushState(null, null, href);
+                    }
+                    if (window.innerWidth <= 992) {
+                        document.getElementById('nav-details').removeAttribute('open');
+                    }
+                }
+            });
+        });
+        
+        function handleResize() {
+            const details = document.getElementById('nav-details');
+            if (window.innerWidth <= 992) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>

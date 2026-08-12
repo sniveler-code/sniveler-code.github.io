@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Gpu Animation Documentation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --bg-surface: #111111;
+            --bg-surface-hover: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #00e5ff; 
+            --accent-dim: rgba(0, 229, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 229, 255, 0.5);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease-out;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+        
+        .mono { font-family: var(--font-mono); }
+        .text-accent { color: var(--accent); }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
+            transition: var(--transition);
+        }
+        .nav-logo:hover { filter: brightness(1.5) drop-shadow(0 0 12px var(--accent)); }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+        nav a:hover { color: var(--accent); }
+
+        .docs-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 80px auto 0;
+            min-height: calc(100vh - 80px);
+            padding: 0 2rem;
+        }
+
+        .sidebar {
+            width: 320px;
+            padding: 2rem 2rem 2rem 0;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+        .content-area {
+            flex-grow: 1;
+            padding: 2rem 0 4rem 4rem;
+            max-width: 900px;
+        }
+
+        .sidebar ul { list-style: none; padding-left: 1rem; }
+        .sidebar > ul { padding-left: 0; }
+        .sidebar li { margin-bottom: 0.25rem; }
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: block;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; scroll-margin-top: 100px; }
+        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
+        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
+        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+        .content-area a:hover { border-bottom-style: solid; }
+        
+        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
+        .content-area li { margin-bottom: 0.5rem; }
+        
+        .content-area pre {
+            background: #0d0d0d !important;
+            padding: 1.5rem !important;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
+        .content-area p code, .content-area li code {
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        .content-area blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 1.5rem 0;
+            background: var(--bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+        }
+        .content-area blockquote p:last-child { margin-bottom: 0; }
+        
+        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
+        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
+
+        details.mobile-nav summary {
+            background: var(--bg-surface);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            color: var(--accent);
+            list-style: none;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        details.mobile-nav summary::-webkit-details-marker { display: none; }
+
+        @media (max-width: 992px) {
+            .docs-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; border-right: none; padding: 1rem 0; }
+            .content-area { padding: 1rem 0 4rem 0; }
+            details.mobile-nav summary { display: block; }
+        }
+        @media (max-width: 768px) {
+            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
+            .nav-links { gap: 1rem; font-size: 0.75rem; }
+            .docs-container { margin-top: 120px; }
+            .content-area h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/_sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <details class="mobile-nav" id="nav-details">
+                <summary>☰ TABLE OF CONTENTS</summary>
+                <div id="sidebar-content">
+                    <ul><li><a href="#1-introduction-overview">👋 1. Introduction & Overview</a></li><li><a href="#2-installation-setup">⚙️ 2. Installation & Setup</a></li><li><a href="#3-quick-start-guide">🚀 3. Quick Start Guide</a></li><li><a href="#4-the-animator-baker-window">🎛️ 4. The Animator Baker Window</a></li><li><a href="#5-shader-graph-integration">🎨 5. Shader Graph Integration</a></li><li><a href="#6-sockets-attachments">🔗 6. Sockets & Attachments</a></li><li><a href="#7-runtime-control">💻 7. Runtime Control</a></li><li><a href="#8-performance-optimization">🏎️ 8. Performance Optimization</a></li><li><a href="#9-root-motion">🚶‍♂️ 9. Root Motion</a></li><li><a href="#10-troubleshooting-faq">🚑 10. Troubleshooting & FAQ</a></li><li><a href="#migration-guide-v110-to-v130">⚙️ Migration Guide: v1.1.0 to v1.3.0</a></li></ul>
+                </div>
+            </details>
+        </aside>
+        
+        <main class="content-area">
+            <div id="1-introduction-overview"></div><h1>👋 Introduction &amp; Overview</h1>
+<p>This asset is a high-performance, strictly DOTS/ECS-driven animation system designed for the Universal Render Pipeline (URP). It bypasses traditional CPU animation bottlenecks by baking skeletal data into highly optimized <code>BlobAssets</code> and performing matrix/Dual Quaternion skinning directly inside the Vertex Shader.</p>
+<p>Whether you are building a massive RTS, a factory automation game, or a swarm-survival (Vampire Survivors-like) project, this tool allows you to render <strong>10,000+ animated units</strong> on screen with zero CPU overhead.</p>
+<hr>
+<h4>✨ Core Features</h4>
+<ul>
+<li>⚔️ <strong>Zero-Latency Sockets (Attachments)</strong><br>Unlike traditional GPU skinning solutions where attachments lag by a frame, our system uses synchronous Burst-compiled <code>BlobAsset</code> queries. You can attach weapons, armor, or VFX to specific bones, and they will follow the animation with frame-perfect precision.</li>
+<li>🎨 <strong>Full Shader Graph Support</strong><br>Don&#39;t limit yourself to standard shaders. We provide out-of-the-box Shader Graph templates. Add dissolve effects, outlines, or custom emission logic to your animated crowds in seconds.</li>
+<li>🦾 <strong>Dual Quaternion Skinning (DQS)</strong><br>Say goodbye to the &quot;candy-wrapper&quot; effect where joints (like shoulders and knees) lose volume during extreme bending. DQS preserves mesh volume, drastically improving the visual fidelity of low-poly and stylized characters.</li>
+<li>⚙️ <strong>One-Click Automated Baking</strong><br>No complex setup. Drag your standard Unity <code>GameObject</code> (with a <code>SkinnedMeshRenderer</code> and Animator) into our custom Editor Window, click &quot;Bake&quot;, and receive a fully configured DOTS Prefab ready to be spawned via ECS.</li>
+<li>🚀 <strong>Extreme Performance &amp; LODs</strong><br>Built-in support for Unity&#39;s <code>LODGroup</code>. The system automatically drops bone influences (4 bones -&gt; 2 bones -&gt; 1 bone) and disables interpolation for distant units and shadow casters to save ALU instructions. Includes distance-based Tick-Rate optimization (animating at 30fps or 15fps for distant crowds).</li>
+</ul>
+<hr>
+<h4>🛠️ Technical Requirements</h4>
+<p>To use this asset, your project must meet the following minimum requirements:</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Supported Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Unity Engine</strong></td>
+<td>2022.2 or higher</td>
+<td>Tested up to Unity 6.</td>
+</tr>
+<tr>
+<td><strong>Render Pipeline</strong></td>
+<td>URP 14.0+</td>
+<td>HDRP and Built-in RP are <strong>not</strong> supported.</td>
+</tr>
+<tr>
+<td><strong>Entities (DOTS)</strong></td>
+<td>1.4.5 or higher</td>
+<td>Requires <code>com.unity.entities</code>.</td>
+</tr>
+<tr>
+<td><strong>Entities Graphics</strong></td>
+<td>1.4.18 or higher</td>
+<td>Requires <code>com.unity.entities.graphics</code>.</td>
+</tr>
+<tr>
+<td><strong>Burst Compiler</strong></td>
+<td>1.8.27 or higher</td>
+<td>Required for high-performance jobs.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 <strong>Note:</strong> The asset relies strictly on the ECS paradigm. It does not use traditional <code>GameObjects</code> for runtime rendering. You must be familiar with spawning and managing entities via <code>EntityCommandBuffer</code> or Bakers.</p>
+</blockquote>
+<hr>
+<h4>⚠️ Known Limitations</h4>
+<p>Because this system is built for maximum performance at massive scales, it relies on pre-computed (baked) data. Please be aware of the following architectural limitations:</p>
+<blockquote>
+<p>🛑 <strong>Important Limitations</strong></p>
+<ul>
+<li><strong>No Runtime IK:</strong> Inverse Kinematics (like procedural foot placement or aiming) is not supported, as the bone matrices are baked into static arrays.</li>
+<li><strong>No Ragdolls:</strong> Physics-driven ragdolls cannot be applied to the GPU-skinned meshes.</li>
+<li><strong>Memory Footprint:</strong> Animation data is baked per-frame, per-bone. While highly optimized, baking 50+ long animations for a character with 100+ bones will consume noticeable VRAM/RAM.</li>
+</ul>
+</blockquote>
+<hr>
+<div id="2-installation-setup"></div><h1>⚙️ 2. Installation &amp; Setup</h1>
+<p>Getting started with <strong>GPU Animation Entities PRO</strong> requires a specific Unity environment, as the asset relies heavily on the Data-Oriented Technology Stack (DOTS) and the Universal Render Pipeline (URP).</p>
+<p>Follow this step-by-step guide carefully to ensure your project is configured correctly. Missing the URP configuration steps is the #1 cause of invisible meshes!</p>
+<hr>
+<h4>📦 Prerequisites</h4>
+<p>Before importing the asset, ensure your Unity project meets the following baseline requirements:</p>
+<ul>
+<li><strong>Unity Version:</strong> 2022.2 or newer (Unity 6 is fully supported).</li>
+<li><strong>Render Pipeline:</strong> Universal Render Pipeline (URP 14.0+).</li>
+<li><strong>Scripting Backend:</strong> IL2CPP (Recommended for final builds) / Mono (Editor).</li>
+</ul>
+<hr>
+<h4>Step 1: Install Required Dependencies</h4>
+<p>Since this is a strict ECS asset, you must install the official Unity DOTS packages.</p>
+<ol>
+<li>Open your Unity project.</li>
+<li>Navigate to <strong>Window &gt; Package Manager</strong>.</li>
+<li>Click the + icon in the top left corner and select <strong>&quot;Add package by name...&quot;</strong>.</li>
+<li>Add the following packages one by one:<ul>
+<li><code>com.unity.entities</code> (Version 1.4.5+)</li>
+<li><code>com.unity.entities.graphics</code> (Version 1.4.18+)</li>
+<li><code>com.unity.burst</code> (Version 1.8.27+)</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Tip:</strong> If you are starting a fresh project, the easiest way to get all dependencies is to create a new project using the <strong>&quot;3D (URP) Core&quot;</strong> template, and then install the Entities packages.</p>
+</blockquote>
+<hr>
+<h4>Step 2: Import the Asset</h4>
+<p>Once the dependencies are resolved:</p>
+<ol>
+<li>Open the <strong>Window &gt; Package Manager</strong>.</li>
+<li>Select <strong>My Assets</strong> from the dropdown.</li>
+<li>Search for <strong>GPU Animation Entities PRO</strong>.</li>
+<li>Click <strong>Download</strong>, then <strong>Import</strong>.</li>
+<li>Ensure all folders (especially Editor, Runtime, and Samples~) are checked, and click <strong>Import</strong>.</li>
+</ol>
+<hr>
+<h4>Step 3: URP Configuration (🚨 CRITICAL)</h4>
+<p>For the GPU skinning to work, the Universal Render Pipeline must be allowed to pass DOTS data to the GPU. <strong>If you skip this step, your animated characters will be invisible.</strong></p>
+<ol>
+<li>Locate your active <strong>URP Asset</strong> in the Project window (usually found in Assets/Settings/ or similar).</li>
+<li>Select the URP Asset to view it in the Inspector.</li>
+<li>Scroll down to the <strong>Advanced</strong> section.</li>
+<li>Ensure the following settings are <strong>ENABLED</strong> (Checked):<ul>
+<li>✅ <strong>SRP Batcher</strong></li>
+<li>✅ <strong>DOTS Instancing</strong> (This is mandatory for <code>_SnivelerRenderFrames</code> to reach the shader).</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>🛑 <strong>Troubleshooting:</strong> If you cannot find the &quot;DOTS Instancing&quot; checkbox, ensure that the <code>com.unity.entities.graphics</code> package is successfully installed and compiled.</p>
+</blockquote>
+<hr>
+<h4>Step 4: Burst Compiler Settings</h4>
+<p>To achieve maximum performance, ensure the Burst compiler is active.</p>
+<ol>
+<li>Go to <strong>Jobs &gt; Burst &gt; Enable Compilation</strong> (Ensure it has a checkmark).</li>
+<li>Go to <strong>Jobs &gt; Burst &gt; Synchronous Compilation</strong> (Optional, but recommended during Editor playback to prevent initial stuttering).</li>
+</ol>
+<hr>
+<h4>Step 5: Explore the Demo Scenes</h4>
+<p>The best way to verify your installation and learn the system is to explore the provided demo scenes. Navigate to the Samples~ folder (you may need to copy it into your Assets folder if Unity imported it as a hidden package sample).</p>
+<p>We have provided three distinct environments:</p>
+<ul>
+<li>🟢 <strong>DemoZone 1 (Basics):</strong><br>Located in <code>DemoZone1/Scenes/Landing.unity</code>. Demonstrates basic baking, simple movement, and parameter changing (Speed, Attack triggers) via UI.</li>
+<li>⚔️ <strong>DemoZone 2 (Sockets &amp; Weapons):</strong><br>Located in <code>DemoZone2/Scenes/Landing.unity</code>. Showcases the <strong>Zero-Latency Socket System</strong>. Watch how the character smoothly equips and unequips a sword and an axe with perfect frame synchronization.</li>
+<li>🏰 <strong>DemoZone 3 (Massive Crowd &amp; RTS Logic):</strong><br>Located in <code>DemoZone3/Scenes/Landing.unity</code>. The ultimate stress test. Features spatial hashing, combat decision-making, ranged projectiles, and thousands of units fighting simultaneously.</li>
+</ul>
+<hr>
+<div id="3-quick-start-guide"></div><h1>🚀 3. Quick Start Guide (Your First 10,000 Units)</h1>
+<p>In this guide, we will take a standard Unity character, convert it into a highly optimized DOTS Prefab using the <strong>Animator Baker</strong>, and write a simple ECS script to spawn thousands of instances on the screen.</p>
+<p>By the end of this 5-minute tutorial, you will have a massive, fully animated crowd running at maximum FPS.</p>
+<hr>
+<h4>Step 1: Prepare Your Source Character</h4>
+<p>Before we can bake anything, we need a standard Unity <code>GameObject</code> set up correctly.</p>
+<ol>
+<li>Drag your character model (FBX) into a standard Unity Scene.</li>
+<li>Ensure the <code>GameObject</code> has a <code>SkinnedMeshRenderer</code>.</li>
+<li>Ensure it has an <strong>Animator</strong> component with a valid <strong>Animator Controller</strong> assigned.</li>
+<li>(Optional but Highly Recommended) Add an <code>LODGroup</code> component and set up your LODs. The Baker will automatically read this and generate optimized DOTS LODs!</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Tip:</strong> Make sure your Animator Controller has at least one animation state (e.g., &quot;Idle&quot; or &quot;Run&quot;). The Baker will read all states directly from this controller.</p>
+</blockquote>
+<hr>
+<h4>Step 2: Bake the DOTS Prefab</h4>
+<p>Now we will convert this standard <code>GameObject</code> into a GPU-driven DOTS Prefab.</p>
+<ol>
+<li>Open the Baker window via <strong>Window &gt; Sniveler Code &gt; Animator Baker</strong>.</li>
+<li>Drag your character <code>GameObject</code> from the scene into the <strong>Prefab Model</strong> field.</li>
+<li>The window will populate with three tabs: <code>Animator</code>, <code>Lods</code>, and <code>Bones</code>.</li>
+<li>In the <code>Lods</code> tab, ensure the <strong>Shader</strong> is set to Sniveler Lit (or Sniveler Unlit).</li>
+<li>Click the big green <strong>Process</strong> button at the bottom.</li>
+</ol>
+<p><strong>What just happened?</strong><br>The system played through all your animations, extracted the bone matrices, and saved them into highly optimized <code>BlobAssets</code>.<br>You will find your new ready-to-use DOTS Prefab in your Project window under:<br><code>Assets/SnivelerCode/GpuAnimation/Generated/[YourCharacterName]/Character</code></p>
+<hr>
+<h4>Step 3: The Scene Renderer (🚨 CRITICAL STEP)</h4>
+<p>For the GPU to know how to animate your characters, the baked animation matrices must be uploaded to the video card&#39;s memory (<code>GraphicsBuffer</code>). We do this using a special scene component.</p>
+<ol>
+<li>Create a <code>SubScene</code> in your project (Right-click in Hierarchy &gt; New Sub Scene &gt; Empty Scene).</li>
+<li>Inside this <code>SubScene</code>, create an Empty <code>GameObject</code> and name it <code>GPU_Animation_Renderer</code>.</li>
+<li>Add the <code>AnimatorRendererAuthoring</code> component to it.</li>
+<li>In the <strong>Animators</strong> array of this component, click + and assign your newly baked DOTS Prefab.</li>
+</ol>
+<blockquote>
+<p>🛑 <strong>Warning:</strong> If you skip this step, your spawned entities will not animate, or they might disappear entirely! This component is responsible for generating the <code>SceneAnimatorConfigData</code> that links your entities to the GPU buffers.</p>
+</blockquote>
+<hr>
+<h4>Step 4: Spawning the Crowd (C# Script)</h4>
+<p>Now let&#39;s write a simple ECS script to spawn a massive grid of our characters.</p>
+<p>Create a new C# script named CrowdSpawnerAuthoring.cs and paste the following code:</p>
+<pre><code class="language-csharp">using SnivelerCode.GpuAnimation.Runtime.Components;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
+using UnityEngine;
+
+namespace SnivelerCode.GpuAnimation.Tutorial
+{
+    // 1. The Component Data (No prefab field needed here!)
+    public struct CrowdSpawnerData : IComponentData
+    {
+        public int GridSize;
+        public float Spacing;
+        public bool IsSpawned;
+    }
+
+    // 2. The Authoring Component
+    public class CrowdSpawnerAuthoring : MonoBehaviour
+    {
+        public int GridSize = 100;         // 100x100 = 10,000 units!
+        public float Spacing = 1.5f;
+
+        class Baker : Baker&lt;CrowdSpawnerAuthoring&gt;
+        {
+            public override void Bake(CrowdSpawnerAuthoring authoring)
+            {
+                var entity = GetEntity(TransformUsageFlags.None);
+                AddComponent(entity, new CrowdSpawnerData
+                {
+                    GridSize = authoring.GridSize,
+                    Spacing = authoring.Spacing,
+                    IsSpawned = false
+                });
+            }
+        }
+    }
+
+    // 3. The Spawner System
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    public partial struct CrowdSpawnerSystem : ISystem
+    {
+        public void OnUpdate(ref SystemState state)
+        {
+            // Ensure the GPU Animation registry exists and has prefabs
+            if (!SystemAPI.HasSingleton&lt;AnimatorPrefabBuffer&gt;()) return;
+            var prefabBuffer = SystemAPI.GetSingletonBuffer&lt;AnimatorPrefabBuffer&gt;();
+            if (prefabBuffer.Length == 0) return;
+
+            // Grab the first registered and fully baked prefab!
+            Entity characterPrefab = prefabBuffer[0].Value;
+
+            foreach (var (spawner, entity) in SystemAPI.Query&lt;RefRW&lt;CrowdSpawnerData&gt;&gt;().WithEntityAccess())
+            {
+                if (spawner.ValueRO.IsSpawned) continue;
+
+                var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+                int size = spawner.ValueRO.GridSize;
+                float spacing = spawner.ValueRO.Spacing;
+
+                // Spawn a grid of units
+                for (int x = 0; x &lt; size; x++)
+                {
+                    for (int z = 0; z &lt; size; z++)
+                    {
+                        Entity instance = ecb.Instantiate(characterPrefab);
+                        
+                        float3 position = new float3(x * spacing, 0, z * spacing);
+                        ecb.SetComponent(instance, LocalTransform.FromPosition(position));
+                    }
+                }
+
+                ecb.Playback(state.EntityManager);
+                ecb.Dispose();
+
+                // Mark as spawned
+                spawner.ValueRW.IsSpawned = true;
+            }
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡Notice that our Spawner doesn&#39;t need a Prefab field! It automatically queries the <code>AnimatorPrefabBuffer</code> to grab the exact entity that was processed and uploaded to the GPU by your Scene Renderer.</p>
+</blockquote>
+<p><strong>Final Setup:</strong></p>
+<ol>
+<li>Create another Empty <code>GameObject</code> in your <strong>SubScene</strong>.</li>
+<li>Attach the <code>CrowdSpawnerAuthoring</code> script to it.</li>
+<li>Drag your <strong>Baked DOTS Prefab</strong> into the Character Prefab slot.</li>
+<li>Set the Grid Size to 100 (which will spawn 10,000 units).</li>
+</ol>
+<hr>
+<h4>Step 5: Press Play! ▶️</h4>
+<p>Hit the Play button in the Unity Editor.</p>
+<p>You should instantly see a massive grid of 10,000 characters, all animating smoothly. Because the animation logic is handled entirely by the GPU and Burst-compiled jobs, your CPU frame time should remain incredibly low.</p>
+<p><strong>Congratulations!</strong> You have successfully integrated GPU Animation Entities PRO into your project.</p>
+<hr>
+<div id="4-the-animator-baker-window"></div><h1>🎛️ 4. The Animator Baker Window</h1>
+<p>The <strong>Animator Baker</strong> is the heart of GPU Animation Entities PRO. Since the GPU needs pre-calculated data to animate thousands of units without CPU overhead, this window handles the heavy lifting: it plays through your animations, extracts the bone matrices, configures the Shader Graph materials, and generates a ready-to-use DOTS Prefab.</p>
+<p>You can open the tool via the top menu: <strong>Window &gt; Sniveler Code &gt; Animator Baker</strong>.</p>
+<hr>
+<h4>📦 The Source Prefab</h4>
+<p>To start, drag and drop a standard Unity <code>GameObject</code> from your scene or project into the <strong>Prefab Model</strong> field.</p>
+<blockquote>
+<p>⚠️ <strong>Requirement:</strong> The source <code>GameObject</code> must contain a <code>SkinnedMeshRenderer</code>. If it contains an <code>Animator</code> component with an assigned <code>Controller</code>, the <code>Baker</code> will automatically detect it. If it has an <code>LODGroup</code>, the Baker will import your LOD levels automatically.</p>
+</blockquote>
+<p>Once a valid prefab is assigned, the window will unlock three configuration tabs: <code>Animator</code>, <code>Lods</code>, and <code>Bones</code>.</p>
+<hr>
+<h4>🎬 Tab 1: Animator Settings</h4>
+<p>This tab controls how your animations are baked and processed.</p>
+<ul>
+<li><strong>Animator Controller:</strong> The Unity Animator Controller containing the states you want to bake. The tool automatically reads all states from the <strong>base layer</strong>.</li>
+<li><strong>Use Dual Quaternion (DQS):</strong><ul>
+<li>Enabled (Recommended for organic characters): Uses Dual Quaternion Skinning. Prevents the &quot;candy-wrapper&quot; effect where joints (shoulders, elbows) lose volume when twisted.</li>
+<li>Disabled (Recommended for mechs/hard-surface): Uses standard Linear Blend Skinning (LBS). Slightly faster on the GPU but can cause volume loss on extreme bends.</li>
+</ul>
+</li>
+<li><strong>Apply Root Motion:</strong> If enabled, the Baker extracts the root movement of the animation and saves it as a <code>RigidTransform</code> delta. At runtime, the <code>AnimatorRootMotionSystem</code> will physically move your Entity&#39;s LocalTransform based on the animation.</li>
+<li><strong>Animation Clips List:</strong><ul>
+<li><strong>FPS Slider:</strong> Controls the sampling rate. A 60 FPS bake is buttery smooth but takes more memory. For distant crowds or simple movements, dropping this to 30 FPS can save 50% of the memory footprint!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4>📉 Tab 2: LODs (Level of Detail)</h4>
+<p>Performance is everything. This tab allows you to configure how your mesh degrades at a distance to save GPU ALU instructions.</p>
+<ul>
+<li><strong>Shader Selection:</strong> Choose the base material for your generated prefab.<ul>
+<li><strong>Sniveler Lit</strong>: Standard URP Lit shader with animation support.</li>
+<li><strong>Sniveler Unlit</strong>: Cheap unlit shader for maximum performance.</li>
+<li>Custom: Allows you to assign your own Shader Graph material (See <strong>5. Shader Graph Integration</strong> for details).</li>
+</ul>
+</li>
+<li><strong>Transition %:</strong> The screen-size percentage at which this LOD becomes active (matches Unity&#39;s standard <code>LODGroup</code>).</li>
+<li><strong>Quality (Bone Influences):</strong><ul>
+<li><strong>4 Bones</strong>: Highest quality. Every vertex is influenced by up to 4 bones.</li>
+<li><strong>2 Bones</strong>: Great for mid-distance.</li>
+<li><strong>1 Bone</strong>: Extremely cheap. Perfect for massive distant swarms.</li>
+</ul>
+</li>
+<li><strong>Interpolation:</strong> If enabled, the shader smoothly blends between animation frames. If disabled <code>_SNIVELER_ANIM_STEP</code>, the animation updates in discrete steps. Disabling this on distant LODs saves significant GPU processing power.</li>
+<li><strong>Shadows:</strong> Toggle whether this specific LOD casts shadows.<ul>
+<li>Note: The system automatically forces 1-Bone, non-interpolated skinning for the <code>Shadow Caster</code> pass to ensure shadows are rendered as cheaply as possible!</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4>🦴 Tab 3: Bones (Sockets Setup)</h4>
+<p>This tab is crucial if you plan to attach weapons, armor, or particle effects to your units later.</p>
+<p>By default, GPU skinning happens entirely on the video card, meaning the CPU doesn&#39;t know where the character&#39;s hands or head are.<br>By adding a bone to the <strong>Bake List</strong> in this tab, the <code>Baker</code> will save that specific bone&#39;s exact position and rotation for every frame into the <code>BlobAsset</code>.</p>
+<ol>
+<li>Click <strong>Add the bone to the bake list</strong>.</li>
+<li>Select the desired bone from the dropdown (e.g., <code>RightHand_Bone</code>, <code>Spine</code>, <code>Head</code>).</li>
+<li>At runtime, our Zero-Latency Socket System will use this data to attach items perfectly. (We will cover this in detail in <strong>6. Sockets &amp; Attachments</strong>).</li>
+</ol>
+<hr>
+<h4>💾 The Output: What Happens When You Click &quot;Process&quot;?</h4>
+<p>When you click the green <strong>Process</strong> button, the tool does the following:</p>
+<ol>
+<li>Creates a new folder in your project: <code>Assets/SnivelerCode/GpuAnimation/Generated/[YourPrefabName]</code>.</li>
+<li>Bakes all animation matrices and root motion data into a <code>AnimatorMatrices.asset</code>.</li>
+<li>Generates optimized Shader Graph materials for each LOD.</li>
+<li>Creates a <strong>DOTS-ready Prefab</strong> in the Character subfolder.</li>
+<li>Generates a C# script (<code>GeneratedParams.cs</code>) containing static byte IDs for your animations and parameters, so you don&#39;t have to use strings in your code!</li>
+</ol>
+<hr>
+<div id="5-shader-graph-integration"></div><h1>🎨 5. Shader Graph Integration (Custom Materials)</h1>
+<p>One of the most powerful features of <strong>GPU Animation Entities PRO</strong> is its native integration with Unity&#39;s Shader Graph.</p>
+<p>Because our animation logic runs entirely in the Vertex Shader, you are completely free to customize the Fragment Shader. Want to add a dissolve effect to dying enemies? Need cel-shaded outlines? Want glowing emission maps for your sci-fi swarm? You can do it all without writing a single line of HLSL code.</p>
+<p>There are two ways to create a custom animated material: <strong>The Easy Way (Templates)</strong> and <strong>The Manual Way (Existing Shaders)</strong>.</p>
+<hr>
+<h4>🟢 Method 1: The Easy Way (Using Templates)</h4>
+<p>We provide pre-configured Shader Graph templates where the complex DOTS animation logic is already wired up for you. This is the recommended workflow.</p>
+<ol>
+<li>In your Project window, right-click in any folder.</li>
+<li>Navigate to <strong>Create &gt; Shader Graph &gt; Sniveler GPU Animation</strong>.</li>
+<li>Select either <strong>Lit Shader</strong> or <strong>Unlit Shader</strong>.</li>
+<li>Name your new shader (e.g., <code>MySwarmDissolveShader</code>).</li>
+<li>Double-click to open it in the Shader Graph editor.</li>
+</ol>
+<figure><img src="documentation/gpu-animation/./assets/B99CAAF2-7BFC-4243-B558-0299BC08375B.png" alt=""><figcaption></figcaption></figure><p><strong>What to do next:</strong><br>Look at the graph. You will see the <code>SnivelerAnimationNode</code> already connected to the Vertex output block. <strong>Do not modify the Vertex connections.</strong><br>Instead, focus on the <strong>Fragment</strong> block. You can drag in textures, add noise nodes, multiply colors, and connect them to Base Color, Emission, or Alpha just like you would in any normal Shader Graph!</p>
+<hr>
+<h4>🟠 Method 2: The Manual Way (Upgrading Existing Shaders)</h4>
+<p>If you already have a massive, complex Shader Graph and want to add GPU animation to it, you can do so in just a few steps.</p>
+<p><strong>Step 1: Add the Animation Node</strong></p>
+<ol>
+<li>Open your existing Shader Graph.</li>
+<li>Press Spacebar to open the search menu and type <code>SnivelerAnimationNode</code>. Add this <code>SubGraph</code> to your workspace.</li>
+</ol>
+<p><strong>Step 2: Create the DOTS Properties (🚨 CRITICAL)</strong></p>
+<p>The GPU needs to know which animation frame to play. We pass this data from ECS to the shader using two specific properties.</p>
+<ol>
+<li>Open the <strong>Blackboard</strong> (left panel).</li>
+<li>Create a new <strong>Vector4</strong> property and name it exactly: <code>_SnivelerRenderFrames</code></li>
+<li>Create another <strong>Vector4</strong> property and name it exactly: <code>_SnivelerRenderFramesTarget</code></li>
+<li><strong>CRITICAL STEP:</strong> Select each property, open the <strong>Graph Inspector</strong> (right panel), and check the box for <strong>Hybrid Rendered (DOTS Instancing)</strong>.</li>
+</ol>
+<blockquote>
+<p>🛑 <strong>Warning:</strong> If you forget to check &quot;Hybrid Rendered&quot;, the DOTS ECS system will not allocate memory for these properties. Your shader will receive zeros, and <strong>your meshes will be completely invisible!</strong></p>
+</blockquote>
+<figure><img src="documentation/gpu-animation/./assets/AE79D089-945A-467D-885F-CA4C588F0A34.png" alt=""><figcaption></figcaption></figure><p><strong>Step 3: Wire the Inputs</strong></p>
+<p>Connect the following standard nodes into the left side of the <code>SnivelerAnimationNode</code>:</p>
+<ul>
+<li><strong>Position (Object Space)</strong> -&gt; <code>PositionOS</code></li>
+<li><strong>Normal (Object Space)</strong> -&gt; <code>NormalOS</code></li>
+<li><strong>Tangent (Object Space)</strong> -&gt; <code>TangentOS</code></li>
+<li><strong>UV (Channel: UV2)</strong> -&gt; <code>BoneIndices</code> (This is where the Baker stores bone indices)</li>
+<li><strong>UV (Channel: UV3)</strong> -&gt; <code>BoneWeights</code> (This is where the Baker stores bone weights)</li>
+<li>Drag your <code>_SnivelerRenderFrames</code> property -&gt; <code>FramesA</code></li>
+<li>Drag your <code>_SnivelerRenderFramesTarget</code> property -&gt; <code>FramesB</code></li>
+</ul>
+<p><strong>Step 4: Wire the Outputs</strong></p>
+<p>Connect the right side of the <code>SnivelerAnimationNode</code> directly into your <strong>Vertex Output Block</strong>:</p>
+<ul>
+<li><code>OutPositionOS</code> -&gt; Vertex Position</li>
+<li><code>OutNormalOS</code> -&gt; Vertex Normal</li>
+<li><code>OutTangentOS</code> -&gt; Vertex Tangent</li>
+</ul>
+<p>Save your asset. Your custom shader is now fully compatible with GPU Animation Entities PRO!</p>
+<hr>
+<h4>🧠 Under the Hood: What about Keywords and LODs?</h4>
+<p>You might be wondering: &quot;How do I enable Dual Quaternion Skinning (DQS) or configure LOD quality in my custom shader?&quot;</p>
+<p><strong>You don&#39;t have to do anything!</strong><br>We designed the system for a &quot;Zero Setup&quot; experience. The <code>SnivelerAnimationNode</code> internally contains all the necessary keywords (<code>DQS</code>, <code>ANIM_STEP</code>, <code>BONE_LOD_1</code>, etc.). When you use this node, your shader automatically inherits these variants.</p>
+<p>When you bake your prefab, our C# Baker script will automatically enable or disable these keywords on your generated materials based on your LOD settings.</p>
+<hr>
+<h4>🔨 Applying Your Custom Shader</h4>
+<p>Once your Shader Graph is ready, you need to tell the Baker to use it:</p>
+<ol>
+<li>Open the <strong>Animator Baker</strong> window.</li>
+<li>Assign your source Prefab.</li>
+<li>Go to the <code>Lods</code> tab.</li>
+<li>Change the <strong>Shader</strong> dropdown from Sniveler Lit to <strong>Custom</strong>.</li>
+<li>A new object field will appear. Drag and drop your custom Shader Graph asset here.</li>
+<li>Click <strong>Process</strong>.</li>
+</ol>
+<p>The Baker will now generate all LOD materials using your custom shader, perfectly configured for DOTS!</p>
+<hr>
+<div id="6-sockets-attachments"></div><h1>🔗 6. Sockets &amp; Attachments (Weapons &amp; VFX)</h1>
+<p>Since standard bones <code>GameObjects</code> do not exist in the scene at runtime when using GPU skinning, the classic <code>transform.SetParent(bone)</code> approach does not work. Our system solves this by calculating precise offset matrices, allowing you to bind items to bones both in a default state and <strong>dynamically at specific animation frames</strong>.</p>
+<h3>⚙️ Animator Authoring Component</h3>
+<p>The starting point for working with sockets is the Animator Authoring component on your character.</p>
+<figure><img src="documentation/gpu-animation/./assets/D8E7362F-0D0B-444E-9B37-E954FF9D1FF2.png" alt=""><figcaption></figcaption></figure><h4>Slots Configuration</h4>
+<p>Every slot in the Slots array represents a distinct logical attachment point (e.g., &quot;Right Hand&quot;, &quot;Back&quot;, &quot;Head&quot;). An array element holds a specific configuration asset — the <code>AttachmentProfileAsset</code>.</p>
+<ul>
+<li><strong>Reference Field:</strong> A link to the profile asset itself.</li>
+<li><strong>Auto Instantiate (Checkbox):</strong> If enabled, the system will automatically instantiate the attachment prefab (e.g., a sword) when the character spawns. If disabled, the prefab will not be created automatically (useful if you want to spawn equipment via code, like from an inventory system).</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Important:</strong> Offsets and sockets can <strong>only be edited in Prefab Mode</strong>. If you select a character directly in the scene, the inspector will display a warning and offer a blue <strong>OPEN PREFAB</strong> button.</p>
+</blockquote>
+<h3>🎛️ Sockets Workflow Window</h3>
+<p>Clicking the green <strong>OPEN SOCKETS WORKFLOW</strong> button in the prefab inspector opens the main interface for configuring sockets. This is a professional dashboard divided into logical zones.</p>
+<figure><img src="documentation/gpu-animation/./assets/D28A080C-4B8D-42AE-8673-C565B61CA322.png" alt=""><figcaption></figcaption></figure><h4>1. Animation Preview &amp; Timeline (Top Section)</h4>
+<p>The top part of the window handles animation previews.</p>
+<ul>
+<li><strong>Selected Clip:</strong> Allows you to choose an animation from your baked list for previewing.</li>
+<li><strong>Timeline:</strong> A track with a red playhead. You can drag it with your mouse to smoothly scrub through the animation.</li>
+<li><strong>Markers (Diamonds):</strong> If the currently selected socket has Overrides (Events) during the active animation, they will appear as diamond markers directly on the timeline.</li>
+</ul>
+<h4>2. Sockets (Global List)</h4>
+<p>The left panel contains a list of all slots assigned to the character.</p>
+<ul>
+<li>🟢 <strong>Green Dot:</strong> A prefab is assigned to this slot.</li>
+<li>⚫ <strong>Grey Dot:</strong> The slot is empty.</li>
+<li>Click the + button in the list header to create a new slot (this generates a new <code>AttachmentProfileAsset</code> automatically).</li>
+</ul>
+<h4>3. Socket Detail (Right Panel)</h4>
+<p>The right panel acts as the inspector for the selected socket. This is where the core attachment logic is set up.</p>
+<h3>🛠️ Socket Configuration: Base vs. Overrides</h3>
+<p>The system&#39;s architecture relies on two key concepts: <strong>Base Configuration</strong> and <strong>Frame Overrides</strong>.</p>
+<h4>1. Base Configuration (Default State)</h4>
+<p>This is the default state of an item.<br>Example: A sword resting in its scabbard is bound to the Spine (back) bone by default.</p>
+<figure><img src="documentation/gpu-animation/./assets/883B2798-70A5-4686-B031-0CF28EEB5006.png" alt=""><figcaption></figcaption></figure><ul>
+<li><strong>Attachment Prefab:</strong> The prefab of the item (weapon, VFX) to be attached.</li>
+<li><strong>Assign Bone / Detach Bone:</strong> Select a bone from the skeleton hierarchy to bind the item to by default.</li>
+<li><strong>Edit Base Offset:</strong> Clicking this button switches the Scene View into offset editing mode for the base state.</li>
+</ul>
+<h4>2. Frame Overrides (Events)</h4>
+<p>Overrides are used when an item needs to change its parent bone during an animation.<br><br>Example: On frame 15 of an <code>Attack</code> animation, the character draws the sword from their back. We create an Override on frame 15 binding the sword to the <code>Right_Hand</code> bone.</p>
+<figure><img src="documentation/gpu-animation/./assets/AC21714A-9DA3-444B-9FC9-1CE19FAF890C.png" alt=""><figcaption></figcaption></figure><p><strong>How to add an Override:</strong></p>
+<ol>
+<li>Choose the desired animation from the top dropdown.</li>
+<li>Scrub the timeline playhead to the exact frame you need.</li>
+<li>In the Add Override at Current Frame section, select the target bone (e.g., the hand).</li>
+<li>Click <strong>Map to Bone</strong>.</li>
+<li>A marker will appear on the timeline, and an override card will be added to the list below.</li>
+</ol>
+<p><strong>Managing Overrides:</strong></p>
+<ul>
+<li><strong>Select:</strong> Instantly seeks the timeline to the override&#39;s exact frame and activates offset editing mode for that specific override.</li>
+<li>🗑 <strong>Trash Bin:</strong> Deletes the override.</li>
+</ul>
+<h3>🎮 Editing Offsets in the Scene View</h3>
+<p>To ensure an item fits perfectly in a hand or on a back, it needs to be positioned. The system allows you to do this visually directly in the Scene View using standard Unity transform tools.</p>
+<figure><img src="documentation/gpu-animation/./assets/657107CE-91AF-4341-93E4-C49ABEE4779F.png" alt=""><figcaption></figcaption></figure><ol>
+<li>In the Sockets Workflow window, click <strong>Edit Base Offset</strong> (or <strong>Select</strong> on an override).</li>
+<li>Switch to the Scene View.</li>
+<li>A centered UI banner will appear at the top, indicating exactly what you are editing (Base Default or a specific Override index).</li>
+<li>A &quot;Ghost Mesh&quot; of your prefab will appear in the scene.</li>
+<li>Use Unity&#39;s standard <strong>Move Tool (W)</strong> and <strong>Rotate Tool (E)</strong> to position the item perfectly relative to the bone. Changes are saved automatically!</li>
+</ol>
+<h3>🧲 Transform Tools</h3>
+<p>At the very bottom of the right panel, you&#39;ll find utilities for managing offset matrices.</p>
+<figure><img src="documentation/gpu-animation/./assets/896D404B-6748-4863-846B-7E575C14B090.png" alt=""><figcaption></figcaption></figure><p>Sometimes you need an item to pass from one hand to another while maintaining its exact local orientation (so you don&#39;t have to manually rotate the sword hilt again).</p>
+<ul>
+<li><strong>📷 CAPTURE OFFSET:</strong> Copies the current local offset (matrix) of the active override into the clipboard.</li>
+<li><strong>🪄 APPLY OFFSET:</strong> Pastes the copied offset into the currently active override, recalculating the matrix so the item visually maintains its world orientation relative to the new bone.</li>
+</ul>
+<h3>🚀 Quick Start: Drawing a Sword</h3>
+<ol>
+<li>Open your character in <strong>Prefab Mode</strong>. Click <strong>OPEN SOCKETS WORKFLOW</strong> in the inspector.</li>
+<li>In the left panel, click + to create a new slot.</li>
+<li>In the right panel, assign your sword prefab to the Attachment Prefab field.</li>
+<li>In the <strong>Base Configuration</strong> block, select a back bone (e.g., Spine) and click <strong>Assign Bone</strong>.</li>
+<li>Click <strong>Edit Base Offset</strong>, switch to the Scene View, and position the sword so it rests nicely on the back.</li>
+<li>Select an attack animation (e.g., Attack_01) from the top dropdown.</li>
+<li>Scrub the timeline to the frame where the character&#39;s hand grabs the hilt (e.g., Frame 20).</li>
+<li>In the <strong>Frame Overrides</strong> block, select the Right_Hand bone and click <strong>Map to Bone</strong>.</li>
+<li>Click <strong>Select</strong> on the newly created override card, go to the Scene View, and align the sword perfectly inside the character&#39;s palm.</li>
+<li><strong>Done!</strong> Now, when the Attack_01 animation plays, the sword will instantly snap from the back to the hand exactly on frame 20.</li>
+</ol>
+<h3>💻 Spawning Attachments via Code (DOTS / ECS)</h3>
+<p>While the <strong>Auto Instantiate</strong> checkbox in the <code>Animator Authoring</code> component is great for static setups (like an NPC who always holds a spear), player characters usually require dynamic equipment. If a player equips a sword from their inventory, you need to spawn and attach that sword via code.</p>
+<p>Our GPU Animation system provides a highly optimized, Burst-compatible ECS workflow for instantiating and binding attachments at runtime.</p>
+<h4>The Three Pillars of Code Attachment</h4>
+<p>To successfully bind an instantiated entity (e.g., a weapon) to a character so that it follows the GPU animation offsets, you must add <strong>three core components</strong> to the weapon entity:</p>
+<ol>
+<li><code>Parent</code>: Points to the main character entity. This establishes the standard Unity Transform hierarchy.</li>
+<li><code>AnimatorAttachData</code>: Contains the <code>SlotID</code> (e.g., 0). This tells the system which socket configuration to read from the animation data.</li>
+<li><code>BlobAttachData</code>: Passes a reference to the character&#39;s baked animation blob data, giving the weapon access to the base matrices and frame overrides.</li>
+</ol>
+<h4>Retrieving the Attachment Prefab</h4>
+<p>In a DOTS environment, prefabs are converted into Entities. Our system automatically caches attachment prefabs defined in the Authoring component into a global <code>SceneAttachmentBuffer</code>.</p>
+<p>To find the correct weapon prefab for a specific character, the system uses a <strong>Hash Match</strong> based on the character&#39;s animation data (<code>MatricesHash</code>) and the Target <code>Slot ID</code>.</p>
+<figure><img src="documentation/gpu-animation/./assets/9C32628C-B4D8-4B50-ABD8-70DC016ECA59.png" alt=""><figcaption></figcaption></figure><h4>Example Workflow (Burst System)</h4>
+<p>Below is a production-ready example of an <code>ISystem</code> that spawns a weapon and attaches it to a character dynamically.</p>
+<p><em>In this example, the system looks for characters with a <code>Demo3SpawnerTag</code>, spawns the prefab assigned to <code>Slot 0</code>, binds it to the character, and removes the spawner tag.</em></p>
+<pre><code class="language-csharp">using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
+
+namespace SnivelerCode.GpuAnimation.DemoZone
+{
+    [UpdateInGroup(typeof(PresentationSystemGroup))]
+    public partial struct DynamicEquipmentSystem : ISystem
+    {
+        private EntityQuery _query;
+
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            _query = new EntityQueryBuilder(Allocator.Temp)
+                .WithAll&lt;Demo3SpawnerTag, LocalTransform, BlobAnimatorData&gt;()
+                .Build(ref state);
+
+            state.RequireForUpdate(_query);
+            // Require the global buffer containing our registered attachment prefabs
+            state.RequireForUpdate&lt;SceneAttachmentBuffer&gt;(); 
+            state.RequireForUpdate&lt;BeginInitializationEntityCommandBufferSystem.Singleton&gt;();
+        }
+
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            var ecbSingleton = SystemAPI.GetSingleton&lt;BeginInitializationEntityCommandBufferSystem.Singleton&gt;();
+            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+            var sceneAttachments = SystemAPI.GetSingletonBuffer&lt;SceneAttachmentBuffer&gt;();
+
+            state.Dependency = new EquipWeaponJob
+            {
+                CommandBuffer = ecb.AsParallelWriter(),
+                SceneAttachments = sceneAttachments
+            }.ScheduleParallel(_query, state.Dependency);
+        }
+
+        [BurstCompile]
+        public partial struct EquipWeaponJob : IJobEntity
+        {
+            public EntityCommandBuffer.ParallelWriter CommandBuffer;
+            [ReadOnly] public DynamicBuffer&lt;SceneAttachmentBuffer&gt; SceneAttachments;
+
+            private void Execute([EntityIndexInQuery] int sortKey, Entity characterEntity, in BlobAnimatorData blob)
+            {
+                // 1. Remove the tag so we only process this character once
+                CommandBuffer.RemoveComponent&lt;Demo3SpawnerTag&gt;(sortKey, characterEntity);
+                
+                // 2. Get the unique Hash of the character&#39;s animation data
+                ulong hash = blob.Value.Value.MatricesHash;
+                
+                // 3. Look up the prefab assigned to Slot 0 for this specific character hash
+                if (SceneAttachments.TryGetSlot(hash, slotIndex: 0, out Entity weaponPrefab))
+                {
+                    if (weaponPrefab != Entity.Null)
+                    {
+                        // 4. Instantiate the weapon entity
+                        var weaponEntity = CommandBuffer.Instantiate(sortKey, weaponPrefab);
+                        
+                        // 5. The Core Binding Logic: Link the weapon to the character
+                        CommandBuffer.AddComponent(sortKey, weaponEntity, new Parent { Value = characterEntity });
+                        CommandBuffer.AddComponent(sortKey, weaponEntity, new AnimatorAttachData { SlotID = 0 });
+                        CommandBuffer.AddComponent(sortKey, weaponEntity, new BlobAttachData { Value = blob.Value });
+                        
+                        return;
+                    }
+                }
+
+                // Fallback logging if the slot was empty or prefab was not found
+                AnimatorLogger.BurstLog()
+                    .Append(&quot;Failed to equip: Slot 0 not found in prefabs.&quot;)
+                    .LogWarning();
+            }
+        }
+    }
+}
+</code></pre>
+<h4>Code Breakdown:</h4>
+<ol>
+<li><strong>blob.Value.Value.MatricesHash</strong>: Every baked character animation asset generates a unique hash. We use this hash to query the <code>SceneAttachmentBuffer</code>.</li>
+<li><strong>SceneAttachments.TryGetSlot(hash, 0, out Entity weaponPrefab)</strong>: This safely retrieves the Entity Prefab that you configured in the <strong>Sockets Workflow</strong> window for <code>Slot 0</code>.</li>
+<li><strong>EntityCommandBuffer (ECB)</strong>: Because we are modifying the hierarchy (adding a Parent component) and instantiating entities inside a Burst-compiled job, all structural changes are recorded into the ECB and executed safely at the end of the frame.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Best Practice:</strong> When creating an inventory system, you can store various Entity Prefabs in your own components. You don&#39;t have to use SceneAttachmentBuffer. As long as you instantiate a prefab and add the <strong>Parent</strong>, <strong>AnimatorAttachData</strong>, and <strong>BlobAttachData</strong> components to it, the GPU animation system will correctly align it to the character&#39;s hand based on the data baked into that Slot ID!</p>
+</blockquote>
+<hr>
+<div id="7-runtime-control"></div><h1>💻 7. Runtime Control (C# ECS API)</h1>
+<p>While the GPU handles the heavy lifting of rendering the animations, your game logic (running on the CPU via ECS Systems) needs to tell the characters what to do. Should they run, attack, or die?</p>
+<p><strong>GPU Animation Entities PRO</strong> provides a clean, allocation-free C# API to control your units using standard DOTS <code>IComponentData</code> and <code>DynamicBuffer</code> components.</p>
+<hr>
+<h4>🗂️ The Generated Parameters Class</h4>
+<p>In traditional Unity, you trigger animations using strings (e.g., <code>animator.SetFloat(&quot;Speed&quot;, 1.0f)</code>). In DOTS, strings are slow and cause memory allocations.</p>
+<p>To solve this, whenever you bake a prefab, our Baker automatically generates a static C# script containing byte IDs for all your animations and parameters.</p>
+<p>You can find this file in your project at:<br><code>Assets/SnivelerCode/GpuAnimation/Generated/[YourPrefabName]/Scripts/GeneratedParams.cs</code></p>
+<p>It looks something like this:</p>
+<pre><code class="language-csharp">namespace SnivelerCode.GpuAnimation.Generated
+{
+    // Animation State IDs
+    public static class AnimatorGuardCastle
+    {
+        public static readonly byte Idle = 0;
+        public static readonly byte Run = 1;
+        public static readonly byte Attack = 2;
+    }
+
+    // Parameter IDs
+    public static partial class AnimatorParams
+    {
+        public static class GuardCastle
+        {
+            public static readonly byte Speed = 0;
+            public static readonly byte IsDead = 1;
+            public static readonly byte AttackTrigger = 2;
+        }
+    }
+}
+</code></pre>
+<p>You will use these static IDs in your Burst-compiled jobs to control the animator with zero overhead.</p>
+<hr>
+<h4>🎬 Method 1: Direct Animation Control (Crossfading)</h4>
+<p>If you want to force a character to play a specific animation immediately (ignoring the Animator Controller&#39;s transition arrows), you modify the <code>AnimatorData</code> component.</p>
+<p>We provide a convenient <code>.Play()</code> extension method that automatically handles smooth crossfading between the current animation and the new one.</p>
+<pre><code class="language-csharp">using SnivelerCode.GpuAnimation.Generated;
+using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
+using Unity.Burst;
+using Unity.Entities;
+
+[BurstCompile]
+public partial struct PlayAnimationJob : IJobEntity
+{
+    private void Execute(ref AnimatorData animator)
+    {
+        // Force the character to play the Attack animation
+        // The second parameter is the crossfade duration in seconds (default is 0.15f)
+        animator.Play(AnimatorGuardCastle.Attack, 0.2f);
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Tip:</strong> Direct control is perfect for combat abilities, hit reactions, or death states where you want immediate responsiveness without relying on complex Animator transition graphs.</p>
+</blockquote>
+<hr>
+<h4>🎛️ Method 2: Parameter Control (Transitions &amp; Logic)</h4>
+<p>If you prefer to use the logic you built in Unity&#39;s Animator window (e.g., transitioning from Idle to Run when the Speed parameter exceeds <code>0.1</code>), you will interact with the <code>AnimatorParameterData</code> buffer.</p>
+<p>We provide a fluent builder API to make setting parameters clean and readable inside your jobs.</p>
+<pre><code class="language-csharp">using SnivelerCode.GpuAnimation.Generated;
+using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
+using Unity.Burst;
+using Unity.Entities;[BurstCompile]
+public partial struct UpdateMovementJob : IJobEntity
+{
+    public float DeltaTime;
+
+    private void Execute(ref DynamicBuffer&lt;AnimatorParameterData&gt; paramBuffer)
+    {
+        float currentSpeed = 1.5f; // Calculated from your movement logic
+
+        // Set the &quot;Speed&quot; parameter to 1.5f
+        AnimatorParams.GuardCastle.Speed.Value(currentSpeed).Apply(paramBuffer);
+    }
+}
+</code></pre>
+<p>The <code>AnimatorProcessSystem</code> will read this buffer every frame. If the <code>Speed</code> value satisfies a transition condition you set up in the Unity Animator (e.g., <code>Speed &gt; 0.1</code>), the system will automatically trigger the transition and handle the crossfade!</p>
+<hr>
+<h4>⚡ Handling Triggers</h4>
+<p>Triggers in Unity&#39;s Animator are special <code>boolean</code> parameters that automatically reset to false once they are consumed by a transition.</p>
+<p>Our DOTS system perfectly replicates this behavior. If a parameter was defined as a <code>Trigger</code> in your original <code>Animator Controller</code>, you simply set its value to <code>1.0f</code> to fire it.</p>
+<pre><code class="language-csharp">// Fire the Attack Trigger
+AnimatorParams.GuardCastle.AttackTrigger.Value(1.0f).Apply(paramBuffer);
+</code></pre>
+<p>Once the <code>AnimatorProcessSystem</code> detects this and starts the transition to the Attack state, it will <strong>automatically reset the value back to 0.0f</strong> in the buffer, ensuring the animation doesn&#39;t loop endlessly.</p>
+<hr>
+<h4>⏱️ Manual Time Control</h4>
+<p>Sometimes you need absolute control over an animation&#39;s playback time (for example, syncing a door opening to a specific puzzle state, or freezing an enemy in ice).</p>
+<p>You can take manual control by setting the <code>ManualControl</code> flag on the <code>AnimatorData</code> component.</p>
+<pre><code class="language-csharp">private void Execute(ref AnimatorData animator)
+{
+    // 1. Enable manual control (stops automatic time progression)
+    animator.ManualControl = true;
+    
+    // 2. Set the exact time in seconds
+    animator.Time = 1.25f; 
+}
+</code></pre>
+<p>Note: When <code>ManualControl</code> is true, automatic transitions and parameter logic are ignored for that specific entity.</p>
+<hr>
+<div id="8-performance-optimization"></div><h1>🏎️ 8. LODs &amp; Performance Optimization</h1>
+<p>Rendering 10,000 animated units at 60+ FPS requires more than just moving calculations to the GPU. If every single vertex of those 10,000 units calculates 4-bone influences and interpolates between frames, you will eventually hit the GPU&#39;s ALU (Arithmetic Logic Unit) and memory bandwidth limits.</p>
+<p><strong>GPU Animation Entities PRO</strong> includes a highly aggressive, automated optimization pipeline. It scales down both <strong>GPU rendering cost</strong> (via LODs) and <strong>CPU logic cost</strong> (via Tick-Rate scaling) based on camera distance.</p>
+<hr>
+<h4>📉 1. Visual Degradation (The LOD Tab)</h4>
+<p>Our system perfectly integrates with Unity&#39;s standard <code>LODGroup</code> component. When you drag a prefab with an <code>LODGroup</code> into the <strong>Animator Baker</strong>, it automatically imports your LOD levels into the <code>Lods</code> tab.</p>
+<p>For each LOD level, you can configure how the shader degrades to save performance:</p>
+<p><strong>🦴 Skinning Quality (Bone Influences)</strong></p>
+<p>Standard Unity animation uses up to 4 bones per vertex. We allow you to reduce this per LOD:</p>
+<ul>
+<li><strong>4 Bones:</strong> Maximum quality. Essential for LOD 0 (close-up camera).</li>
+<li><strong>2 Bones:</strong> Great for mid-distance (LOD 1). Visually identical to 4 bones in most cases, but skips half the math.</li>
+<li><strong>1 Bone:</strong> The ultimate performance saver for distant swarms (LOD 2+). The mesh becomes completely rigid (like a Minecraft character), but at a distance, the player cannot tell the difference. It requires only a single matrix multiplication per vertex.</li>
+</ul>
+<p><strong>🎞️ Interpolation (Stepped Animation)</strong></p>
+<p>By default, our shader reads two animation frames from the <code>GraphicsBuffer</code> and interpolates (Lerps) between them to create buttery-smooth motion.</p>
+<ul>
+<li>If you <strong>disable Interpolation</strong>, the shader activates the <code>ANIM_STEP_ONLY</code> keyword.</li>
+<li>The shader will now only read one frame and snap to it.</li>
+<li><strong>Why do this?</strong> It cuts memory bandwidth reads in half and eliminates the Lerp math. For distant units, the lack of interpolation is practically invisible, but the performance gain is massive.</li>
+</ul>
+<p><strong>🌑 The Shadow Caster Trick (Zero Setup)</strong></p>
+<p>Shadow passes are notoriously expensive. You might be wondering how to optimize them.<br><strong>You don&#39;t have to.</strong><br>Under the hood, our <code>SnivelerSGWrapper.hlsl</code> automatically detects if Unity is rendering a <code>ShadowCaster</code> or <code>DepthOnly</code> pass. If it is, the shader <strong>forces 1-Bone Skinning and disables Interpolation</strong>, regardless of your LOD settings. You get ultra-cheap shadows completely for free.</p>
+<hr>
+<h4>⏱️ 2. Logic Degradation (Tick-Rate Optimization)</h4>
+<p>Even though the GPU handles the vertices, the CPU still has to calculate the current animation time, check transition conditions, and update the <code>_SnivelerRenderFrames</code> data for the shader.</p>
+<p>To prevent the CPU from bottlenecking when you have 10,000+ units, we use <strong>Distance-Based Tick-Rate Optimization</strong>.</p>
+<p>You configure this on the <code>AnimatorRendererAuthoring</code> component (the script you placed in your <code>SubScene</code> to upload the prefabs to the GPU).</p>
+<ul>
+<li><strong>Half Tick Distance (e.g., 50 meters):</strong><br>If an entity is further than this distance from the camera, the <code>AnimatorProcessSystem</code> will only update its animation logic every 2nd frame (effectively running its logic at 30 FPS).</li>
+<li><strong>Quarter Tick Distance (e.g., 100 meters):</strong><br>If an entity is further than this distance, its logic updates every 4th frame (running at 15 FPS).</li>
+</ul>
+<p>Because the GPU continues to render the last known state, the units don&#39;t disappear—they just update their animation frames slightly less frequently. This drastically reduces the execution time of the Burst-compiled jobs.</p>
+<hr>
+<h4>👁️ 3. Automatic Frustum Culling</h4>
+<p>You do not need to write custom culling logic for your animations.</p>
+<p>The <code>AnimatorProcessSystem</code> automatically reads the <code>AnimatorCameraData</code> (updated by the Main Camera) and checks it against the <code>WorldRenderBounds</code> of your entities.</p>
+<p>If an entity is completely off-screen (outside the camera frustum):</p>
+<ol>
+<li>The system flags it as invisible.</li>
+<li>It <strong>skips</strong> updating the <code>GraphicsBuffer</code> indices for that entity.</li>
+<li>It <strong>skips</strong> calculating complex transition blending.</li>
+<li>If the entity has <code>Root Motion</code>, it snaps the root motion delta to the final frame instead of calculating frame-by-frame interpolation.</li>
+</ol>
+<p>This ensures that if you have 10,000 units in the level, but only 2,000 are on screen, your CPU is only doing the heavy lifting for those 2,000.</p>
+<hr>
+<div id="9-root-motion"></div><h1>🚶‍♂️ 9. Root Motion</h1>
+<p>In traditional game development, <strong>Root Motion</strong> allows the animation itself to drive the character&#39;s movement in the world. For example, if a character performs a dodge roll or a heavy sword swing that steps forward, the animation moves the actual <code>GameObject</code>, preventing foot-sliding and ensuring realistic weight.</p>
+<p>Implementing Root Motion in GPU-driven crowds is notoriously difficult because the GPU only moves vertices visually—it doesn&#39;t move the actual Entity&#39;s <code>LocalTransform</code>.</p>
+<p><strong>GPU Animation Entities PRO</strong> solves this by extracting the root motion data during the baking process and evaluating it synchronously on the CPU via Burst-compiled jobs.</p>
+<p>Here is how to set it up and use it.</p>
+<hr>
+<h4>🛠️ Step 1: Baking Root Motion</h4>
+<p>To enable Root Motion, you must tell the Baker to extract the movement data from your Animator Controller.</p>
+<ol>
+<li>Open the <strong>Animator Baker</strong> window.</li>
+<li>Assign your source Prefab.</li>
+<li>In the <strong>Animator</strong> tab, check the box for <strong>Apply Root Motion</strong>.</li>
+<li>Click <strong>Process</strong>.</li>
+</ol>
+<p><strong>What happens under the hood?</strong><br>The Baker evaluates your animation frame-by-frame, extracts the world-space movement of the root node, and saves it as an array of <code>RigidTransform</code> data inside the <code>BlobAsset</code>.</p>
+<hr>
+<h4>⚙️ Step 2: How It Works at Runtime</h4>
+<p>When you spawn your baked DOTS Prefab, it automatically comes with two specific components:</p>
+<ul>
+<li><code>AnimatorRootMotionData</code>: Stores the internal state (last evaluated frame, target animation during transitions, etc.).</li>
+<li><code>AnimatorRootMotionDelta</code>: Stores the actual movement that needs to be applied this frame.</li>
+</ul>
+<p>Every frame, the <code>AnimatorRootMotionSystem</code> runs on the CPU. It looks at your current animation, your current frame, and your transition weight. It then calculates the exact difference (delta) in position and rotation since the last frame and writes it to the <code>AnimatorRootMotionDelta</code> component.</p>
+<blockquote>
+<p>✨ <strong>Pro-Tip: Transition Blending</strong><br>If your character is crossfading between two animations (e.g., transitioning from a Walk to a Run), the system automatically calculates the root motion delta for both animations and blends them together based on the transition weight!</p>
+</blockquote>
+<hr>
+<h4>🏃 Step 3: Applying the Movement (Default Behavior)</h4>
+<p>By default, you do not need to write any code to make Root Motion work.</p>
+<p>The asset includes a built-in system called <code>AnimatorRootMotionApplierSystem</code>. This system runs right before the <code>TransformSystemGroup</code>. It reads the <code>AnimatorRootMotionDelta</code> and adds it directly to your Entity&#39;s <code>LocalTransform</code>.</p>
+<p>If your game does not use a complex physics engine and you just want your units to move exactly as the animator intended, <strong>you are already done!</strong></p>
+<hr>
+<h4>🧠 Step 4: Custom Physics &amp; Character Controllers (Advanced)</h4>
+<p>If you are building a game with Unity Physics, Havok Physics, or a custom Kinematic Character Controller, directly modifying the <code>LocalTransform</code> is usually a bad idea. It can cause characters to clip through walls or ignore collisions.</p>
+<p>Instead, you want to feed the animation&#39;s movement delta into your physics velocity.</p>
+<p><strong>How to do this:</strong></p>
+<ol>
+<li><strong>Disable the Default Applier:</strong><br>You need to stop our default system from moving the <code>LocalTransform</code>. You can do this by adding a system group attribute to your custom code, or simply by removing the <code>AnimatorRootMotionApplierSystem</code> from your world initialization.</li>
+<li><strong>Read the Delta in your Custom System:</strong><br>Write your own system that reads the <code>AnimatorRootMotionDelta</code> and applies it to your physics components (like <code>PhysicsVelocity</code>).</li>
+</ol>
+<p>Here is a quick example of how you can read the delta in your own Burst-compiled job:</p>
+<pre><code class="language-csharp">using SnivelerCode.GpuAnimation.Runtime.Components;
+using Unity.Burst;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Physics; // Assuming you are using Unity Physics
+
+[BurstCompile]
+[UpdateBefore(typeof(Unity.Physics.Systems.PhysicsSystemGroup))]
+public partial struct CustomPhysicsRootMotionJob : IJobEntity
+{
+    public float DeltaTime;
+
+    private void Execute(ref PhysicsVelocity velocity, ref AnimatorRootMotionDelta rootDelta)
+    {
+        // 1. Convert the translation delta into a velocity (meters per second)
+        float3 animationVelocity = rootDelta.Translation / DeltaTime;
+
+        // 2. Apply it to the physics body (preserving gravity on the Y axis)
+        velocity.Linear = new float3(animationVelocity.x, velocity.Linear.y, animationVelocity.z);
+
+        // 3. Clear the delta so it isn&#39;t applied twice!
+        rootDelta.Translation = float3.zero;
+        rootDelta.Rotation = quaternion.identity;
+    }
+}
+</code></pre>
+<p>By taking control of the <code>AnimatorRootMotionDelta</code>, you get the best of both worlds: AAA-quality animation-driven movement, perfectly integrated with your custom DOTS physics logic.</p>
+<hr>
+<br><hr>
+<div id="10-troubleshooting-faq"></div><h1>🚑 10. Troubleshooting &amp; FAQ</h1>
+<p>Even with automated baking pipelines, working with DOTS and GPU skinning can sometimes lead to unexpected results. This page covers the most common issues developers face and how to fix them instantly.</p>
+<hr>
+<h4>👻 1. My characters are completely invisible!</h4>
+<p>This is the most common issue when setting up custom materials. If your meshes are not rendering at all, it means the vertices are collapsing to (0,0,0).</p>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>URP Settings:</strong> Open your active URP Asset in the Inspector. Ensure <strong>SRP Batcher</strong> and <strong>DOTS Instancing</strong> are checked.</li>
+<li><strong>Shader Graph Properties:</strong> If you are using a custom Shader Graph, open it and check the Blackboard. Ensure you have two <code>Vector4</code> properties named exactly <code>_SnivelerRenderFrames</code> and <code>_SnivelerRenderFramesTarget</code>.</li>
+<li><strong>Hybrid Rendered Checkbox:</strong> Select those two properties in the Shader Graph and look at the Graph Inspector. The <strong>Hybrid Rendered (DOTS Instancing)</strong> checkbox MUST be enabled.</li>
+<li><strong>Scene Renderer:</strong> Ensure you have an <code>AnimatorRendererAuthoring</code> component in your <code>SubScene</code>, and your baked DOTS Prefab is assigned to its array.</li>
+</ol>
+<hr>
+<h4>🦔 2. My characters look like spikes / are horribly deformed!</h4>
+<p>This happens when the C# script sends one type of mathematical data to the GPU, but the shader tries to read it as another type.</p>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>DQS Mismatch:</strong> If you baked your prefab with <strong>Use Dual Quaternion</strong> enabled, your material must have the <code>_SNIVELER_DQS</code> keyword enabled.</li>
+<li><strong>How to fix:</strong> If you are using our templates <code>Sniveler_Lit_Template</code>, the Baker handles this automatically. If you are using a custom Shader Graph, ensure you added the <code>_SNIVELER_DQS</code> Boolean Keyword to your Blackboard (even if it&#39;s hidden/not exposed).</li>
+<li><strong>Re-bake:</strong> Sometimes simply clicking <strong>Process</strong> again in the Animator Baker window resolves keyword mismatches on generated materials.</li>
+</ol>
+<hr>
+<h4>⚔️ 3. My weapons/attachments are spawning at (0,0,0) on the ground!</h4>
+<p>The Socket system relies on the <code>AttachmentData</code> component to link the weapon to the character.</p>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>Missing Component:</strong> When you spawn the weapon via <code>EntityCommandBuffer.Instantiate</code>, you must manually add the <code>AttachmentData</code> component to it.</li>
+<li><strong>Missing Link:</strong> Ensure you set the <code>CharacterEntity</code> field inside AttachmentData to the Entity ID of the character holding the weapon.</li>
+<li><strong>Missing Slot ID:</strong> Ensure the <code>SlotID</code> matches the index of the weapon in the character&#39;s <code>AnimatorSlotsBuffer</code>.</li>
+</ol>
+<p>Example of correct spawning:</p>
+<pre><code class="language-csharp">ecb.AddComponent(weaponEntity, new AttachmentData 
+{ 
+    CharacterEntity = characterEntity, 
+    SlotID = 0 
+});
+</code></pre>
+<hr>
+<h4>🛑 4. The Baker throws an error: &quot;No shader selected&quot; or &quot;Shader does not use SnivelerAnimationNode&quot;</h4>
+<p>The Baker validates your custom shaders before generating prefabs to prevent broken builds.</p>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>Missing Properties:</strong> Your custom Shader Graph is missing the <code>_SnivelerRenderFrames</code> and <code>_SnivelerRenderFramesTarget</code> properties. Add them.</li>
+<li><strong>Missing Node:</strong> You forgot to add the <code>SnivelerAnimationNode</code> SubGraph to your custom shader, or you didn&#39;t connect it to the Vertex output block.</li>
+<li><strong>Use Templates:</strong> If you are struggling, delete your custom shader, right-click in the Project window, and select <strong>Create &gt; Shader Graph &gt; Sniveler GPU Animation &gt; Lit Shader</strong>. Use this template as your starting point.</li>
+</ol>
+<hr>
+<h4>🏃 5. My character is animating, but Root Motion isn&#39;t moving them!</h4>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>Baker Setting:</strong> Open the Animator Baker, select your source prefab, and ensure <strong>Apply Root Motion</strong> is checked in the Animator tab. Re-bake the prefab.</li>
+<li><strong>Animator Controller:</strong> Ensure the original animations in your Unity Animator Controller actually contain root motion data (the red trajectory line in the Animation preview window).</li>
+<li><strong>Custom Physics:</strong> If you are using a custom physics system, ensure you haven&#39;t accidentally deleted or overridden the <code>LocalTransform</code> after the <code>AnimatorRootMotionApplierSystem</code> runs. (See the <strong>Root Motion</strong> page for how to integrate with custom physics).</li>
+</ol>
+<hr>
+<h4>📉 6. Performance drops when I spawn 20,000+ units</h4>
+<p>While the GPU can handle massive numbers, the CPU still needs to process the logic.</p>
+<p><strong>Checklist to fix:</strong></p>
+<ol>
+<li><strong>Burst Compilation:</strong> Ensure <strong>Jobs &gt; Burst &gt; Enable Compilation</strong> is checked in the top menu. Running DOTS without Burst will destroy your framerate.</li>
+<li><strong>Tick-Rate Optimization:</strong> Select your <code>AnimatorRendererAuthoring</code> component in the <code>SubScene</code>. Reduce the <strong>Half Tick Distance</strong> and <strong>Quarter Tick Distance</strong> values. This forces distant units to update their logic at <code>30fps</code> or <code>15fps</code>, drastically reducing CPU load.</li>
+<li><strong>LOD Aggressiveness:</strong> Open the Animator Baker and check your LOD settings. Ensure your distant LODs (e.g., LOD 2) are set to <strong>1 Bone</strong> Quality and have <strong>Interpolation</strong> disabled. Re-bake.</li>
+</ol>
+<hr>
+<h4>💬 Still need help?</h4>
+<p>If you&#39;ve checked all the above and are still experiencing issues, we are here to help!<br>Please reach out to us with a screenshot of your issue and any console errors:</p>
+<p>📧 <strong>Email:</strong> <a href="https://www.google.com/url?sa=E&q=sniveler.code">sniveler.code@gmail.com</a><br>🌐 <strong>GitHub:</strong> <a href="https://github.com/sniveler-code">https://github.com/sniveler-code</a></p>
+<hr>
+<div id="migration-guide-v110-to-v130"></div><h1>⚙️Migration Guide: v1.1.0 to v1.3.0</h1>
+<p>This guide will walk you through the necessary steps to upgrade your project to the latest version of the GPU Animation Pro package. This update includes significant architectural improvements that increase stability, performance, and long-term scalability.</p>
+<p>While many changes are internal and automatic, a few key updates require manual steps to ensure a smooth transition.</p>
+<h4>Summary of Key Benefits</h4>
+<ul>
+<li><strong>Enhanced Stability:</strong> A new Unique ID system for assets prevents errors when files are moved or renamed.</li>
+<li><strong>Improved Performance:</strong> A new memory recycling system prevents memory leaks and ensures stable performance during long sessions.</li>
+<li><strong>Decoupled &amp; Robust Architecture:</strong> Core components now reference data assets directly, making the system more modular and less prone to scene-based configuration errors.</li>
+</ul>
+<hr>
+<h3>Required Migration Steps</h3>
+<p>Please follow these steps in order to ensure your project is fully compatible with the new version.</p>
+<h4>1. (CRITICAL) Backup Your Project</h4>
+<blockquote>
+<p><strong>WARNING</strong> Before proceeding with any package update, please ensure you have a complete and reliable backup of your project.</p>
+</blockquote>
+<h4>2. Update the Package</h4>
+<p>Update the <code>com.snivelercode.gpu-animation-pro</code> package through the Unity Package Manager. After updating, you will likely see compilation errors. The following steps will resolve them.</p>
+<h4>3. Rename Core System Component</h4>
+<p>The main system component has been renamed for better clarity. This is a breaking change that will likely cause compilation errors until it is fixed.</p>
+<ul>
+<li><strong>Old Name:</strong> <code>AnimatorLodsSystem</code></li>
+<li><strong>New Name:</strong> <code>AnimatorLodSyncSystem</code></li>
+</ul>
+<p><strong>Action Required:</strong></p>
+<ul>
+<li>Search your codebase for any references to <code>AnimatorLodsSystem</code> and replace them with <code>AnimatorLodSyncSystem</code>.</li>
+<li>In your scenes, inspect any <code>GameObjects</code> that had the <code>AnimatorLodsSystem</code> script attached. The script reference will be missing. You must remove the old component and add the new <code>AnimatorLodSyncSystem</code> component.</li>
+</ul>
+<h4>4. (IMPORTANT) Update <code>AnimatorRendererAuthoring</code> Asset References</h4>
+<blockquote>
+<p><strong>IMPORTANT</strong> This is a significant architectural change and the most critical manual step. The <code>AnimatorRendererAuthoring</code> component no longer references other <code>AnimatorAuthoring</code> components. It now directly references the animation data assets (<code>AnimatorMatricesAsset</code>).</p>
+</blockquote>
+<ul>
+<li><strong>Old Behavior:</strong> <code>AnimatorRendererAuthoring</code> had a list that you would populate by dragging <code>GameObjects</code> with the <code>AnimatorAuthoring</code> component.</li>
+<li><strong>New Behavior:</strong> <code>AnimatorRendererAuthoring</code> now has a list that you must populate by dragging the <code>AnimatorMatricesAsset</code> <code>ScriptableObject</code> files from your Project window.</li>
+</ul>
+<p><strong>Action Required:</strong></p>
+<ol>
+<li>Find all <code>GameObjects</code> in your scenes and prefabs that have an <code>AnimatorRendererAuthoring</code> component.</li>
+<li>The list of animations on this component will now be empty or have missing references.</li>
+<li>Lock the Inspector window showing the <code>AnimatorRendererAuthoring</code> component.</li>
+<li>From the Project window, find your <code>AnimatorMatricesAsset</code> files (the <code>ScriptableObjects</code> containing the baked animation data).</li>
+<li>Drag these asset files directly into the animation list on the <code>AnimatorRendererAuthoring</code> component.</li>
+</ol>
+<p><strong>Why this change was made:</strong> This decouples the rendering system from the source <code>GameObjects</code>, making it more robust. It&#39;s a key part of the new Unique ID system that prevents references from breaking when you rename or move things.</p>
+<h4>5. Force Re-import of Animation Assets</h4>
+<p>The new version uses a robust Unique ID system for animation data assets. To ensure these IDs are generated and assigned correctly after the update, you must force a re-import.</p>
+<p><strong>Action Required:</strong></p>
+<ul>
+<li>In the Unity Editor, locate the folder(s) containing your <code>AnimatorMatricesAsset</code> files.</li>
+<li>Right-click on the folder(s) and select <strong>&quot;Reimport&quot;</strong>.</li>
+</ul>
+<p>This process will trigger the new <code>AnimatorMatricesAssetProcessor</code>, which automatically assigns the persistent unique IDs to your assets, ensuring the system works correctly.</p>
+<h4>6. Review Attachments Configuration</h4>
+<p>The <code>Attachments</code> system has been internally refactored. While we have aimed to maintain compatibility, it is wise to double-check your setups.</p>
+<p><strong>Action Required:</strong></p>
+<ul>
+<li>After completing the steps above, identify any characters or prefabs that use the Attachments feature.</li>
+<li>Enter Play Mode and verify that all attachments appear and function as they did previously. If not, review their configuration on the relevant <code>GameObjects</code>.</li>
+</ul>
+<hr>
+<h3>Changes That Are Automatic (No Action Required)</h3>
+<p>The following improvements are included in this update and will work automatically after the package is installed:</p>
+<ul>
+<li><strong>GPU Index Recycling:</strong> The new <code>AnimatorIndexAllocatorSystem</code> now manages memory automatically.</li>
+<li><strong>Safety Buffers:</strong> A <code>DummyBuffer</code> is now used internally to prevent GPU-related errors.</li>
+<li><strong>Performance Optimizations:</strong> Various internal optimizations, including the new GPU state buffer, will improve overall animation performance.</li>
+</ul>
+<hr>
+<h3>Post-Upgrade Checklist</h3>
+<p>After performing the migration steps, please verify the following:</p>
+<ol>
+<li>Ensure there are no compilation errors in the console.</li>
+<li>Enter Play Mode in your main scenes.</li>
+<li>Confirm that animations are playing correctly on your characters.</li>
+<li>Verify that any dynamic features, like attachments, are working as expected.</li>
+</ol>
+<p>By following this guide, you will successfully transition to the latest, most powerful version of GPU Animation Pro.</p>
+<hr>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const top = target.getBoundingClientRect().top + window.scrollY - 90;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                        // Update hash in URL
+                        window.history.pushState(null, null, href);
+                    }
+                    if (window.innerWidth <= 992) {
+                        document.getElementById('nav-details').removeAttribute('open');
+                    }
+                }
+            });
+        });
+        
+        function handleResize() {
+            const details = document.getElementById('nav-details');
+            if (window.innerWidth <= 992) {
+                details.removeAttribute('open');
+            } else {
+                details.setAttribute('open', '');
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>
