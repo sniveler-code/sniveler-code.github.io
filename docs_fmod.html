@@ -378,7 +378,7 @@ AudioWriter.SetGlobalParameter(SncGlobalParamID.TimeOfDay, 14.5f);
                 const href = this.getAttribute('href');
                 if (href.startsWith('#')) {
                     e.preventDefault();
-                    const target = document.querySelector(href);
+                    const target = document.getElementById(href.substring(1));
                     if (target) {
                         const top = target.getBoundingClientRect().top + window.scrollY - 90;
                         window.scrollTo({ top, behavior: 'smooth' });

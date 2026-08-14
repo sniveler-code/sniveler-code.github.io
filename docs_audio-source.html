@@ -211,13 +211,21 @@
             <details class="mobile-nav" id="nav-details">
                 <summary>☰ TABLE OF CONTENTS</summary>
                 <div id="sidebar-content">
-                    <ul><li><a href="#introduction">Introduction</a></li><li><a href="#installation">Installation</a></li><li><a href="#quick-start">Quick Start</a></li><li><a href="#audio-database-ids">Audio Database & IDs</a></li><li><a href="#playing-sounds-fluent-api">Playing Sounds (Fluent API)</a></li><li><a href="#looping-sounds-shadow-tracking">Looping Sounds (Shadow Tracking)</a></li><li><a href="#architecture-performance">Architecture & Performance</a></li></ul>
+                    <ul>
+                        <li><a href="#introduction">👋 Introduction</a></li>
+                        <li><a href="#installation">⚙️ Installation</a></li>
+                        <li><a href="#quick-start">🚀 Quick Start</a></li>
+                        <li><a href="#audio-database-ids">🗃️ Audio Database &amp; IDs</a></li>
+                        <li><a href="#playing-sounds-fluent-api">🔊 Playing Sounds (Fluent API)</a></li>
+                        <li><a href="#looping-sounds-shadow-tracking">🔄 Looping Sounds (Shadow Tracking)</a></li>
+                        <li><a href="#architecture-performance">🏎️ Architecture &amp; Performance</a></li>
+                    </ul>
                 </div>
             </details>
         </aside>
         
         <main class="content-area">
-            <div id="introduction"></div><h1>Introduction</h1>
+            <div id="introduction"></div><h1>👋 Introduction</h1>
 <p>Welcome to the documentation for <strong>Audio Dispatcher for DOTS</strong>.</p>
 <p>Triggering standard Unity <code>AudioSource</code> components from pure ECS is notoriously difficult because managed objects cannot be accessed inside Burst-compiled jobs.</p>
 <p><strong>Audio Dispatcher</strong> solves this problem elegantly. It is a production-ready, Data-Oriented audio bridging system that allows your high-frequency ECS systems to trigger, move, and stop sounds without ever touching the Managed Heap or stalling the Main Thread.</p>
@@ -233,7 +241,7 @@
 </ul>
 <p>Let&#39;s get started!</p>
 <hr>
-<div id="installation"></div><h1>Installation</h1>
+<div id="installation"></div><h1>⚙️ Installation</h1>
 <h4>Prerequisites</h4>
 <p>Ensure your project is using <strong>Unity 2022.3 LTS</strong> or higher and has the following packages installed:</p>
 <ul>
@@ -260,7 +268,7 @@
 </li>
 </ol>
 <hr>
-<div id="quick-start"></div><h1>Quick Start</h1>
+<div id="quick-start"></div><h1>🚀 Quick Start</h1>
 <p>Get your first sound playing in 4 simple steps.</p>
 <h4>1. Create an Audio Database</h4>
 <p>Right-click in your Project view and select <code>Create &gt; SnivelerCode &gt; Audio Database</code>. Add an <code>AudioClip</code> (e.g., an explosion sound) to the list.</p>
@@ -303,7 +311,7 @@ public partial struct CombatJob : IJobEntity
 }
 </code></pre>
 <hr>
-<div id="audio-database-ids"></div><h1>Audio Database &amp; IDs</h1>
+<div id="audio-database-ids"></div><h1>🗃️ Audio Database &amp; IDs</h1>
 <p>The <code>AudioDatabase</code> ScriptableObject is the heart of your audio configuration.</p>
 <h4>Pool Settings</h4>
 <ul>
@@ -330,7 +338,7 @@ public partial struct CombatJob : IJobEntity
 }
 </code></pre>
 <hr>
-<div id="playing-sounds-fluent-api"></div><h1>Playing Sounds (Fluent API)</h1>
+<div id="playing-sounds-fluent-api"></div><h1>🔊 Playing Sounds (Fluent API)</h1>
 <p>Audio Dispatcher features a zero-allocation <strong>Fluent Builder API</strong>. It makes writing audio code inside Jobs incredibly clean and readable.</p>
 <h4>The Syntax</h4>
 <p>Every generated Audio ID gets extension methods. You start by calling <code>.Shot()</code> or <code>.Loop()</code>, chain your modifiers, and finish with <code>.Apply(writer)</code>.</p>
@@ -347,7 +355,7 @@ public partial struct CombatJob : IJobEntity
 <h4>How it works under the hood</h4>
 <p>The Fluent API does not allocate any classes. It builds a 32-byte <code>AudioEvent</code> struct on the stack and pushes it directly into the lock-free <code>NativeQueue</code>.</p>
 <hr>
-<div id="looping-sounds-shadow-tracking"></div><h1>Looping Sounds (Shadow Tracking)</h1>
+<div id="looping-sounds-shadow-tracking"></div><h1>🔄 Looping Sounds (Shadow Tracking)</h1>
 <p>Playing a looping sound (like a car engine) in ECS is tricky because the sound needs to follow the moving entity, and it needs to stop when the entity is destroyed.</p>
 <p>Audio Dispatcher handles this automatically using a technique called <strong>Shadow Tracking</strong>.</p>
 <h4>How to start a Loop</h4>
@@ -364,7 +372,7 @@ public partial struct CombatJob : IJobEntity
 <li><strong>Automatic Cleanup:</strong> If your vehicle entity is destroyed (e.g., <code>ecb.DestroyEntity(entity)</code>), the Shadow Tracker detects it, stops the <code>AudioSource</code>, returns it to the pool, and destroys itself. You don&#39;t need to write any cleanup code!</li>
 </ol>
 <hr>
-<div id="architecture-performance"></div><h1>Architecture &amp; Performance</h1>
+<div id="architecture-performance"></div><h1>🏎️ Architecture &amp; Performance</h1>
 <p>Audio Dispatcher was built with strict Data-Oriented Design (DOD) principles to ensure it scales to AAA workloads.</p>
 <h4>1. Double Buffering (No Main Thread Stalls)</h4>
 <p>In a naive implementation, the Main Thread must wait for ECS Jobs to finish before it can read the audio queue (<code>Dependency.Complete()</code>). This causes massive frame drops.</p>
@@ -391,7 +399,7 @@ public partial struct CombatJob : IJobEntity
                 const href = this.getAttribute('href');
                 if (href.startsWith('#')) {
                     e.preventDefault();
-                    const target = document.querySelector(href);
+                    const target = document.getElementById(href.substring(1));
                     if (target) {
                         const top = target.getBoundingClientRect().top + window.scrollY - 90;
                         window.scrollTo({ top, behavior: 'smooth' });

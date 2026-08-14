@@ -631,7 +631,7 @@ namespace SnivelerCode.GpuAnimation.Tutorial
 </ol>
 <p>The Baker will now generate all LOD materials using your custom shader, perfectly configured for DOTS!</p>
 <hr>
-<div id="6-sockets-attachments"></div><h1>🔗 6. Sockets &amp; Attachments (Weapons &amp; VFX)</h1>
+<div id="6-sockets-attachments"></div><h1>🔗 6. Sockets & Attachments (Weapons &amp; VFX)</h1>
 <p>Since standard bones <code>GameObjects</code> do not exist in the scene at runtime when using GPU skinning, the classic <code>transform.SetParent(bone)</code> approach does not work. Our system solves this by calculating precise offset matrices, allowing you to bind items to bones both in a default state and <strong>dynamically at specific animation frames</strong>.</p>
 <h3>⚙️ Animator Authoring Component</h3>
 <p>The starting point for working with sockets is the Animator Authoring component on your character.</p>
@@ -1199,7 +1199,7 @@ public partial struct CustomPhysicsRootMotionJob : IJobEntity
                 const href = this.getAttribute('href');
                 if (href.startsWith('#')) {
                     e.preventDefault();
-                    const target = document.querySelector(href);
+                    const target = document.getElementById(href.substring(1));
                     if (target) {
                         const top = target.getBoundingClientRect().top + window.scrollY - 90;
                         window.scrollTo({ top, behavior: 'smooth' });
