@@ -1,24 +1,39 @@
 {
   "name": "sniveler-code.github.io",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sniveler Code - High-Performance Unity Architecture & Tooling",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build-docs.js",
+    "build:images": "node optimize-images.js",
+    "build:all": "npm run build:images && npm run build",
+    "dev": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sniveler-code/sniveler-code.github.io.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "unity",
+    "dots",
+    "ecs",
+    "burst",
+    "game-development",
+    "high-performance"
+  ],
+  "author": "Sniveler Code <sniveler.code@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sniveler-code/sniveler-code.github.io/issues"
   },
-  "homepage": "https://github.com/sniveler-code/sniveler-code.github.io#readme",
+  "homepage": "https://sniveler-code.github.io",
   "dependencies": {
     "highlight.js": "^11.12.0",
     "marked": "^18.0.9"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0",
+    "serve": "^14.2.0"
   }
 }

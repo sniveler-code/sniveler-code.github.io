@@ -1,0 +1,51 @@
+# Cloudflare Pages Headers
+# Place this file in the root of your project for Cloudflare Pages
+# See: https://developers.cloudflare.com/pages/platform/headers/
+
+/*
+  # Security Headers
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: interest-cohort=(), camera=(), microphone=(), geolocation=()
+  
+  # Content Security Policy
+  # Allow: self, Google Fonts, GitHub (for badges), shields.io
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://img.shields.io; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+
+  # Cache Control
+  Cache-Control: public, max-age=31536000, immutable
+*/
+
+# HTML files - shorter cache
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# CSS/JS - long cache with versioning
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images - long cache
+/Images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/Images/optimized/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+# RSS/Sitemap - no cache
+/feed.xml
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/robots.txt
+  Cache-Control: public, max-age=86400, must-revalidate

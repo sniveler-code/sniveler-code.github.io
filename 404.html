@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page Not Found | Sniveler Code</title>
+    <meta name="description" content="Page not found. Return to Sniveler Code homepage.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="404 — Page Not Found | Sniveler Code">
+    <meta property="og:description" content="Page not found. Return to Sniveler Code homepage.">
+    <meta property="og:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    <meta property="og:url" content="https://sniveler-code.github.io/404.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="404 — Page Not Found | Sniveler Code">
+    <meta name="twitter:description" content="Page not found. Return to Sniveler Code homepage.">
+    <meta name="twitter:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://sniveler-code.github.io/404.html">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/main.css">
+    
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: clamp(6rem, 20vw, 12rem);
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: var(--font-mono);
+        }
+        .error-message {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .error-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+        }
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .glitch {
+            position: relative;
+            animation: glitch 3s infinite;
+        }
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 2px); }
+            94% { transform: translate(2px, -2px); }
+            96% { transform: translate(-2px, -2px); }
+            98% { transform: translate(2px, 2px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .glitch { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// ASSETS</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="error-page">
+        <h1 class="error-code glitch mono">404</h1>
+        <p class="error-message">System.Exception: PageNotFound</p>
+        <p class="error-description">The documentation or asset page you're looking for doesn't exist. It may have been moved, renamed, or never existed in the first place — much like a null reference in a Burst-compiled job.</p>
+        <div class="error-actions">
+            <a href="index.html" class="btn btn-primary">← Back to Home</a>
+            <a href="index.html#assets" class="btn btn-secondary">Browse Assets</a>
+            <a href="https://github.com/sniveler-code" target="_blank" class="btn btn-secondary">GitHub</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="mailto:sniveler.code@gmail.com">Email</a>
+                <a href="https://github.com/sniveler-code" target="_blank">GitHub</a>
+                <a href="https://www.youtube.com/@SnivelerCode" target="_blank">YouTube</a>
+                <a href="https://discord.gg/rQ5XK9x7N" target="_blank">Discord</a>
+                <a href="https://assetstore.unity.com/publishers/80672" target="_blank">Asset Store</a>
+            </div>
+            <p class="mono" style="font-size: 0.8rem; color: var(--border-hover);">&copy; <span id="current-year"></span> Sniveler Code. 0 Bytes Allocated.</p>
+        </div>
+    </footer>
+
+    <!-- Main JS -->
+    <script src="assets/main.js"></script>
+</body>
+</html>

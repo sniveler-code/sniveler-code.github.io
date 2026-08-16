@@ -1,0 +1,8 @@
+# Cloudflare Pages Redirects
+# See: https://developers.cloudflare.com/pages/platform/redirects/
+
+# Redirect old paths if needed
+# /old-path  /new-path  301
+
+# SPA fallback (not needed for static site)
+# /*  /index.html  200

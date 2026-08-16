@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sniveler-code.github.io/sitemap.xml
