@@ -27,7 +27,8 @@
                 if (!href || href === '#') return;
 
                 e.preventDefault();
-                const target = document.querySelector(href);
+                const id = href.slice(1);
+                const target = document.getElementById(id);
                 if (target) {
                     const navHeight = document.querySelector('nav')?.offsetHeight || 80;
                     const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 10;
