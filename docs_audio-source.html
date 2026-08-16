@@ -4,194 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sniveler Code | Audio Source Documentation</title>
+    <meta name="description" content="Welcome to the documentation for Audio Dispatcher for DOTS.">
     
+    <!-- Open Graph / Twitter Card -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sniveler Code | Audio Source Documentation">
+    <meta property="og:description" content="Welcome to the documentation for Audio Dispatcher for DOTS.">
+    <meta property="og:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    <meta property="og:url" content="https://sniveler-code.github.io/docs_audio-source.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sniveler Code | Audio Source Documentation">
+    <meta name="twitter:description" content="Welcome to the documentation for Audio Dispatcher for DOTS.">
+    <meta name="twitter:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://sniveler-code.github.io/docs_audio-source.html">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
     
-    <style>
-        :root {
-            --bg-base: #050505;
-            --bg-surface: #111111;
-            --bg-surface-hover: #1a1a1a;
-            --text-primary: #f0f0f0;
-            --text-secondary: #a0a0a0;
-            --accent: #00e5ff; 
-            --accent-dim: rgba(0, 229, 255, 0.1);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(0, 229, 255, 0.5);
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease-out;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html {
-            scroll-behavior: smooth;
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            font-family: var(--font-sans);
-            line-height: 1.6;
-        }
-        
-        .mono { font-family: var(--font-mono); }
-        .text-accent { color: var(--accent); }
-
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 1.5rem 0;
-            background: rgba(5, 5, 5, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
-        }
-
-        nav .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-links { display: flex; gap: 2rem; }
-
-        .nav-logo {
-            height: 32px;
-            width: auto;
-            display: block;
-            filter: brightness(1.2) drop-shadow(0 0 8px var(--accent-dim));
-            transition: var(--transition);
-        }
-        .nav-logo:hover { filter: brightness(1.5) drop-shadow(0 0 12px var(--accent)); }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-family: var(--font-mono);
-            font-size: 0.875rem;
-            transition: var(--transition);
-        }
-        nav a:hover { color: var(--accent); }
-
-        .docs-container {
-            display: flex;
-            max-width: 1400px;
-            margin: 80px auto 0;
-            min-height: calc(100vh - 80px);
-            padding: 0 2rem;
-        }
-
-        .sidebar {
-            width: 320px;
-            padding: 2rem 2rem 2rem 0;
-            border-right: 1px solid var(--border);
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 80px);
-            overflow-y: auto;
-        }
-
-        .sidebar::-webkit-scrollbar { width: 6px; }
-        .sidebar::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
-
-        .content-area {
-            flex-grow: 1;
-            padding: 2rem 0 4rem 4rem;
-            max-width: 900px;
-        }
-
-        .sidebar ul { list-style: none; padding-left: 1rem; }
-        .sidebar > ul { padding-left: 0; }
-        .sidebar li { margin-bottom: 0.25rem; }
-        .sidebar a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            display: block;
-            padding: 0.4rem 0.5rem;
-            border-radius: 4px;
-        }
-        .sidebar a:hover {
-            background: var(--bg-surface);
-            color: var(--text-primary);
-        }
-
-        .content-area h1 { font-size: 2.5rem; font-weight: 600; margin: 3rem 0 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; scroll-margin-top: 100px; }
-        .content-area h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
-        .content-area h3 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--text-primary); scroll-margin-top: 100px; }
-        .content-area p { margin-bottom: 1.5rem; color: #d1d5db; }
-        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
-        .content-area a:hover { border-bottom-style: solid; }
-        
-        .content-area img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 1.5rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .content-area ul, .content-area ol { margin-bottom: 1.5rem; padding-left: 2rem; color: #d1d5db; }
-        .content-area li { margin-bottom: 0.5rem; }
-        
-        .content-area pre {
-            background: #0d0d0d !important;
-            padding: 1.5rem !important;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1.5rem 0;
-            border: 1px solid var(--border);
-        }
-        .content-area code { font-family: var(--font-mono); font-size: 0.9em; }
-        .content-area p code, .content-area li code {
-            background: var(--bg-surface);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--accent);
-            border: 1px solid var(--border);
-        }
-        
-        .content-area blockquote {
-            border-left: 4px solid var(--accent);
-            margin: 1.5rem 0;
-            background: var(--bg-surface);
-            padding: 1rem 1.5rem;
-            border-radius: 0 8px 8px 0;
-            color: var(--text-secondary);
-        }
-        .content-area blockquote p:last-child { margin-bottom: 0; }
-        
-        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-        .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
-        .content-area th { background: var(--bg-surface); color: var(--text-primary); }
-
-        details.mobile-nav summary {
-            background: var(--bg-surface);
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            color: var(--accent);
-            list-style: none;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        details.mobile-nav summary::-webkit-details-marker { display: none; }
-
-        @media (max-width: 992px) {
-            .docs-container { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: static; border-right: none; padding: 1rem 0; }
-            .content-area { padding: 1rem 0 4rem 0; }
-            details.mobile-nav summary { display: block; }
-        }
-        @media (max-width: 768px) {
-            nav .container { flex-direction: column; gap: 1rem; align-items: center; }
-            .nav-links { gap: 1rem; font-size: 0.75rem; }
-            .docs-container { margin-top: 120px; }
-            .content-area h1 { font-size: 2rem; }
-        }
-    </style>
+    <!-- Highlight.js (self-hosted) -->
+    <link rel="stylesheet" href="assets/highlight.css">
+    
+    <!-- Shared Docs Styles -->
+    <link rel="stylesheet" href="assets/docs.css">
 </head>
 <body>
     <nav>
@@ -206,26 +44,28 @@
         </div>
     </nav>
 
+    <!-- Pagefind Search Styles -->
+    <link rel="stylesheet" href="assets/pagefind/pagefind-ui.css">
+    <link rel="stylesheet" href="assets/pagefind/pagefind-modular-ui.css">
+    
     <div class="docs-container">
         <aside class="sidebar">
+            <!-- Pagefind Search -->
+            <div id="search">
+                <search-input placeholder="Search docs..."></search-input>
+                <div id="search-results"></div>
+            </div>
+            
             <details class="mobile-nav" id="nav-details">
                 <summary>☰ TABLE OF CONTENTS</summary>
                 <div id="sidebar-content">
-                    <ul>
-                        <li><a href="#introduction">👋 Introduction</a></li>
-                        <li><a href="#installation">⚙️ Installation</a></li>
-                        <li><a href="#quick-start">🚀 Quick Start</a></li>
-                        <li><a href="#audio-database-ids">🗃️ Audio Database &amp; IDs</a></li>
-                        <li><a href="#playing-sounds-fluent-api">🔊 Playing Sounds (Fluent API)</a></li>
-                        <li><a href="#looping-sounds-shadow-tracking">🔄 Looping Sounds (Shadow Tracking)</a></li>
-                        <li><a href="#architecture-performance">🏎️ Architecture &amp; Performance</a></li>
-                    </ul>
+                    <ul><li><a href="#introduction">Introduction</a></li><li><a href="#installation">Installation</a></li><li><a href="#quick-start">Quick Start</a></li><li><a href="#audio-database-ids">Audio Database & IDs</a></li><li><a href="#playing-sounds-fluent-api">Playing Sounds (Fluent API)</a></li><li><a href="#looping-sounds-shadow-tracking">Looping Sounds (Shadow Tracking)</a></li><li><a href="#architecture-performance">Architecture & Performance</a></li></ul>
                 </div>
             </details>
         </aside>
         
         <main class="content-area">
-            <div id="introduction"></div><h1>👋 Introduction</h1>
+            <div id="introduction"></div><h1>Introduction</h1>
 <p>Welcome to the documentation for <strong>Audio Dispatcher for DOTS</strong>.</p>
 <p>Triggering standard Unity <code>AudioSource</code> components from pure ECS is notoriously difficult because managed objects cannot be accessed inside Burst-compiled jobs.</p>
 <p><strong>Audio Dispatcher</strong> solves this problem elegantly. It is a production-ready, Data-Oriented audio bridging system that allows your high-frequency ECS systems to trigger, move, and stop sounds without ever touching the Managed Heap or stalling the Main Thread.</p>
@@ -241,7 +81,7 @@
 </ul>
 <p>Let&#39;s get started!</p>
 <hr>
-<div id="installation"></div><h1>⚙️ Installation</h1>
+<div id="installation"></div><h1>Installation</h1>
 <h4>Prerequisites</h4>
 <p>Ensure your project is using <strong>Unity 2022.3 LTS</strong> or higher and has the following packages installed:</p>
 <ul>
@@ -268,7 +108,7 @@
 </li>
 </ol>
 <hr>
-<div id="quick-start"></div><h1>🚀 Quick Start</h1>
+<div id="quick-start"></div><h1>Quick Start</h1>
 <p>Get your first sound playing in 4 simple steps.</p>
 <h4>1. Create an Audio Database</h4>
 <p>Right-click in your Project view and select <code>Create &gt; SnivelerCode &gt; Audio Database</code>. Add an <code>AudioClip</code> (e.g., an explosion sound) to the list.</p>
@@ -311,7 +151,7 @@ public partial struct CombatJob : IJobEntity
 }
 </code></pre>
 <hr>
-<div id="audio-database-ids"></div><h1>🗃️ Audio Database &amp; IDs</h1>
+<div id="audio-database-ids"></div><h1>Audio Database &amp; IDs</h1>
 <p>The <code>AudioDatabase</code> ScriptableObject is the heart of your audio configuration.</p>
 <h4>Pool Settings</h4>
 <ul>
@@ -338,7 +178,7 @@ public partial struct CombatJob : IJobEntity
 }
 </code></pre>
 <hr>
-<div id="playing-sounds-fluent-api"></div><h1>🔊 Playing Sounds (Fluent API)</h1>
+<div id="playing-sounds-fluent-api"></div><h1>Playing Sounds (Fluent API)</h1>
 <p>Audio Dispatcher features a zero-allocation <strong>Fluent Builder API</strong>. It makes writing audio code inside Jobs incredibly clean and readable.</p>
 <h4>The Syntax</h4>
 <p>Every generated Audio ID gets extension methods. You start by calling <code>.Shot()</code> or <code>.Loop()</code>, chain your modifiers, and finish with <code>.Apply(writer)</code>.</p>
@@ -355,7 +195,7 @@ public partial struct CombatJob : IJobEntity
 <h4>How it works under the hood</h4>
 <p>The Fluent API does not allocate any classes. It builds a 32-byte <code>AudioEvent</code> struct on the stack and pushes it directly into the lock-free <code>NativeQueue</code>.</p>
 <hr>
-<div id="looping-sounds-shadow-tracking"></div><h1>🔄 Looping Sounds (Shadow Tracking)</h1>
+<div id="looping-sounds-shadow-tracking"></div><h1>Looping Sounds (Shadow Tracking)</h1>
 <p>Playing a looping sound (like a car engine) in ECS is tricky because the sound needs to follow the moving entity, and it needs to stop when the entity is destroyed.</p>
 <p>Audio Dispatcher handles this automatically using a technique called <strong>Shadow Tracking</strong>.</p>
 <h4>How to start a Loop</h4>
@@ -372,7 +212,7 @@ public partial struct CombatJob : IJobEntity
 <li><strong>Automatic Cleanup:</strong> If your vehicle entity is destroyed (e.g., <code>ecb.DestroyEntity(entity)</code>), the Shadow Tracker detects it, stops the <code>AudioSource</code>, returns it to the pool, and destroys itself. You don&#39;t need to write any cleanup code!</li>
 </ol>
 <hr>
-<div id="architecture-performance"></div><h1>🏎️ Architecture &amp; Performance</h1>
+<div id="architecture-performance"></div><h1>Architecture &amp; Performance</h1>
 <p>Audio Dispatcher was built with strict Data-Oriented Design (DOD) principles to ensure it scales to AAA workloads.</p>
 <h4>1. Double Buffering (No Main Thread Stalls)</h4>
 <p>In a naive implementation, the Main Thread must wait for ECS Jobs to finish before it can read the audio queue (<code>Dependency.Complete()</code>). This causes massive frame drops.</p>
@@ -390,39 +230,71 @@ public partial struct CombatJob : IJobEntity
 <p>The system calculates sound lifetimes using <code>AudioSettings.dspTime</code> instead of <code>Time.time</code>. If you use slow-motion effects (<code>Time.timeScale = 0.1f</code>), your sounds will not be cut off prematurely.</p>
 <hr>
 
+            
+            <!-- Edit on GitHub / Version -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <a href="https://github.com/sniveler-code/sniveler-code.github.io/edit/main/documentation/audio-source/" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                    Edit on GitHub
+                </a>
+                <span class="mono" style="color: var(--text-secondary); font-size: 0.85rem;">v1.0.0</span>
+            </div>
         </main>
     </div>
 
+    <!-- Shared Docs JS -->
+    <script src="assets/docs.js"></script>
+    
+    <!-- Highlight.js (self-hosted) -->
+    <script src="assets/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
+    <!-- Pagefind Search -->
+    <script src="assets/pagefind/pagefind-ui.js"></script>
     <script>
-        document.querySelectorAll('.sidebar a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href.startsWith('#')) {
-                    e.preventDefault();
-                    const target = document.getElementById(href.substring(1));
-                    if (target) {
-                        const top = target.getBoundingClientRect().top + window.scrollY - 90;
-                        window.scrollTo({ top, behavior: 'smooth' });
-                        // Update hash in URL
-                        window.history.pushState(null, null, href);
-                    }
-                    if (window.innerWidth <= 992) {
-                        document.getElementById('nav-details').removeAttribute('open');
-                    }
+        window.addEventListener('DOMContentLoaded', () => {
+            new PagefindUI({
+                element: '#search',
+                showSubResults: true,
+                showImages: false,
+                resetStyles: false,
+                translations: {
+                    placeholder: 'Search docs...',
+                    zeroResults: 'No results found for "{term}"',
+                    manyResults: '{count} results for "{term}"',
+                    oneResult: '1 result for "{term}"',
+                    searchLabel: 'Search',
+                    clearSearchLabel: 'Clear search'
                 }
             });
         });
-        
-        function handleResize() {
-            const details = document.getElementById('nav-details');
-            if (window.innerWidth <= 992) {
-                details.removeAttribute('open');
-            } else {
-                details.setAttribute('open', '');
-            }
-        }
-        window.addEventListener('resize', handleResize);
-        handleResize();
     </script>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Source",
+  "description": "Welcome to the documentation for Audio Dispatcher for DOTS.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Unity (Windows, macOS, Linux)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://sniveler-code.github.io/docs_audio-source.html"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Sniveler Code",
+    "url": "https://sniveler-code.github.io"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Sniveler Code"
+  },
+  "url": "https://sniveler-code.github.io/docs_audio-source.html",
+  "image": "https://sniveler-code.github.io/Images/sniveler_logo.png"
+}</script>
 </body>
 </html>

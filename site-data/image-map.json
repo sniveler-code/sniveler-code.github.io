@@ -1,0 +1,203 @@
+{
+  "ai_behavior_architect.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 36601,
+      "optimizedUrl": "Images/optimized/ai_behavior_architect@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "ai_behavior_architect@400w.webp",
+          "size": 23088,
+          "url": "Images/optimized/ai_behavior_architect@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "ai_behavior_architect@400w.avif",
+          "size": 14192,
+          "url": "Images/optimized/ai_behavior_architect@400w.avif"
+        }
+      ]
+    }
+  },
+  "audio_dispatcher_advanced.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 20132,
+      "optimizedUrl": "Images/optimized/audio_dispatcher_advanced@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "audio_dispatcher_advanced@400w.webp",
+          "size": 12992,
+          "url": "Images/optimized/audio_dispatcher_advanced@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "audio_dispatcher_advanced@400w.avif",
+          "size": 8324,
+          "url": "Images/optimized/audio_dispatcher_advanced@400w.avif"
+        }
+      ]
+    }
+  },
+  "audio_dispatcher_lite.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 14347,
+      "optimizedUrl": "Images/optimized/audio_dispatcher_lite@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "audio_dispatcher_lite@400w.webp",
+          "size": 9410,
+          "url": "Images/optimized/audio_dispatcher_lite@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "audio_dispatcher_lite@400w.avif",
+          "size": 6087,
+          "url": "Images/optimized/audio_dispatcher_lite@400w.avif"
+        }
+      ]
+    }
+  },
+  "burstnav_ecs.jpg": {
+    "original": {
+      "width": 480,
+      "height": 262,
+      "format": "jpeg",
+      "optimizedSize": 27412,
+      "optimizedUrl": "Images/optimized/burstnav_ecs@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "burstnav_ecs@400w.webp",
+          "size": 17680,
+          "url": "Images/optimized/burstnav_ecs@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "burstnav_ecs@400w.avif",
+          "size": 12063,
+          "url": "Images/optimized/burstnav_ecs@400w.avif"
+        }
+      ]
+    }
+  },
+  "gpu_animation_entities_lite.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 22413,
+      "optimizedUrl": "Images/optimized/gpu_animation_entities_lite@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "gpu_animation_entities_lite@400w.webp",
+          "size": 12178,
+          "url": "Images/optimized/gpu_animation_entities_lite@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "gpu_animation_entities_lite@400w.avif",
+          "size": 8555,
+          "url": "Images/optimized/gpu_animation_entities_lite@400w.avif"
+        }
+      ]
+    }
+  },
+  "gpu_animation_entities_pro.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 26532,
+      "optimizedUrl": "Images/optimized/gpu_animation_entities_pro@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "gpu_animation_entities_pro@400w.webp",
+          "size": 14718,
+          "url": "Images/optimized/gpu_animation_entities_pro@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "gpu_animation_entities_pro@400w.avif",
+          "size": 9535,
+          "url": "Images/optimized/gpu_animation_entities_pro@400w.avif"
+        }
+      ]
+    }
+  },
+  "sniveler_logo.png": {
+    "original": {
+      "width": 900,
+      "height": 900,
+      "format": "png",
+      "optimizedSize": 95578,
+      "optimizedUrl": "Images/optimized/sniveler_logo@original.png"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "sniveler_logo@400w.webp",
+          "size": 43226,
+          "url": "Images/optimized/sniveler_logo@400w.webp"
+        },
+        {
+          "width": 800,
+          "filename": "sniveler_logo@800w.webp",
+          "size": 113030,
+          "url": "Images/optimized/sniveler_logo@800w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "sniveler_logo@400w.avif",
+          "size": 17472,
+          "url": "Images/optimized/sniveler_logo@400w.avif"
+        },
+        {
+          "width": 800,
+          "filename": "sniveler_logo@800w.avif",
+          "size": 35655,
+          "url": "Images/optimized/sniveler_logo@800w.avif"
+        }
+      ]
+    }
+  }
+}
