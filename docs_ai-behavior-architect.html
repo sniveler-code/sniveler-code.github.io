@@ -44,18 +44,8 @@
         </div>
     </nav>
 
-    <!-- Pagefind Search Styles -->
-    <link rel="stylesheet" href="assets/pagefind/pagefind-ui.css">
-    <link rel="stylesheet" href="assets/pagefind/pagefind-modular-ui.css">
-    
     <div class="docs-container">
         <aside class="sidebar">
-            <!-- Pagefind Search -->
-            <div id="search">
-                <search-input placeholder="Search docs..."></search-input>
-                <div id="search-results"></div>
-            </div>
-            
             <details class="mobile-nav" id="nav-details">
                 <summary>☰ TABLE OF CONTENTS</summary>
                 <div id="sidebar-content">
@@ -533,27 +523,6 @@ namespace MyGame.AI
     <!-- Highlight.js (self-hosted) -->
     <script src="assets/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
-    
-    <!-- Pagefind Search -->
-    <script src="assets/pagefind/pagefind-ui.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            new PagefindUI({
-                element: '#search',
-                showSubResults: true,
-                showImages: false,
-                resetStyles: false,
-                translations: {
-                    placeholder: 'Search docs...',
-                    zeroResults: 'No results found for "{term}"',
-                    manyResults: '{count} results for "{term}"',
-                    oneResult: '1 result for "{term}"',
-                    searchLabel: 'Search',
-                    clearSearchLabel: 'Clear search'
-                }
-            });
-        });
-    </script>
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">{
