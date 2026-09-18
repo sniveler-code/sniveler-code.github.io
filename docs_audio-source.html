@@ -64,7 +64,7 @@
 <li>⚡ <strong>100% Burst Compatible:</strong> Trigger sounds directly from <code>IJobEntity</code> or <code>ISystem</code>.</li>
 <li>🚀 <strong>Zero Main Thread Stalls:</strong> Uses a Double Buffering Command Architecture.</li>
 <li>🗑️ <strong>Zero GC Allocations:</strong> Pre-allocated object pools for One-Shot and Looping sounds.</li>
-<li>🧠 <strong>Smart Voice Stealing:</strong> Automatically replaces the quietest/furthest sound when pools are full.</li>
+<li>🧠 <strong>Smart Voice Stealing:</strong> When the one-shot pool is full, automatically steals the slot of the quietest/lowest-priority voice.</li>
 <li>🔗 <strong>Shadow Tracking:</strong> Looping sounds follow entities without modifying your core archetypes.</li>
 <li>💎 <strong>Fluent API:</strong> Clean, readable, and chainable syntax for triggering sounds.</li>
 <li>🛠️ <strong>Stable Hash IDs:</strong> Auto-generates C# constants using stable hashes. Reordering your audio database will never break your code.</li>
