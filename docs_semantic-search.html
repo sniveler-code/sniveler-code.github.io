@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniveler Code | Semantic Search Documentation</title>
+    <meta name="description" content="Welcome to the documentation for AI Semantic Search.">
+    
+    <!-- Open Graph / Twitter Card -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sniveler Code | Semantic Search Documentation">
+    <meta property="og:description" content="Welcome to the documentation for AI Semantic Search.">
+    <meta property="og:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    <meta property="og:url" content="https://sniveler-code.github.io/docs_semantic-search.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sniveler Code | Semantic Search Documentation">
+    <meta name="twitter:description" content="Welcome to the documentation for AI Semantic Search.">
+    <meta name="twitter:image" content="https://sniveler-code.github.io/Images/sniveler_logo.png">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://sniveler-code.github.io/docs_semantic-search.html">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Highlight.js (self-hosted) -->
+    <link rel="stylesheet" href="assets/highlight.css">
+    
+    <!-- Shared Docs Styles -->
+    <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo-link">
+                <img src="Images/sniveler_logo.png" alt="Sniveler Code Logo" class="nav-logo">
+            </a>
+            <div class="nav-links">
+                <a href="index.html#assets">// BACK TO ASSETS</a>
+                <a href="https://discord.gg/b2f7ZZA4Rw" target="_blank">// DISCORD</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <details class="mobile-nav" id="nav-details" open>
+                <summary>☰ TABLE OF CONTENTS</summary>
+                <div id="sidebar-content">
+                    <ul><li><a href="#introduction">🏠 Introduction</a></li><li><a href="#overview">📖 Overview</a></li><li><a href="#getting-started">🚀 Getting Started</a></li><li><a href="#searching-assets">🔎 Searching Assets</a></li><li><a href="#configuration">⚙️ Configuration</a></li><li><a href="#extensibility">🧩 Extensibility</a></li><li><a href="#troubleshooting">🛠️ Troubleshooting</a></li><li><a href="#faq">❓ FAQ</a></li></ul>
+                </div>
+            </details>
+        </aside>
+        
+        <main class="content-area">
+            <div id="introduction"></div><h1>Introduction</h1>
+<p>Welcome to the documentation for <strong>AI Semantic Search</strong>.</p>
+<p>Finding assets by exact filename falls apart the moment a project outgrows its naming convention. <strong>AI Semantic Search</strong> fixes that: it indexes your prefabs with local semantic embeddings and lets you search by <em>meaning</em> — &quot;heavy axe&quot;, &quot;small green plant&quot;, &quot;loud explosion&quot; — instead of guessing names.</p>
+<h4>Key Features</h4>
+<ul>
+<li>🧠 <strong>100% Local AI:</strong> embeddings are computed in the Editor with Unity Sentis — no API keys, no internet connection.</li>
+<li>⚡ <strong>Instant Results:</strong> SIMD-accelerated cosine similarity over a local SQLite index, plus a text-match bonus.</li>
+<li>🎯 <strong>Understands Context:</strong> prefab names, components, folder/category context, materials and mesh geometry.</li>
+<li>📦 <strong>Small Footprint:</strong> ships a uint8-quantized MiniLM-L6-v2 model (~24 MB) instead of the 90 MB float32 original.</li>
+<li>🧩 <strong>Extensible:</strong> add new asset kinds or custom metadata extractors via the <code>Metadata&lt;T&gt;</code> base class.</li>
+</ul>
+<p>Everything runs locally in the Unity Editor (Windows and macOS). Let&#39;s get started!</p>
+<hr>
+<div id="overview"></div><h1>AI Semantic Search — Documentation</h1>
+<p>Welcome to <strong>AI Semantic Search</strong>, a local, AI-powered asset finder for the Unity Editor.<br>It indexes prefabs with semantic embeddings (Unity Sentis) and lets you<br>search them by <em>meaning</em> — &quot;heavy axe&quot;, &quot;small green plant&quot; — instead<br>of exact filenames.</p>
+<h2>What&#39;s inside the package</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Editor tool</td>
+<td><code>Window &gt; SnivelerCode &gt; Semantic Search</code> (window title <em>Asset AI Search</em>)</td>
+</tr>
+<tr>
+<td>Search engine</td>
+<td>SIMD-accelerated cosine similarity over the local SQLite index</td>
+</tr>
+<tr>
+<td>Prefab analysis</td>
+<td>names, components, folder/category context, materials, geometry</td>
+</tr>
+<tr>
+<td>Samples</td>
+<td><code>Base AI Model &amp; Demo Assets</code> — MiniLM ONNX model, BERT tokenizer config, medieval demo prefabs</td>
+</tr>
+</tbody></table>
+<p>Everything runs locally — no API keys, no internet connection required.</p>
+<h2>Getting started in 60 seconds</h2>
+<ol>
+<li>Install the package (<strong>Assets → Import Package → Custom Package…</strong> with the <code>.unitypackage</code><br>from the store listing).</li>
+<li>Import the sample: <strong>Package Manager → AI Semantic Search → Samples → Import</strong>.</li>
+<li>Open the tool: <strong>Window &gt; SnivelerCode &gt; Semantic Search</strong>.</li>
+<li>In the <strong>Embedding</strong> tab assign:<ul>
+<li><strong>Model</strong> ← <code>MiniLM_uint8.sentis</code></li>
+<li><strong>Vocab</strong> ← <code>tokenizer.json</code></li>
+</ul>
+</li>
+<li>In the <strong>Prefabs</strong> tab: <strong>Check</strong> → <strong>Index</strong>.</li>
+<li>Go to <strong>Search</strong> and describe what you need.</li>
+</ol>
+<p>See <a href="#getting-started">Getting Started</a> for the full walkthrough.</p>
+<h2>Documentation contents</h2>
+<ul>
+<li><a href="#getting-started">Getting Started</a> — installation, setup, first search</li>
+<li><a href="#configuration">Configuration</a> — model, tokenizer, backend, sensitivity, database actions</li>
+<li><a href="#searching-assets">Searching Assets</a> — how search works and how to get better results</li>
+<li><a href="#extensibility">Extensibility</a> — add custom metadata extractors and asset kinds</li>
+<li><a href="#troubleshooting">Troubleshooting</a> — common issues and fixes</li>
+<li><a href="#faq">FAQ</a> — size, performance, privacy, roadmap</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Unity <strong>2022.3 LTS or newer</strong> (developed and tested on 6000.5.2f1)</li>
+<li><code>com.unity.ai.inference</code> (Sentis) 2.3.0+ — installed automatically with the package</li>
+<li>GPU compute shader support for the GPU backend (a CPU backend is available as fallback)</li>
+</ul>
+<hr>
+<div id="getting-started"></div><h1>Getting Started</h1>
+<p>This guide walks you from a fresh project to your first semantic search.</p>
+<h2>1. Install the package</h2>
+<ol>
+<li>In the Editor open <strong>Assets → Import Package → Custom Package…</strong>.</li>
+<li>Select the <strong><code>AI Semantic Search.unitypackage</code></strong> file (from the store listing) and click<br><strong>Import</strong>. The <code>com.unity.ai.inference</code> (Sentis) dependency installs automatically.</li>
+</ol>
+<h2>2. Locate the sample assets</h2>
+<p>The sample (model, tokenizer config and demo prefabs) ships <strong>inside</strong> the package file, so<br>it is already in your project after step 1. If you imported a build without the sample, use<br><strong>Package Manager → AI Semantic Search → Samples → Base AI Model &amp; Demo Assets → Import</strong>.</p>
+<p>The files you need:</p>
+<ul>
+<li><code>Models/MiniLM_uint8.sentis</code> — the MiniLM-L6-v2 sentence model, uint8-quantized (~24 MB);</li>
+<li><code>Data/tokenizer.json</code> — the BERT WordPiece tokenizer config (the full vocabulary is<br>embedded in this file — no separate <code>vocab.txt</code> is needed);</li>
+<li><code>Resources/…</code> — a small set of medieval prefabs to search immediately.</li>
+</ul>
+<h2>3. Open the tool</h2>
+<p><strong>Window → SnivelerCode → Semantic Search</strong> (window title: <em>Asset AI Search</em>).</p>
+<p>The window has three tabs: <strong>Search</strong>, <strong>Embedding</strong>, <strong>Prefabs</strong>, and a<br>status bar at the bottom showing progress and messages.</p>
+<h2>4. Set up the model</h2>
+<p>In the <strong>Embedding</strong> tab:</p>
+<ol>
+<li><strong>Model</strong> — drag <code>MiniLM_uint8.sentis</code> into the field.</li>
+<li><strong>Vocab</strong> — drag <code>tokenizer.json</code> into the field.<blockquote>
+<p>⚠ This must be the JSON tokenizer config. Plain vocabulary files (e.g. <code>vocab.txt</code><br>published by some model repositories) do not work — the tool reads the JSON config,<br>which already contains the complete vocabulary.</p>
+</blockquote>
+</li>
+<li>Leave <strong>Tokens = 128</strong> and <strong>Backend = GPU</strong>. If your GPU has no compute shader<br>support, switch <strong>Backend</strong> to <strong>CPU</strong>.</li>
+</ol>
+<p>The status bar confirms the model is ready and the <strong>Search</strong> button becomes enabled.</p>
+<h2>5. Index your assets</h2>
+<p><strong>Prefabs tab:</strong></p>
+<ol>
+<li><strong>Check</strong> — scans the project for new/modified prefabs.</li>
+<li><strong>Index</strong> — runs the model over them and saves vectors to the local database.</li>
+</ol>
+<blockquote>
+<p>Tip: you can toggle individual metadata extractors (name/context/components/…) in the<br>Prefabs tab settings panel before indexing.</p>
+</blockquote>
+<h2>6. Search</h2>
+<p>Open the <strong>Search</strong> tab, type e.g. <code>heavy axe</code> and press <strong>Search</strong>.<br>Results appear grouped by type, sorted by similarity score.</p>
+<ul>
+<li>Clicking a prefab result lets you drag it into the scene.</li>
+</ul>
+<p>Adjust the <strong>Sensitivity</strong> slider if you get too many or too few results (default 25 is loose;<br>raise it for stricter matches).</p>
+<p>That&#39;s it — you are now searching assets by meaning, fully offline.</p>
+<hr>
+<div id="searching-assets"></div><h1>Searching Assets</h1>
+<h2>How a search works</h2>
+<ol>
+<li>Your query is embedded with the same model used for indexing.</li>
+<li>Every indexed asset gets a similarity score — cosine similarity between the query<br>vector and the asset&#39;s vector, computed with SIMD acceleration.</li>
+<li>A small <strong>text-match bonus</strong> is added when the raw query text appears in the asset&#39;s<br>metadata.</li>
+<li>Assets above the <strong>Sensitivity</strong> threshold are returned, sorted by score.</li>
+</ol>
+<h2>What affects relevance</h2>
+<p>The quality of results depends on the metadata collected during indexing:</p>
+<h3>Prefabs</h3>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Name</strong></td>
+<td><code>Axe_Bronze</code> → &quot;axe&quot;, &quot;bronze&quot;</td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td>Light, VFX, Rigidbody, colliders → &quot;lamp&quot;, &quot;physical&quot;, &quot;interactive&quot;</td>
+</tr>
+<tr>
+<td><strong>Context</strong></td>
+<td>folder path &amp; category keyword DBs → &quot;workshop&quot;, &quot;weapons&quot;, &quot;furniture&quot;</td>
+</tr>
+<tr>
+<td><strong>Materials</strong></td>
+<td>material names/keys → &quot;wood&quot;, &quot;metal&quot;, &quot;cloth&quot;</td>
+</tr>
+<tr>
+<td><strong>Geometry</strong></td>
+<td>mesh complexity hints (if the extractor is enabled)</td>
+</tr>
+</tbody></table>
+<h2>Tips for better results</h2>
+<ul>
+<li>Use <strong>everyday words</strong>: <code>small green plant</code> beats <code>Plant_SM_04</code>.</li>
+<li>Combine category words with context: <code>medieval storage barrel</code> is very precise.</li>
+<li>If a result is missing, lower the sensitivity a bit.</li>
+<li>After moving/renaming assets, re-run <strong>Check</strong> (it detects modified assets by hash)<br>and <strong>Index</strong> to refresh vectors.</li>
+</ul>
+<h2>Result interactions</h2>
+<ul>
+<li><strong>Prefabs</strong> — select a result and drag it into the scene (or an open prefab edit).</li>
+</ul>
+<hr>
+<div id="configuration"></div><h1>Configuration</h1>
+<p>This page explains every setting in the tool and how the database lifecycle works.</p>
+<h2>Embedding tab — model setup</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Model</strong></td>
+<td>—</td>
+<td>The embedding model (<code>.sentis</code> or <code>.onnx</code>). Any BERT-like model with <code>input_ids</code> / <code>attention_mask</code> inputs works; <code>MiniLM_uint8.sentis</code> from the samples is recommended.</td>
+</tr>
+<tr>
+<td><strong>Vocab</strong></td>
+<td>—</td>
+<td>The BERT tokenizer configuration, provided as JSON (<code>tokenizer.json</code>). The tokenizer is built from this config.</td>
+</tr>
+<tr>
+<td><strong>Tokens</strong> (max length)</td>
+<td>128</td>
+<td>Maximum sequence length (range 128–512). 128 is enough for names; raise for deep folder paths or long descriptions.</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>GPU</td>
+<td>Sentis compute backend. Use <strong>CPU</strong> when the GPU lacks compute shader support.</td>
+</tr>
+</tbody></table>
+<p>When you assign a model, it is loaded and validated immediately — an unsupported model<br>shows an error in the status bar instead of crashing.</p>
+<h2>Where things live in the window</h2>
+<p>The window has three tabs — <strong>Search</strong>, <strong>Embedding</strong>, <strong>Prefabs</strong> — and a status bar.</p>
+<ul>
+<li><strong>Embedding tab</strong> — model setup: Model, Vocab, Tokens, Backend (all values are persisted).</li>
+<li><strong>Prefabs tab</strong> — database actions: <strong>Check</strong> scans for new/modified prefabs,<br><strong>Index</strong> embeds them into the local database; extractor toggles live in the<br>transformer settings panel of this tab.</li>
+</ul>
+<h2>Search tab — sensitivity</h2>
+<p><strong>Sensitivity</strong> (default 25) is the minimum similarity score, in percent, for a result.<br>Higher values are stricter (fewer, more precise matches); lower values allow broader<br>associations.</p>
+<ul>
+<li>Lower (e.g. 55–65) → more relaxed search, more noise;</li>
+<li>60–70 → the &quot;sweet spot&quot; for most projects;</li>
+<li>Higher (e.g. 80+) → exact-ish matches only.</li>
+</ul>
+<h2>Where the data lives</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Index + settings</td>
+<td><code>Library/SnivelerCode_SemanticIndex.db</code> (project-local, gitignored)</td>
+</tr>
+<tr>
+<td>Category keyword DBs</td>
+<td>inside the package: <code>Editor/Transformers/Local/Prefabs/Database/*.json</code></td>
+</tr>
+</tbody></table>
+<h3>Resetting the index</h3>
+<p>The database is stored in <code>Library/</code>. Cleaning <code>Library/</code> deletes it; the tool then starts<br>empty — re-run <strong>Check → Index</strong> after that. To rebuild categories only, use the<br><strong>Bake</strong> action in the Prefabs tab settings (they rebuild automatically when missing).</p>
+<hr>
+<div id="extensibility"></div><h1>Extensibility</h1>
+<p>This package is architectured around small, composable pieces. You can extend it without<br>modifying the core modules.</p>
+<h2>Architecture overview</h2>
+<pre><code>EditorWindow (SemanticSearchEditor)
+ └─ MiniContainer (constructor-injection DI)
+     ├─ IEmbeddingModule   — model + tokenizer + Worker (Sentis)
+     ├─ PrefabsModule      — Check/Index UI, result view, LocalTransformer
+     └─ SearchModule       — query embedding + SIMD scoring over the index
+</code></pre>
+<ul>
+<li><strong>Storage</strong>: SQLite (<code>SqliteStorage</code>, partial class implementing <code>IAssetsStorage</code>,<br><code>IPropertiesStorage</code>, <code>IMetadataStorage</code>); index file <code>Library/SnivelerCode_SemanticIndex.db</code>.</li>
+<li><strong>Transformers</strong>: <code>Transformer&lt;T&gt;</code> (base: chunked <code>ProcessAsync</code> → <code>CollectMetadata</code>),<br><code>LocalTransformer</code> (prefabs).</li>
+<li><strong>Metadata</strong>: <code>Metadata&lt;T&gt;</code> — one semantic extractor per concern.</li>
+</ul>
+<h2>Adding a metadata extractor (prefabs example)</h2>
+<ol>
+<li><p>Create a class in <code>Editor/Transformers/Local/Prefabs/Metadata/</code>:</p>
+<pre><code class="language-csharp">public sealed class MyMetadata : Metadata&lt;GameObject&gt;
+{
+    public override string Name =&gt; &quot;My Rule&quot;;
+    public override string Info =&gt; &quot;Adds custom semantic hints.&quot;;
+    public MyMetadata(IMetadataFacade facade) : base(facade) { }
+
+    public override async Task&lt;IMetadataResult&gt; ProcessAsync(GameObject asset)
+    {
+        // ... analyze the GameObject ...
+        return IMetadataResult.FromArray(new[] { &quot;custom hint&quot; });
+    }
+}
+</code></pre>
+</li>
+<li><p>Register it in <code>LocalMetadataProcessor</code> (constructor array):</p>
+<pre><code class="language-csharp">_extractors = new Metadata&lt;GameObject&gt;[]
+{
+    container.Create&lt;IdentityMetadata&gt;(),
+    // ...existing extractors...
+    container.Create&lt;MyMetadata&gt;(),   // ← new
+};
+</code></pre>
+</li>
+<li><p>Use <code>_metadata.GetVectorsAsync(MetadataWord[])</code> for similarity against the category<br>databases, and return a semantic description. The extractor automatically appears in<br>the Prefabs tab settings (extractor toggles).</p>
+</li>
+</ol>
+<h2>Adding a new asset kind</h2>
+<ol>
+<li>Add a value to <code>AssetStorageType</code>.</li>
+<li>Write a <code>Transformer&lt;YourAssetType&gt;</code> that collects metadata and persists vectors<br>(model it on <code>LocalTransformer</code>: <code>CollectMetadata</code> + <code>ProcessAssets</code>).</li>
+<li>Add a module/tab modeled on <code>PrefabsModule</code> (Check/Index + <code>Bind&lt;YourResultView&gt;()</code><br>where the result view extends <code>SearchResultView</code>).</li>
+</ol>
+<h2>Working with the category databases</h2>
+<p>Category keyword databases (<code>Editor/Transformers/Local/Prefabs/Database/*.json</code>)<br>define semantic axes: <code>{ &quot;categories&quot;: [ { &quot;id&quot;, &quot;parent?&quot;, &quot;keys&quot;, &quot;values&quot;, &quot;examples?&quot; } ] }</code>.<br>Each category is embedded and matched during indexing. The category databases are<br>validated by tests (unique ids across all databases, <code>Detailed.parent</code> resolves to a<br><code>General</code> id, no self-parent, no category pair sharing ≥3 keys, minimum coverage). The optional <code>examples</code> field<br>enriches the category embedding with <em>your project&#39;s</em> typical prefab names — for<br>example <code>&quot;examples&quot;: [&quot;P_Weapon_Axe_LOD0&quot;, &quot;Axe_Heavy&quot;]</code>. Use your own nomenclature:<br>shipped databases ship without examples so the search stays generic and portable<br>across projects. The <strong>Bake</strong> action in the<br>Prefabs tab re-embeds them when the DB file changes — it also runs automatically the<br>first time. To see which categories your corpus never matches (dead categories) and<br>which assets match no category, open<br><code>Window &gt; SnivelerCode &gt; Category Coverage (Debug)</code> after indexing.</p>
+<h2>Code style notes</h2>
+<ul>
+<li>Editor-only package: everything lives in the <code>SnivelerCode.SemanticSearch.*</code> namespaces.</li>
+<li>Register types in <code>SemanticSearchEditor.RegisterContainer()</code> or create them locally via<br><code>container.Create&lt;T&gt;()</code> (prefer <code>Create</code> for transformer-pipeline types that must not<br>appear in other modules&#39; dropdowns).</li>
+<li>Follow the existing custody pattern: modules implement <code>IDisposable</code> and unsubscribe<br>event handlers.</li>
+</ul>
+<hr>
+<div id="troubleshooting"></div><h1>Troubleshooting</h1>
+<h2>&quot;Semantic model is empty&quot; / assignment does nothing</h2>
+<p>The model field expects a <strong>Model Asset</strong> (<code>.sentis</code> or <code>.onnx</code>). If nothing happens after<br>assigning:</p>
+<ul>
+<li>Check that the file is a valid model (re-import if it came from disk).</li>
+<li>Check the status bar: &quot;Unsupported model. Expected BERT-like inputs (input_ids,<br>attention_mask)&quot; means the model architecture is not supported.</li>
+</ul>
+<h2>&quot;Tokenizer&quot; errors when assigning Vocab</h2>
+<p>The <strong>Vocab</strong> slot expects the <strong><code>tokenizer.json</code></strong> config (JSON). A plain vocabulary<br>file (e.g. <code>vocab.txt</code> from a model repository) fails the JSON parse with a<br><code>TokenizerException</code>. Use <code>Data/tokenizer.json</code> from the samples — it already contains<br>the complete vocabulary.</p>
+<h2>Search button is disabled</h2>
+<p>The embedding model is not fully set up, or the model did not finish loading/validation.<br>Check the <strong>Embedding</strong> tab settings and the status bar messages; make sure both <strong>Model</strong><br>and <strong>Vocab</strong> are assigned and no error message is shown.</p>
+<h2>No results for a known asset</h2>
+<ol>
+<li>Lower <strong>Sensitivity</strong> — the default 25 is already loose, so if it is at the default the<br>issue is likely indexing (steps 2–3), not the threshold.</li>
+<li>Verify the asset was indexed: <strong>Prefabs tab → Check</strong> shows <code>Indexed: N</code>,<br>and it appears in the database count in the status bar.</li>
+<li>Re-run <strong>Index</strong> after changing model or metadata settings.</li>
+</ol>
+<h2>&quot;Database is empty&quot; after it worked before</h2>
+<p>The index lives in <code>Library/SnivelerCode_SemanticIndex.db</code>. Cleaning <code>Library/</code> deletes<br>it — re-run <strong>Check → Index</strong> in both tabs. Your assets are never modified.</p>
+<h2>Errors during Check/Index</h2>
+<p>Check/Index failures are shown in the status bar and detailed in the Console<br>(Window → General → Console). Typical causes:</p>
+<ul>
+<li>an asset marked as missing (moved/deleted file) — Check removes it automatically;</li>
+<li>a corrupt prefab — exclude it or fix it, then re-run Check.</li>
+</ul>
+<h2>Performance is slow</h2>
+<ul>
+<li>Indexing is GPU-accelerated by default. If your GPU lacks compute shaders, the tool<br>falls back to CPU — expect lower throughput; consider setting <strong>Backend = CPU</strong><br>explicitly to avoid repeated warnings.</li>
+<li>Very deep folder structures may benefit from a higher <strong>Tokens</strong> value (256–512) at the<br>cost of slower indexing.</li>
+</ul>
+<h2>Collecting logs for support</h2>
+<ol>
+<li>Reproduce the issue.</li>
+<li>Open <strong>Window → General → Console</strong>, note the error lines, and click the log entry<br>to expand the stack trace.</li>
+<li>Include Unity version (from Help → About Unity) and package version<br>(Package Manager → AI Semantic Search).</li>
+</ol>
+<hr>
+<div id="faq"></div><h1>FAQ</h1>
+<h2>Why is the package so large?</h2>
+<p>The sample ships the sentence-transformer model as a <strong>uint8-quantized</strong> build<br>(<code>MiniLM_uint8.sentis</code>, ~24 MB) so that the tool works out of the box. The editor code<br>itself is small; you can remove the sample after importing and keep only the model files<br>you need. The full-precision float32 version (<code>MiniLM.onnx</code>, ~90 MB) is <strong>not</strong> part of the<br>shipped package — the original float32 weights live on Hugging Face; see the README<br>(&quot;Embedding model&quot;).</p>
+<h2>Does it work offline?</h2>
+<p>Yes. All embedding and search computations run in the editor, locally. No API keys,<br>no cloud calls, no telemetry. Open-source friendly.</p>
+<h2>What hardware is required?</h2>
+<ul>
+<li>Unity 2022.3 LTS or newer.</li>
+<li>A GPU with compute shader support delivers fast indexing (HSAIL/DX12/Vulkan/Metal<br>compute); otherwise the CPU backend is used.</li>
+</ul>
+<h2>How accurate is the search?</h2>
+<p>MiniLM-L6-v2 embeddings capture semantic similarity well for names and short descriptions.<br>The package adds strong context: components, folder/category keywords, materials,<br>geometry — which is what makes queries like<br>&quot;small green plant&quot; work despite no exact filename.</p>
+<h2>Which models are supported?</h2>
+<p>BERT-like models (<code>.onnx</code> or <code>.sentis</code>) with <code>input_ids</code> and <code>attention_mask</code> inputs.<br>The bundled <code>MiniLM_uint8.sentis</code> is a uint8-quantized build of all-MiniLM-L6-v2 (float32<br>source: the original weights on Hugging Face). Other sentence models may work if they<br>share the same input/output contract.</p>
+<h2>Will there be a cloud/AI-powered version?</h2>
+<p>A <strong>Gemini Transformer</strong> appears in the Prefabs dropdown as <em>&quot;(PRO experimental)&quot;</em> — it is<br>a placeholder reserved for future PRO versions and is not functional in this release.</p>
+<h2>Will my assets be modified?</h2>
+<p>No. The tool only reads assets and writes to <code>Library/SnivelerCode_SemanticIndex.db</code><br>(project-local and gitignored). Deleting that file resets the index; your prefabs<br>and scenes are untouched.</p>
+<h2>How do I improve search quality on my project?</h2>
+<ul>
+<li>Keep asset names descriptive (<code>Chest_Medieval</code> &gt; <code>T_chest_03</code>);</li>
+<li>let the tool index after folder reorganizations (Check picks up new/changed assets by hash);</li>
+<li>enable/disable extractors per project — e.g. context or geometry toggles in the<br>Prefabs tab settings;</li>
+<li>adjust sensitivity and, for deep hierarchies, token length.</li>
+</ul>
+<h2>What if I find a bug?</h2>
+<p>Report it via the <strong>support section of the store listing</strong> with the Unity version, package<br>version, and steps to reproduce (see Troubleshooting).</p>
+<h2>I imported the package but the sample model is missing</h2>
+<p>The model (<code>MiniLM_uint8.sentis</code>), the tokenizer config and the demo prefabs are part of the<br>sample content shipped inside the package file. Re-run the import and make sure the files<br>appear in your project; for the Package Manager flow, open <strong>AI Semantic Search → Samples →<br>Base AI Model &amp; Demo Assets → Import</strong>.</p>
+<h2>Why is the shipped model quantized?</h2>
+<p>The sample ships <code>MiniLM_uint8.sentis</code> — the float32 model (original weights on Hugging<br>Face) quantized to uint8 with Unity Sentis (<code>ModelQuantizer</code>). That cuts the model<br>~4× (90 MB → ~24 MB) with negligible impact on search quality for this model. Note: the<br>Sentis ONNX importer does <strong>not</strong> accept pre-quantized ONNX (QDQ) graphs — quantization is<br>applied to the imported model and serialized as a <code>.sentis</code> file. See the README<br>(&quot;Embedding model&quot;) for the exact script.</p>
+<hr>
+
+            
+            <!-- Edit on GitHub / Version -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <a href="https://github.com/sniveler-code/sniveler-code.github.io/edit/main/documentation/semantic-search/" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;">
+                    Edit on GitHub
+                </a>
+                <span class="mono" style="color: var(--text-secondary); font-size: 0.85rem;">v1.0.0</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Shared Docs JS -->
+    <script src="assets/docs.js"></script>
+    
+    <!-- Highlight.js (self-hosted) -->
+    <script src="assets/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Semantic Search",
+  "description": "Welcome to the documentation for AI Semantic Search.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Unity (Windows, macOS, Linux)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://sniveler-code.github.io/docs_semantic-search.html"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Sniveler Code",
+    "url": "https://sniveler-code.github.io"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Sniveler Code"
+  },
+  "url": "https://sniveler-code.github.io/docs_semantic-search.html",
+  "image": "https://sniveler-code.github.io/Images/sniveler_logo.png"
+}</script>
+</body>
+</html>
