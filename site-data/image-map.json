@@ -26,6 +26,33 @@
       ]
     }
   },
+  "ai_semantic_search.jpg": {
+    "original": {
+      "width": 420,
+      "height": 280,
+      "format": "jpeg",
+      "optimizedSize": 19400,
+      "optimizedUrl": "Images/optimized/ai_semantic_search@original.jpeg"
+    },
+    "variants": {
+      "webp": [
+        {
+          "width": 400,
+          "filename": "ai_semantic_search@400w.webp",
+          "size": 10792,
+          "url": "Images/optimized/ai_semantic_search@400w.webp"
+        }
+      ],
+      "avif": [
+        {
+          "width": 400,
+          "filename": "ai_semantic_search@400w.avif",
+          "size": 6953,
+          "url": "Images/optimized/ai_semantic_search@400w.avif"
+        }
+      ]
+    }
+  },
   "audio_dispatcher_advanced.jpg": {
     "original": {
       "width": 420,
