@@ -1,33 +1,72 @@
 # 🎛 Blackboard Nodes
 
-While custom C# actions can read and write to the Blackboard programmatically, you can also manipulate Blackboard variables directly using visual nodes.
+Besides custom C# actions, you can read and write **named blackboard variables** directly with visual nodes. Both live under **Blackboard/** in the search window.
 
-#### ⚖️ Blackboard Condition Node
+## ⚖️ Blackboard Condition
 
-This node acts as a gatekeeper. It checks the value of a Blackboard variable and returns **Success** if the condition is met, or **Failure** if it is not.
+`Blackboard/Blackboard Condition` — a leaf gatekeeper. Reads one named variable and returns **Success** if the comparison holds, **Failure** otherwise.
 
-**How to use:**
+**Inspector:**
 
-1. Add a **Blackboard Condition** node via the Search Window (`Blackboard/Blackboard Condition`).
-2. Select the node.
-3. In the Node Tab (left panel), configure the check:
-   * **Variable:** Select the variable from your `Blackboard list`.
-   * **Operator:** Choose how to compare it (`Equal`, `NotEqual`, `Greater`, `Less`).
-   * **Value:** The static value to compare against.
+| Field | Meaning |
+|---|---|
+| **Variable** | dropdown of the graph's named variables (by name; identity is the hash) |
+| **Operator** | `Skip`, `Equal`, `NotEqual`, `Greater`, `Less` |
+| **Value** | the static value to compare against (float field) |
+| **Enable Output** | when on, the node grows a horizontal **output** port carrying this variable's hash — connect it to a custom action's `[BtBlackboard]` input so the same variable flows through |
 
-Example: Check if Health is Less than 20. If true (Success), the tree can move on to a "Flee" action.
+**Runtime semantics (exact):**
 
-#### ✏️ Blackboard Modify Node
+* The variable's 4-byte slot is read as a **float** and compared:
+  * `Equal` / `NotEqual` use a **0.001 absolute epsilon** (`|a − b| < 0.001`), not strict equality — integer-valued floats work fine with it,
+  * `Greater` / `Less` are strict,
+  * `Skip` (the default) never evaluates — the condition **always succeeds** (it's the "not configured" state, not a failure state).
+* The node is a **terminal** node: single input flow port, no output flow port.
 
-This node allows you to mathematically alter the value of a Blackboard variable during the execution of the tree. It always returns **Success** upon completion.
+**Example:** variable `Health` (Float). Set `Health < 20` → when the agent's health drops below 20 the condition succeeds and the tree can proceed to a Flee branch.
 
-**How to use:**
+## ✏️ Blackboard Modify
 
-1. Add a **Blackboard Modify** node (Blackboard/Blackboard Modify).
-2. Select the node.
-3. In the Node Tab, configure the modification:
-   * **Variable:** Select the variable you want to change.
-   * **Operator:** Choose the math operation (`Set`, `Inc` \[Increase/Add], `Dec` \[Decrease/Subtract]).
-   * **Value:** The static value to apply.
+`Blackboard/Blackboard Modify` — a leaf that changes a variable. **Always returns Success** once applied.
 
-Example: When a "Take Damage" action completes, use this node to Dec (decrease) the Health variable by 10.
+**Inspector:**
+
+| Field | Meaning |
+|---|---|
+| **Variable** | the variable to modify |
+| **Operator** | `Skip`, `Set`, `Inc` (add), `Dec` (subtract) |
+| **Value** | the static value |
+| **Use DeltaTime** | when enabled, `Value` is **multiplied by `DeltaTime`** before the operation (per-frame accumulation — see below) |
+| **Enable Output** | same output-port behavior as Condition |
+
+**Runtime semantics (exact):**
+
+* The slot holds one float; the operation is `current = Set ? value : current ± (value · Δt?)` and written back in the same frame.
+* `Skip` leaves the value untouched (still returns Success).
+* Because `int`/`bool` variables share the float slot, modifying them is done **in float space** — e.g. `Inc 1` on a bool toggles 0→1→2…; treat `Int`/`Bool` variables as float-backed integers/flags.
+
+### The `Use DeltaTime` pattern
+
+With **Use DeltaTime** on, each execution of the node applies `value · Δt` — i.e. it integrates *real time*. The node itself only runs when the tree reaches it, so to accumulate continuously you wrap it in an **infinite Repeater** (Repeater value `0`):
+
+```
+Sequence
+└─ Repeater (value 0  = infinite)
+   └─ Blackboard Modify  (Inc, Value 1, Use DeltaTime ✓)
+      → variable increases by exactly 1.0 per real second
+```
+
+This is the idiomatic way to build a "time spent in state" counter.
+
+## ⚡ Data-Port Outputs ("Enable Output")
+
+Both nodes can expose their variable as a **data port** (the horizontal port on the right). The port's payload is the variable's *hash*, typed as the blackboard-variable marker type, so it can only connect to a **`[BtBlackboard]` input port of a custom action**:
+
+```
+Blackboard Modify (Health, Set, 100, Enable Output ✓)
+        │ output (variable: Health)
+        ▼
+Action Custom → MoveAction.Process([BtBlackboard] ref float speed, …)
+```
+
+At runtime the generated job reads the variable's state slot before `Process`, passes it (by value or `ref`), and — for `ref` — writes the slot back **after** `Process` returns. This is the only way to hand a *named* variable to C#; everything else goes through `[BtInput]`/`[BtOutput]` data channels (see [The Blackboard System](#the-blackboard-system)).

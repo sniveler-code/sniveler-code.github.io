@@ -1,34 +1,79 @@
 # 🌳 Composites
 
-Composite nodes are the structural backbone of your Behavior Tree. They control the flow of execution, deciding which of their children (connected below them) to run, and in what order.
+Composite nodes are the structural backbone of a tree. They have an **Input flow port (top)** and a **Multi Output flow port (bottom)** — you can hang any number of children, ordered **left to right** by their horizontal position on the canvas (the compiler sorts children by `Position.x`).
 
-#### ➡️ Sequence
+All composites below are implemented as an **iterative state machine**: the agent's current node index is persisted on the entity, and each frame the evaluator re-enters the tree exactly where it left off. A composite never "waits" — it either descends into a child, or reports a terminal status to its parent.
 
-The Sequence node executes its children from left to right.
+## ➡️ Sequence
 
-* **Success:** It returns Success only if **all** of its children return Success.
-* **Failure:** It stops and returns Failure the moment **any** child returns Failure.
-* Use case: A strict list of tasks. (e.g., Check Ammo -> Aim -> Fire). If the agent has no ammo, the sequence fails and stops immediately.
+`Composites/Composite Sequence`
 
-#### 🔀 Selector
+Runs children left → right, one at a time.
 
-The Selector node executes its children from left to right.
+* **Descend:** when first entered, jumps to the first child.
+* **Child Success:** advances to the next sibling (fresh state). No siblings left → **Success**.
+* **Child Failure:** immediately **Failure** (remaining children are not attempted).
+* **Child Running:** suspends there; resumes next frame.
+* **Empty Sequence:** returns **Success** vacuously.
 
-* **Success:** It stops and returns Success the moment **any** child returns Success.
-* **Failure:** It returns Failure only if **all** of its children return Failure.
-* Use case: Prioritizing actions. (e.g., Try to take cover -> Try to shoot -> Try to run away). It attempts the first option; if that fails, it tries the next.
+> Use case: a strict task list — `Check Ammo → Aim → Fire`. Any failed step aborts the whole sequence.
 
-#### 🎲 Random Sequence & Random Selector
+## 🔀 Selector
 
-These function exactly like their standard counterparts, but instead of evaluating children strictly from left to right, they evaluate them in a **random, non-repeating order**.
+`Composites/Composite Selector`
 
-* Use case: Making AI feel less predictable (e.g., choosing a random patrol point or picking a random taunt animation).
+Runs children left → right, trying each until one succeeds.
 
-#### ⏸ Parallel
+* **Descend:** first child.
+* **Child Success:** immediately **Success** (remaining children skipped).
+* **Child Failure:** tries the next sibling. No siblings left → **Failure**.
+* **Child Running:** suspends there; resumes next frame.
+* **Empty Selector:** returns **Failure** (nothing to try).
 
-The Parallel node executes **all** of its connected children simultaneously on the same frame.\
-When you select the Parallel node, you can configure its **Policy** in the settings panel:
+> Use case: prioritized fallback — `Take Cover → Shoot → Flee`.
 
-* **Require All Success:** The Parallel node returns Success only when every running child finishes with Success. If any child fails, the Parallel node immediately returns Failure and aborts the other children.
-* **Require One Success:** The Parallel node returns Success the moment any child finishes with Success, instantly aborting the remaining running children.
-* Use case: Moving while shooting, or monitoring for threats while performing a task.
+## 🎲 Random Selector / Random Sequence
+
+`Composites/Composite Selector Random` · `Composites/Composite Sequence Random`
+
+Same policies as Selector/Sequence, but children are picked in a **random, non-repeating order** for each pass:
+
+* the composite stores a **visited bitmask** (one bit per child, in left-to-right order) in its state slot,
+* each pick draws a random child among the unvisited ones; the random is seeded from `hash(entityIndex, nodeIndex, frame)`, so different agents pick different orders *and* the order changes frame to frame,
+* when all children have been visited, the composite returns its terminal status (`Success` for Random Sequence, `Failure` for Random Selector).
+
+> ⚠️ **Limit: at most 31 children.** The visited mask is a 32-bit int; the compiler asserts this at bake time (`Random selector/sequence node X has N children, max supported is 31`).
+
+> Use case: non-repeating patrol point selection, varied taunt animations.
+
+## ⏸ Parallel
+
+`Composites/Composite Parallel`
+
+Executes **all** children **simultaneously** — each child branch is ticked in the same frame, each with its **own** state (stored in the agent's `BtParallelBranchState` buffer, sized at bake time for every Parallel branch in the tree, including branches inside sub-trees).
+
+**Policy (inspector dropdown):**
+
+| Policy | Completes when… | Result |
+|---|---|---|
+| **Require All Success** (default) | any child returns **Failure** → abort | **Failure** |
+| | all children finish (no failures) | **Success** |
+| **Require One Success** | any child returns **Success** → abort | **Success** |
+| | all children finish with no success | **Failure** |
+
+**Abort behavior (exact):** when the Parallel completes, every branch still `Running` is abandoned:
+
+1. each abandoned branch's running custom/Find/Condition action is removed from `BtActionState`,
+2. a **deactivation request** is queued so the dispatcher disables that action's Tag on this agent — the abandoned action stops executing immediately (this is what `BtParallelDeactivationTests` verifies).
+
+Branches that haven't been started yet are simply never started. When the Parallel is re-entered later, all branch states are reset to `None` and every branch starts fresh.
+
+> Use case: move *while* shooting; monitor threats while performing a task.
+
+## ⚠️ Resuming a Suspended Composite
+
+Because the resume point is stored **on the child**, a composite only re-enters when its child reports a terminal status. Practical consequences:
+
+* a `Sequence` whose child is `Running` stays on that child next frame (the sequence itself is not re-ticked),
+* decorators like `Repeater`/`Retry` re-enter their child with an explicit state transition (see [Decorators](#decorators)),
+* this is why a tree that is *entirely* of immediate-completing leaves (conditions, blackboard ops) can run many nodes in a single frame — bounded by **Max Iterations Per Frame** (default 50). Deep, always-completing trees may need a higher budget; see [Runtime Internals](#runtime-internals).

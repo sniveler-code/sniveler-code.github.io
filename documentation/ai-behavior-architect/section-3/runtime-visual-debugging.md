@@ -1,31 +1,45 @@
 # 🐞 Runtime Visual Debugging
 
-Debugging DOTS applications can be notoriously difficult since the logic happens inside multithreaded Burst jobs. AI Behavior Architect completely solves this by providing real-time, visual debugging directly on the graph.
+Debugging DOTS is notoriously hard because the logic lives inside multithreaded Burst jobs. AI Behavior Architect mirrors the evaluator's state machine back into the editor so you can watch your exact graph run, node by node, in real time.
 
-#### 🔍 How to Monitor an Agent
+## 🔍 How to Monitor an Agent
 
-1. Enter **Play Mode** in the Unity Editor.
-2. Open the **Entity Hierarchy** window (provided by Unity's Entities package).
-3. Select any Entity that possesses a `BtAgent` component.
-4. If your `Behavior Editor` window is open, it will immediately snap to the `Graph Asset` currently running on that Entity.
+1. Enter **Play Mode** (the editor auto-switches to read-only and locks the canvas).
+2. Open the **Entity Hierarchy** window (Window → General → Entity Hierarchy, provided by the Entities package).
+3. Select any entity that carries a **`BtAgent`** component.
+4. If the Behavior Editor is open, it **snap-loads** the graph asset that the selected entity is running (resolved by matching the blob's `TreeHash` against graph asset hashes) and begins polling that entity's debug state every editor frame.
 
-#### 🚦 Visual Feedback
+> 💡 Selecting a *different* agent switches the editor to *that* agent's tree. If two agents run the same graph, the editor shows the graph once and mirrors the status of whichever agent you selected last.
 
-As the C# Job evaluates the behavior tree, the Editor listens to the state buffer and updates the nodes on your canvas in real-time. Look at the colored borders of the nodes:
+## 🚦 Visual Feedback
 
-* 🟡 **Yellow Border:** The node is currently **Running**.
-* 🟢 **Green Border:** The node returned **Success** this frame.
-* 🔴 **Red Border:** The node returned **Failure** this frame.
+The Burst job writes each node's `NodeStatus` into an editor-only `BtDebugState` buffer (one slot per flat node); the editor reads the whole buffer every frame and applies it to the canvas:
 
-> 🔒 **Read-Only Mode**\
-> When you enter Play Mode, the entire graph canvas and toolbar become locked (Read-Only). This prevents you from accidentally making structural changes to the graph while the backend DOTS systems are actively iterating over the unmanaged Blob Assets.
+| Border / port color | Meaning |
+|---|---|
+| 🟡 **Yellow** | The node is currently **Running** (it will be re-ticked next frame). |
+| 🟢 **Green** | The node returned **Success** this frame. The highlight fades after ~0.5 s. |
+| 🔴 **Red** | The node returned **Failure** this frame. The highlight fades after ~0.5 s. |
+| ⬜ Gray | Idle — the node was not touched this frame. |
 
-#### ⚡ Zero Overhead in Production
+Terminal results (Success/Failure) are stamped with a timestamp and automatically fade to gray, while **Running** stays lit as long as the node keeps ticking — so a `Wait` node glows yellow for its whole duration, and a fast `Condition` flickers green/red each frame.
 
-You might be wondering: "Does visual debugging slow down my DOTS jobs?"\
-The answer is **No**.\
-The debug state buffers (`BtDebugState`) are wrapped in strict `#if UNITY_EDITOR` preprocessor directives. When you build your game, the debugging memory footprint and logging logic are completely stripped from the compilation. Your production builds run with absolute maximum performance.
+**Status reset semantics:** when an agent's tree restarts (root completes and the index resets to 0), the runner flags `DebugReset`, and the editor resets every slot to `None` — *except* slots flagged `BlockReset` (nodes that are mid-execution, like a running Parallel's active branch or a running Wait), which keep their state. This prevents stale "success" flashes when a tree loops.
 
-***
+For **Parallel** nodes, each running branch is logged into its own flat node, so you can see *which branches* of a parallel are still alive. When a Parallel finishes and abandons still-running branches, the abandoned custom actions are **deactivated** (their Tag disabled, see [Runtime Internals](#runtime-internals)) so they stop burning CPU.
 
-<br>
+## ⚡ Zero Overhead in Production
+
+Does visual debugging slow down the DOTS jobs? **No.**
+
+* The `BtDebugState` buffer, the `BtDebugInitSystem` and every `logger.Log(...)` call sit behind `#if UNITY_EDITOR` and/or `[Conditional("UNITY_EDITOR")]` — in a player build the compiler strips the calls entirely, leaving no buffer, no writes, no branching.
+* Editor-only warning/error logs go through `BtLogger` with `[Conditional("SNC_DEBUG_INFO")]` / `[Conditional("SNC_DEBUG_WARNINGS")]` define gates, so even log *formatting* disappears unless you opt in by defining those symbols.
+
+> 💡 You *can* opt into managed logging in the editor for deeper diagnostics: define `SNC_DEBUG_INFO` (info) and/or `SNC_DEBUG_WARNINGS` in your assembly's player settings or a scripting define. `BtLogger.LogManaged` and `BurstLogBuilder.LogWarning` only emit under those defines.
+
+## 🐛 What to Look For (Common Debug Patterns)
+
+* **A node stuck yellow forever** — its action never completes. For custom actions: check that the agent actually has every component the `Process` method queries (the generated job silently skips entities that don't match its query — see [The Custom Action Execution Model](#the-custom-action-execution-model)).
+* **A Find node flickering red** — nothing in range matches the component conditions, or the **Spatial Cell Size** is smaller than your world's entity spacing (cells are only visited inside the search cube).
+* **Parallel looks "stuck"** — one branch is running a long action; the yellow branch child tells you exactly which one.
+* **Tree restarts every frame** (whole root flashes) — your root completes and the tree re-runs from the top; that's normal Behavior Tree behavior (root is ticked every frame), not a bug.

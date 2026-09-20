@@ -31,6 +31,22 @@ function slugify(text) {
         .replace(/\-\-+/g, '-');
 }
 
+// Minify rendered HTML for a smaller single-page file.
+// <pre> blocks (code / diagrams) are protected byte-for-byte — their
+// whitespace and alignment are meaningful; everything else gets the
+// whitespace between tags stripped.
+function minifyHTML(html) {
+    const preBlocks = [];
+    let out = html.replace(/<pre[\s\S]*?<\/pre>/g, m => {
+        preBlocks.push(m);
+        return `\u0000PRE${preBlocks.length - 1}\u0000`;
+    });
+    out = out.replace(/>[ \t\n\r]+</g, '><');   // whitespace between tags
+    out = out.replace(/^[ \t]+$/gm, '');         // whitespace-only lines
+    out = out.replace(/\n{2,}/g, '\n');          // collapse blank lines
+    return out.replace(/\u0000PRE(\d+)\u0000/g, (m, i) => preBlocks[+i]);
+}
+
 // Generate JSON-LD for SoftwareApplication
 function generateJsonLd(project, projectTitle, projectDescription) {
     const jsonLd = {
@@ -107,15 +123,20 @@ projects.forEach(project => {
     
     const summaryLines = fs.readFileSync(summaryPath, 'utf-8').split('\n');
     
-    let sidebarHTML = '<ul>';
     let fullMarkdown = '';
     
     // Mapping from filename to anchor slug
     const fileToSlug = {};
 
-    // First pass: find all files and create slugs
+    // First pass: find all files, create slugs, remember their SUMMARY.md section (## heading)
     const filesToProcess = [];
+    let currentSection = null;
     summaryLines.forEach(line => {
+        const sectionMatch = line.match(/^##\s+(.+?)\s*$/);
+        if (sectionMatch) {
+            currentSection = sectionMatch[1];
+            return;
+        }
         const match = line.match(/\*\s+\[(.*?)\]\((.*?)\)/);
         if (match) {
             const title = match[1];
@@ -123,12 +144,21 @@ projects.forEach(project => {
             const cleanTitle = title.replace(/[^\w\s]/g, '').trim(); // Remove emojis for slug
             const slug = slugify(cleanTitle) || slugify(file.replace('.md', ''));
             fileToSlug[file] = slug;
-            filesToProcess.push({ title, file, slug });
+            filesToProcess.push({ title, file, slug, section: currentSection });
         }
     });
 
-    // Build Sidebar and Concatenate Markdown
-    filesToProcess.forEach(({title, file, slug}) => {
+    // Build Sidebar (grouped into submenus when the SUMMARY has ## sections) and Concatenate Markdown
+    let sidebarHTML = '<ul>';
+    let openSection = null;
+    filesToProcess.forEach(({title, file, slug, section}) => {
+        if (section !== openSection) {
+            if (openSection !== null) sidebarHTML += '</ul></li>'; // close previous group
+            if (section !== null) {
+                sidebarHTML += `<li class="toc-group"><span class="toc-group-label">${section}</span><ul class="toc-group-items">`;
+            }
+            openSection = section;
+        }
         sidebarHTML += `<li><a href="#${slug}">${title}</a></li>`;
         
         const filePath = path.join(projectDir, file);
@@ -196,6 +226,7 @@ projects.forEach(project => {
             console.warn(`File not found: ${filePath}`);
         }
     });
+    if (openSection !== null) sidebarHTML += '</ul></li>'; // close last group
 
     sidebarHTML += '</ul>';
 
@@ -217,8 +248,9 @@ projects.forEach(project => {
         .replace('{{JSON_LD}}', jsonLd);
 
     const outPath = path.join(__dirname, `docs_${project}.html`);
-    fs.writeFileSync(outPath, finalHTML);
-    console.log(`Generated: ${outPath}`);
+    const minified = minifyHTML(finalHTML);
+    fs.writeFileSync(outPath, minified);
+    console.log(`Generated: ${outPath} (${(finalHTML.length/1024).toFixed(1)} KB -> ${(minified.length/1024).toFixed(1)} KB)`);
 
     // Add to sitemap
     sitemapUrls.push(`${BASE_URL}/docs_${project}.html`);

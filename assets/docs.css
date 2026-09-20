@@ -124,6 +124,25 @@ nav a:hover { color: var(--accent); }
     font-weight: 600;
 }
 
+/* --- Sidebar grouped TOC (submenus from SUMMARY.md ## sections) --- */
+.sidebar .toc-group { margin-bottom: 1rem; }
+.sidebar .toc-group-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 0.75rem 0.5rem 0.35rem;
+}
+.sidebar .toc-group-items {
+    padding-left: 0.75rem;
+    margin-left: 0.25rem;
+    border-left: 1px solid var(--border);
+}
+.sidebar .toc-group-items li { margin-bottom: 0.15rem; }
+
 /* --- Content Typography --- */
 .content-area h1 {
     font-size: 2.5rem;
@@ -190,7 +209,7 @@ nav a:hover { color: var(--accent); }
 }
 .content-area blockquote p:last-child { margin-bottom: 0; }
 
-.content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+.content-area table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; margin-bottom: 1.5rem; }
 .content-area th, .content-area td { border: 1px solid var(--border); padding: 0.75rem 1rem; text-align: left; }
 .content-area th { background: var(--bg-surface); color: var(--text-primary); }
 
