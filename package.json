@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build-docs.js",
     "build:images": "node optimize-images.js",
-    "build:all": "npm run build:images && npm run build",
+    "build:search": "pagefind -s . --output-subdir assets/pagefind --glob {index.html,docs_*.html}",
+    "build:all": "npm run build:images && npm run build && npm run build:search",
     "dev": "npx serve .",
     "test": "echo \"No tests specified\" && exit 0"
   },
@@ -33,7 +34,8 @@
     "marked": "^18.0.9"
   },
   "devDependencies": {
-    "sharp": "^0.33.0",
-    "serve": "^14.2.0"
+    "pagefind": "^1.5.2",
+    "serve": "^14.2.0",
+    "sharp": "^0.33.0"
   }
 }

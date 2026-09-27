@@ -21,6 +21,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://sniveler-code.github.io/docs_burstnav-ecs.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://sniveler-code.github.io/docs_fmod.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
