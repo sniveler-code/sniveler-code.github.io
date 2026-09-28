@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# AI company (agents + instructions) — local only, never deploy
+.pi/
+
 # Build output (if any)
 *.log
 npm-debug.log*
@@ -26,3 +29,6 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Local tooling
+.mcp.json
