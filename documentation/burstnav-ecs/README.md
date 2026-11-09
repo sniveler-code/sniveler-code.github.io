@@ -1,51 +1,87 @@
-# 👋 Introduction & Overview
+# 👋 BurstNav Free — ECS Pathfinding for Unity DOTS
 
-**BurstNav ECS** is a hierarchical pathfinding (HPA\*) + ORCA steering system for Unity DOTS/ECS. Navmeshes are baked once into an immutable blob graph with a spatial-grid index and an optional cluster graph; at runtime a Burst-compiled flat/HPA\* A\* search (zero steady-state allocation) produces polygon corridors, a funnel simplifies them into waypoints, and a spatial-hash + ORCA pipeline keeps hundreds of agents apart. Dynamic obstacles block links at runtime — **no re-bake**.
+**BurstNav Free** is a zero-allocation navigation package for Unity DOTS: a baked polygon graph feeds a flat A* search, the search fills a per-agent waypoint buffer, and a kinematic funnel turns that corridor into a smooth desired velocity. Every stage is a Burst-compiled job reading chunk arrays — no `NavMeshAgent`, no MonoBehaviours, no per-frame allocations.
 
-Whether you are building an RTS, a factory-automation game, or a swarm-survival project, BurstNav gives you scalable crowd navigation where `NavMeshAgent` hits its per-MonoBehaviour limits.
+> 💡 **Why not `NavMeshAgent`?**
+> `NavMeshAgent` is an object-oriented wrapper around a managed navigation world. One agent per MonoBehaviour means one transform sync, one callback and one managed object per unit. BurstNav keeps the whole agent state in six ECS components and resolves paths and velocity inside Burst jobs, so hundreds of agents cost chunk iteration instead of main-thread calls.
 
 ***
 
 #### ✨ Core Features
 
-* 🗺️ **HPA\* Hierarchical Pathfinding**\
-  Short hops run flat A\* over a grid-broadphased polygon graph; long paths (distance > threshold) run HPA\* over the cluster graph with a refinement pass. The threshold is per-mesh.
-* 🚶 **ORCA Crowd Steering**\
-  2-D disk avoidance with spatial-hash neighbor discovery (`MaxNeighbors = 48`) and a corridor containment clamp that keeps agents on the mesh and out of walls.
-* 📦 **Baked Immutable Blob Graphs**\
-  One `BlobAssetReference<BnBlobMeshGraph>`: deduplicated portals, uniform XZ spatial grid, optional HPA\* cluster layers. No per-frame allocation in the path hot path.
-* 🚧 **Dynamic Obstacles Without Re-Bake**\
-  Per-link blocking (`SetLinkBlocked` for debris) and door/water-style tag masks (`BnDoorComponent` + `PolygonTagMasks`). Affected agents re-path within 1–2 frames.
-* 🎲 **Deterministic Bakes & Searches**\
-  Same input → same blob → same paths. Re-baking is reproducible, and the shipped harness checks rely on it.
-* 🧪 **EditMode Tests + Headless Harnesses**\
-  An NUnit EditMode suite plus deterministic `BurstNav/…` editor checks runnable in `-batchmode`.
+* 🧊 **Static polygon graph in a blob asset** — one immutable `BlobAssetReference<BnMeshGraphBlob>` shared by every job. No graph copies, no per-agent topology.
+* 🧠 **Branch-free flat A\*** — `BnAStar.FindPath` expands polygons from a single reusable `BnPathScratchpad`. Steady-state allocation is exactly zero.
+* 🎯 **Kinematic funnel steering** — portal-based string pulling (`BnFunnel`) removes the stair-step corridor and returns corner-cutting velocity in one pass.
+* 🧩 **Six-component agent archetype** — `BnAgentSteering`, `BnAgentPath`, `BnPathWaypoint`, `BnAgentPathRequest` plus two enableable toggles. One dominant archetype means dense chunks.
+* ⚡ **Deferred, allocation-free command buffers** — request and steering toggles flip enable bits through `EndSimulationEntityCommandBufferSystem`; nothing completes a job on the main thread.
+* 🧪 **EditMode and PlayMode tests** — the package ships a NUnit suite under `Tests` plus two runnable samples.
 
 ***
 
-#### ⚙️ Technical Requirements
+#### 🧭 How the pipeline fits together
 
-| Requirement | Supported Version | Notes |
+```text
+BnBlobMeshGraph (singleton)
+  -> BnMeshGraphBlob (blob asset)
+  -> BnAStar.FindPath + BnPathScratchpad
+  -> BnAgentPath + BnPathWaypoint buffer
+  -> BnFunnel.Solve
+  -> BnAgentSteering.DesiredVelocity
+  -> KinematicBypassJob
+  -> BnAgentSteering.Velocity
+  -> IntegrateJob
+  -> BnAgentSteering.Position
+```
+
+Read [How It Works](3.-how-it-works.md) for the data passing through each arrow, or jump to [Quick Start](2.-quick-start.md) to get one agent moving.
+
+***
+
+#### 📦 Package Facts
+
+| Property | Value |
+|---|---|
+| Package name | `sniveler-code.dev.burstnav-ecs` |
+| Display name | BurstNav Free |
+| Version | 1.1.0 |
+| Minimum Unity | 2022.3 |
+| Runtime assembly | `SnivelerCode.BurstNav.Runtime` (root namespace `BurstNav`) |
+| Dependencies | `com.unity.entities` 1.2.4, `com.unity.burst` 1.8.12, `com.unity.collections` 2.4.0, `com.unity.mathematics` 1.3.1 |
+| Verified host | Unity 6000.5.2f1 with `com.unity.entities` 6.5.0 |
+| License | MIT |
+| Editor tooling | None — no windows, no define symbols, no project settings |
+
+***
+
+#### 🚀 What ships in the box
+
+| Layer | Implementation | Main types |
 |---|---|---|
-| **Unity Engine** | **Unity 6 (6000.x) only** | Minimum `6000.0`. Earlier versions are not supported. |
-| **Unity Entities** | `6.5.0`+ | Pulled in automatically as a dependency. |
-| **Unity Collections** | `6.5.0`+ | Pulled in automatically. |
-| **Burst Compiler** | `1.8.29`+ | Pulled in automatically. |
-| **Unity Mathematics** | `1.4.0`+ | Pulled in automatically. |
-| **AI Module** | `1.0.0` (built-in) | Built-in `NavMesh` triangulation at bake time. |
+| Navigation graph | Static polygon graph in a blob asset | `BnMeshGraphBlob`, `BnPolygon`, `BnLinkData` |
+| Graph owner | Singleton component pointing at the blob | `BnBlobMeshGraph` |
+| Search | Flat A* with a fixed iteration budget | `BnAStar`, `BnPathScratchpad`, `BnLinkFilter` |
+| Path storage | Per-agent path slot and waypoint buffer | `BnAgentPath`, `BnPathWaypoint` |
+| Steering | Kinematic funnel over portal edges | `BnFunnel` |
+| Velocity | Kinematic bypass: desired velocity becomes velocity | `KinematicBypassJob` |
+| Integration | Position advanced by velocity and delta time | `IntegrateJob` |
+| Environment | Static navmesh only | `BnMeshAuthoring` |
+| Agent authoring | One dominant agent archetype | `BnAgentAuthoring`, `BnAgentSteering` |
 
-> 💡 **Note:** the asset relies strictly on the ECS paradigm — everything runs as `ISystem`s with `[BurstCompile]` jobs. There is no per-agent MonoBehaviour cost at runtime.
+Two samples are included: **Hello Navmesh** (one agent patrolling a 4 × 4 grid) and **Funnel Steering** (four agents crossing a 6 × 6 grid on diagonals). Both are imported from the Package Manager **Samples** tab.
 
 ***
 
-#### ⚠️ Scope & Known Limitations
+#### ⚠️ What Free deliberately does not do
 
-> 🛑 **2.5-D Navigation (XZ only)**
->
-> * Pathfinding and steering operate on **XZ only**: no stair/ramp following, agent Y is never modified by the pipeline (gameplay code handles vertical movement).
-> * Multi-floor navmeshes flatten into one layer; a "vertical" path is a straight XZ shortcut.
-> * Pathfinding throughput is capped at ≈ **256 new requests/frame** (excess is deferred, not dropped).
-> * ORCA is 2-D disk avoidance with a fixed neighbor cap (48); agents with radius > 1 m are warned about, not clamped.
-> * Spawn/destination more than one grid cell (2 m) from the mesh → first request fails (`BnPathState.Failed`) rather than snapping.
+Free is a single-agent-quality steering pipeline. It has **no local avoidance**, **no dynamic obstacles** and **no door/area tags** — those stages do not exist in the runtime, so there is nothing to tune or toggle. If a level needs crowds that separate, obstacles that move, or doors that close, read [Limitations & Scope](5.-limitations-and-scope.md) before you commit to the package.
 
-Full details: [Troubleshooting & FAQ](9.-troubleshooting-and-faq.md).
+***
+
+#### 📚 How this documentation is organised
+
+* **Getting Started** — install the package, bake a graph, spawn an agent and issue the first request.
+* **Core** — the frame-by-frame pipeline and the full runtime API for requests, search and steering.
+* **Reference** — every component, job and system, the blob memory layout, and the tuning knobs that actually exist.
+* **Handbook** — the exact scope of Free and a symptom-to-cause troubleshooting table.
+
+Every type lives in the `BurstNav` namespace; every code snippet on these pages compiles against `SnivelerCode.BurstNav.Runtime`.

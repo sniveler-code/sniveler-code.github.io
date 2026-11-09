@@ -17,6 +17,16 @@ const DOCS_DIR = path.join(__dirname, 'documentation');
 const TEMPLATE_PATH = path.join(__dirname, 'docs_template.html');
 const BASE_URL = 'https://sniveler-code.github.io';
 
+// Per-project SEO overrides. Any project without an entry falls back to a
+// title derived from its folder name and the first paragraph of its README.
+const PROJECT_META = {
+    'burstnav-ecs': {
+        title: 'BurstNav Free — ECS Pathfinding for Unity DOTS',
+        description: 'Zero-allocation Unity DOTS pathfinding: baked polygon graph, flat A* and kinematic funnel steering for ECS agents. Burst-compiled, GC-free.',
+        schemaName: 'BurstNav Free — ECS Pathfinding for Unity DOTS'
+    }
+};
+
 if (!fs.existsSync(TEMPLATE_PATH)) {
     console.error("docs_template.html not found!");
     process.exit(1);
@@ -233,11 +243,12 @@ projects.forEach(project => {
     const renderedHTML = marked.parse(fullMarkdown);
     
     // Capitalize project title
-    const projectTitle = project.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const meta = PROJECT_META[project] || {};
+    const projectTitle = meta.title || project.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const projectSlug = project.toLowerCase();
-    const projectDescription = extractDescription(projectDir, filesToProcess) || 
+    const projectDescription = meta.description || extractDescription(projectDir, filesToProcess) ||
         `Documentation for ${projectTitle} - High-performance Unity DOTS/ECS tooling by Sniveler Code.`;
-    const jsonLd = generateJsonLd(project, projectTitle, projectDescription);
+    const jsonLd = generateJsonLd(project, meta.schemaName || projectTitle, projectDescription);
 
     const finalHTML = templateStr
         .replace(/\{\{PROJECT_TITLE\}\}/g, projectTitle)
@@ -282,7 +293,8 @@ console.log('Build complete.');
 
 // Generate RSS feed for asset updates
 const rssItems = projects.map(project => {
-    const projectTitle = project.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const projectTitle = (PROJECT_META[project] && PROJECT_META[project].title) ||
+        project.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     const projectDir = path.join(DOCS_DIR, project);
     const summaryPath = path.join(projectDir, 'SUMMARY.md');
     
